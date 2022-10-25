@@ -1,21 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
+import {DrawerScreenProps} from "@react-navigation/drawer"
 import { MainStackNavigator,ApplyStackNavigator,TestStackNavigator,ResultStackNavigator,MyPageStackNavigator } from "./StackNavigator";
 import { Image } from "react-native";
-
+import { DrawerParamList } from "../type";
 const Tab = createBottomTabNavigator();
-type Props = {
-  defaultScreen: string
-}
-const BottomTabNavigator = (/* {defaultScreen='Home'}:Props */) => {
+type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'Main'>;
+
+
+const BottomTabNavigator = ({navigation}:DrawerScreenProp) => {
+
   return (
     <Tab.Navigator
     screenOptions={{
-      headerShown:false
+      headerShown:false,
+      tabBarStyle:{
+        borderTopLeftRadius:16,
+        borderTopRightRadius:16
+      }
     }}
-      // initialRouteName={defaultScreen}
-      // initialRouteName='Home'
+
     >
       <Tab.Screen name="Home" component={MainStackNavigator} options={{
         title: 'HOME',

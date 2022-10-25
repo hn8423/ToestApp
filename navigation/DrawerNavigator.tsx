@@ -1,19 +1,19 @@
 import React, { useRef, useState,useMemo, useEffect, useCallback } from "react";
-
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import _ from 'lodash';
-import {useNavigation} from '@react-navigation/native';
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import TabNavigator from "./TabNavigator";
 import MyPage from "../screens/MyPage";
 import ToestIntro from "../screens/ToestIntro";
 import PrivacyPolicy from "../screens/PrivacyPolicy";
 import TermsOfUse from "../screens/TermsOfUse";
+import { DrawerParamList } from "../type";
+import { useNavigation } from '@react-navigation/native';
 import { DrawerActions } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View,Dimensions, Text,TouchableOpacity, Image, ScrollView, StatusBar } from "react-native";
 const chartHeight = Dimensions.get('window').height;
 const chartWidth = Dimensions.get('window').width;
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 const globalText:any = {
   login: {
@@ -65,26 +65,15 @@ const globalText:any = {
     ko: 'TOEST 란?',
   },
 }
-/*Drawer*/
-export type DrawerParamList = {
-  Main: undefined;
-  MyPage: undefined;
-  ToestIntro: undefined;
-  PrivacyPolicy: undefined;
-  TermsOfUse: undefined;
 
-  // Login: undefined;
-}
-type drawerScreenProp = DrawerScreenProps<DrawerParamList>;
+type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'Main'>;
 
 
-const DrawerNavigator = (/* navigation:any */) => {
+const DrawerNavigator = () => {
   // const navigation = useNavigation<drawerScreenProp>();
+  const navigation = useNavigation();
   const lang = 'en'
   const isLogined = true
-  const [isClosing, setClosing] = useState(false)
-  const sideBar = useRef(null)
-  const [name, setName] = useState('')
  type children ={
   name: string,
   link: string,
@@ -103,7 +92,8 @@ type menu ={
       icon: require(`../assets/images/drawer/mypage.png`),
       link: '',
       children: [
-        { name: globalText.account[lang], link: '/my_page?to=accountsetting', component: 'MyPage' },
+        // { name: globalText.account[lang], link: '/my_page?to=accountsetting', component: ['MyPage',{defaultScreen: 'MyPage'}]},
+        { name: globalText.account[lang], link: '/my_page?to=accountsetting', component: 'MyPage'},
         { name: globalText.payment[lang], link: '/my_page?to=payment', component: 'MyPage' },
       ],
     },
@@ -171,7 +161,7 @@ type menu ={
     <Drawer.Navigator 
       screenOptions={{
         headerLeft:(()=>(
-          <TouchableOpacity style={styles.headerLeft} onPress={()=>{/* navigation.openDrawer() */}}>
+          <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}>
             <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
         )),
         headerLeftContainerStyle:{
@@ -205,8 +195,7 @@ type menu ={
           v.children && 
           _(v.children)
           .map((j,i)=> (
-            <TouchableOpacity style={styles.itemChildren}  key={j.name+i}  onPress={()=>navigation.navigate(j.component)} >
-            
+            <TouchableOpacity style={styles.itemChildren}  key={j.name+i}  onPress={j.component === 'MyPage' ? ()=>navigation.navigate(j.component, {defaultScreen: 'account'}) :  ()=>navigation.navigate(j.component)} >
               <Text style={styles.itemChildrenText} >{j.name}</Text>
             </TouchableOpacity>
           )
