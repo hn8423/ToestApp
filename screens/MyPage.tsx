@@ -8,7 +8,7 @@ const MyPage = ({ navigation,route }:DrawerScreenProp) => {
    if(!route.params){
     return
    }
-   console.log(route.params.defaultScreen)
+  //  console.log(route.params.defaultScreen)
   },[route.params])
   return (
     <View style={styles.center}>
