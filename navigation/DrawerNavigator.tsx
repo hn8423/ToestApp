@@ -9,7 +9,6 @@ import PrivacyPolicy from "../screens/PrivacyPolicy";
 import TermsOfUse from "../screens/TermsOfUse";
 import { DrawerParamList } from "../type";
 import { useNavigation } from '@react-navigation/native';
-import { DrawerActions } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View,Dimensions, Text,TouchableOpacity, Image, ScrollView, StatusBar } from "react-native";
 const chartHeight = Dimensions.get('window').height;
 const chartWidth = Dimensions.get('window').width;
@@ -160,10 +159,7 @@ type menu ={
   return (
     <Drawer.Navigator 
       screenOptions={{
-        headerLeft:(()=>(
-          <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}>
-            <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
-        )),
+    
         headerLeftContainerStyle:{
           paddingLeft:10
         },
@@ -221,11 +217,47 @@ type menu ={
         </SafeAreaView>
       )}
     >
-      <Drawer.Screen name="Main" component={TabNavigator} />
-      <Drawer.Screen name="MyPage" component={MyPage} />
-      <Drawer.Screen name="ToestIntro" component={ToestIntro} />
-      <Drawer.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-      <Drawer.Screen name="TermsOfUse" component={TermsOfUse} />
+      <Drawer.Screen name="Main" component={TabNavigator} 
+       options={{    
+        headerShown:false,
+      //   headerLeft:(()=>(
+      //    <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}>
+      //      <Image source={require('../assets/images/drawer/hamburger.png')} /></TouchableOpacity>
+      //  ))
+       }}
+         />
+      <Drawer.Screen name="MyPage" component={MyPage} 
+           options={{    
+            headerLeft:(()=>(
+             <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
+               <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
+           ))
+           }}
+      />
+      <Drawer.Screen name="ToestIntro" component={ToestIntro} 
+            options={{    
+              headerLeft:(()=>(
+               <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
+                 <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
+             ))
+             }}
+      />
+      <Drawer.Screen name="PrivacyPolicy" component={PrivacyPolicy}
+            options={{    
+              headerLeft:(()=>(
+               <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
+                 <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
+             ))
+             }}
+      />
+      <Drawer.Screen name="TermsOfUse" component={TermsOfUse} 
+            options={{    
+              headerLeft:(()=>(
+               <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
+                 <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
+             ))
+             }}
+      />
     </Drawer.Navigator>
   );
 }
