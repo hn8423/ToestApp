@@ -11,18 +11,17 @@
 import React from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import DrawerNavigator from "./navigation/DrawerNavigator";
-import BottomTabNavigator from './navigation/TabNavigator';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
 const App = () => {
 
   return (    
-   <SafeAreaProvider>
+  <SafeAreaProvider>
      <NavigationContainer>
        <DrawerNavigator />
      </NavigationContainer>
-   </SafeAreaProvider>
+  </SafeAreaProvider>
 
 
     );

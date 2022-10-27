@@ -1,9 +1,8 @@
 import React from "react";
-import {  View,TouchableOpacity,Image,StatusBar } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {  TouchableOpacity,Image } from "react-native";
+import {SafeAreaView,  useSafeAreaInsets } from "react-native-safe-area-context";
 import useGetStyle from '../hooks/use-style'
 import { useNavigation,DrawerActions } from '@react-navigation/native';
-import { NavigationProps } from "../type";
 
 
 const Header = () => {
@@ -16,7 +15,7 @@ const Header = () => {
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       backgroundColor:'#fff',  
-      padding:16       
+      padding:16,    
     },
    logo:{
       marginBottom:5
@@ -24,9 +23,7 @@ const Header = () => {
   })
   
   return (
-    <SafeAreaView edges={['bottom']} >
-      <StatusBar />
-           <View {...style.container}>
+    <SafeAreaView edges={['left','right']} {...style.container} >
               <TouchableOpacity onPress={()=>drawerNavigation.dispatch(DrawerActions.openDrawer())} >
           <Image source={require('../assets/images/header/hamburger.png')} />
           </TouchableOpacity  >
@@ -36,7 +33,6 @@ const Header = () => {
               <TouchableOpacity onPress={()=>{}}>
           <Image source={require('../assets/images/header/circle.png')} />
           </TouchableOpacity>
-           </View>
     </SafeAreaView>
   )
 }

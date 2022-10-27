@@ -1,23 +1,23 @@
 import React, { useMemo, useState } from "react";
-import { View, Button, Text, StyleSheet } from "react-native";
+import { View, Text,  ScrollView,Dimensions, Image } from "react-native";
 import { NavigationProps } from "../type";
 import Header from "../component/Header";
 import ImageSlider from "../component/ImageSlider";
-
+import useGetStyle from '../hooks/use-style'
+const chartWidth = Dimensions.get('window').width;
 
 const Home = ({ navigation }:NavigationProps) => {
   const lang = 'en'
   
   const [globalText] = useState({
     en: {
-      gpst: `Global Problem-Solving Test(GPST) is a competition \nthat measures comprehensive problem-solving ability \nbased on the PISA test.`,
-      smc: `Silicon Valley Math Contest (SMC) is a competition 
-      that measures ability for AI convergence talents. `,
-      etest: 'e~Test Professionals is a nationally recognized certification \nproviding a comprehensive evaluation system \nthat assesses Information literacy',
+      gpst: `Global Problem-Solving Test(GPST) is a \ncompetition that measures comprehensive \nproblem-solving ability based on the \nPISA test.`,
+      smc: `Silicon Valley Math Contest (SMC) is\n a competition that measures ability \nfor AI convergence talents. `,
+      etest: 'e~Test Professionals is a nationally \nrecognized certification providing \na comprehensive evaluation system \nthat assesses Information literacy',
       // psycho:
       //   'Psychoeducational evaluations is an assessment \nusing a variety of tools to develop a complete perspective \nof your child’s academic skills and cognitive abilities',
       title: 'TEST AS A SERVICE',
-      bigData: `Driving change \nfor testtakers \nthrough big data`,
+      bigData: `Driving change for testtakers \nthrough big data`,
       userFriendly: 'User-friendly and accessible, TOEST contains an advanced system to evaluate all learners worldwide.',
       testAsDes: 'Whether you are a parent or an instructor TOEST provides detailed evaluation and actionable feedback. Our asessment do not happen without you.',
     },
@@ -42,8 +42,7 @@ const Home = ({ navigation }:NavigationProps) => {
   const images = useMemo(
     () => [
       {
-        key: '',
-        location: '../assets/images/home/gpst.png',
+        location: require('../assets/images/home/gpst.png') ,
         textContents: {
           subtitle: 'GPST',
           title: 'Global Problem\nSolving Test',
@@ -52,8 +51,7 @@ const Home = ({ navigation }:NavigationProps) => {
         },
       },
       {
-        key: '',
-        location: '../assets/images/home/smc.png',
+        location: require('../assets/images/home/smc.png'),
         textContents: {
           subtitle: 'SMC',
           title: 'Silicon valley\nMath Contes',
@@ -62,8 +60,8 @@ const Home = ({ navigation }:NavigationProps) => {
         },
       },
       {
-        key: '',
-        location: '../assets/images/home/etest.png',
+  
+        location:require('../assets/images/home/etest.png'),
         textContents: {
           subtitle: 'Customized MOS Expertise',
           title: 'e~Test\nProfessionals',
@@ -85,7 +83,7 @@ const Home = ({ navigation }:NavigationProps) => {
     [textLan],
   )
 
-    // memo
+  // memo
   // memo
   // memo
 
@@ -94,26 +92,83 @@ const Home = ({ navigation }:NavigationProps) => {
       return { ...v, key: `imageSlider-${i}` }
     })
   }, [images])
+
+  const style = useGetStyle({
+    center: {   
+      justifyContent: 'flex-start',
+      textAlign: "center",
+      height:1230
+    },
+    boxWrapper:{
+      position:'relative',
+      width:chartWidth,
+    },
+    box1:{
+      position: 'absolute', 
+      top: -50,
+      left: 16,
+      width:chartWidth-32,
+      // height:300,
+      backgroundColor:'#fff',
+      borderRadius:16
+
+    },
+    box2:{
+      position: 'absolute', 
+      top: 310,
+      left: 16,
+      width:chartWidth-32,
+      // height:300,
+      backgroundColor:'#fff',
+      borderRadius:16
+
+    },
+    boxTitleWrapper:{
+      marginHorizontal:24,
+      marginVertical:16, 
+    },
+    boxTitle:{
+      fontStyle:'normal',
+      fontWeight:'500',
+      color:'#191919',
+      fontSize:16,
+      lineHeight:24,
+      letterSpacing:0.15,
+      textTransform:'capitalize'      
+    },
+    boxSub:{
+      fontStyle:'normal',
+      fontWeight:'400',
+      color:'#393939',
+      fontSize:14,
+      lineHeight:20,
+      letterSpacing:0.25,      
+    },
+  })
+
   return (
       <>
         <Header/>
-      <View style={styles.center}>
-        <ImageSlider images={imageList}/>
-        <Text>This is the home screen</Text>
-        {/* <Button title="Go to About Screen" onPress={() => navigation.navigate("About")} // We added an onPress event which would navigate to the About screen */}
-   {/* /> */}
-      </View>
+     <ScrollView>
+        <View {...style.center}>
+          <ImageSlider images={imageList}/>
+         <View {...style.boxWrapper} >
+            <View {...style.box1}>
+              <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >TEST AS A SERVICE</Text></View>
+              <Image source={require('../assets/images/home/box1.png')} />
+              <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.testAsDes}</Text></View>
+            </View>
+            <View {...style.box2}>
+              <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.bigData}</Text></View>
+              <Image source={require('../assets/images/home/box1.png')} />
+              <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.userFriendly}</Text></View>
+            </View>
+         </View>
+        </View>
+     </ScrollView>
       </>
   );
 };
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-  },
-});
 
 export default Home;

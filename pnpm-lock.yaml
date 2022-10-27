@@ -29,6 +29,7 @@ specifiers:
   react-native-gesture-handler: ^2.7.1
   react-native-gradle-plugin: ^0.71.4
   react-native-reanimated: ^2.11.0
+  react-native-reanimated-carousel: ^3.1.1
   react-native-safe-area-context: ^4.4.1
   react-native-screens: ^3.18.2
   react-test-renderer: 18.1.0
@@ -48,6 +49,7 @@ dependencies:
   react-native-gesture-handler: 2.7.1_li67rxuecrv4t7nknbczgycq3a
   react-native-gradle-plugin: 0.71.4
   react-native-reanimated: 2.11.0_3czbkggvrmibboi24l5aa7shum
+  react-native-reanimated-carousel: 3.1.1_tmqql6w3dc5gouloaanfqrbuwu
   react-native-safe-area-context: 4.4.1_li67rxuecrv4t7nknbczgycq3a
   react-native-screens: 3.18.2_li67rxuecrv4t7nknbczgycq3a
 
@@ -6477,6 +6479,20 @@ packages:
 
   /react-native-gradle-plugin/0.71.4:
     resolution: {integrity: sha512-5izzWXIlr5DL5+cx3a6oSA4cgSCw9Kv7WQjHqLxV2I1fSfzjzEdYTaDfrNjdcy71BHeeUB6BEyl70yXpjkCkdA==}
+    dev: false
+
+  /react-native-reanimated-carousel/3.1.1_tmqql6w3dc5gouloaanfqrbuwu:
+    resolution: {integrity: sha512-MmtomuAmHfAII4ovP7dB81mAuwMsLMJ6boioOh3wows0LQCnd0OoaYJF5gmNhAmXVU1WeFw5UVaklOH2e1oGpw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-native: '>=0.6.0'
+      react-native-gesture-handler: '*'
+      react-native-reanimated: '>=2.7.0'
+    dependencies:
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+      react-native-gesture-handler: 2.7.1_li67rxuecrv4t7nknbczgycq3a
+      react-native-reanimated: 2.11.0_3czbkggvrmibboi24l5aa7shum
     dev: false
 
   /react-native-reanimated/2.11.0_3czbkggvrmibboi24l5aa7shum:
