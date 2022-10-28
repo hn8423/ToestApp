@@ -7,6 +7,7 @@ import MyPage from "../screens/MyPage";
 import ToestIntro from "../screens/ToestIntro";
 import PrivacyPolicy from "../screens/PrivacyPolicy";
 import TermsOfUse from "../screens/TermsOfUse";
+import LogIn from "../screens/Login";
 import { DrawerParamList } from "../type";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View,Dimensions, Text,TouchableOpacity, Image, ScrollView, StatusBar } from "react-native";
@@ -72,7 +73,7 @@ const DrawerNavigator = () => {
   // const navigation = useNavigation<drawerScreenProp>();
   const navigation = useNavigation();
   const lang = 'en'
-  const isLogined = true
+  const isLogined = false
  type children ={
   name: string,
   link: string,
@@ -141,16 +142,18 @@ type menu ={
 
 
 
-  const loginItem = useMemo(()=>{
-    return (
-      <View   style={styles.itemWrapper}  >
-      <View style={styles.itemParents} >
-          <Image style={styles.itemParentsImage} source={isLogined ? require(`../assets/images/drawer/logout.png`) : require(`../assets/images/drawer/login.png`)} />
-       <Text>{isLogined ? globalText.logOut[lang] : globalText.logIn[lang]}</Text>
-      </View>
- </View>
-    )
-  },[isLogined, lang])
+  // const loginItem = useMemo(()=>{
+  //   return (
+  //     <TouchableOpacity onPress={()=>navigation.navigate('LogIn')}>
+  //       <View   style={styles.itemWrapper}  >
+  //       <View style={styles.itemParents} >
+  //           <Image style={styles.itemParentsImage} source={isLogined ? require(`../assets/images/drawer/logout.png`) : require(`../assets/images/drawer/login.png`)} />
+  //        <Text>{isLogined ? globalText.logOut[lang] : globalText.logIn[lang]}</Text>
+  //       </View>
+  //  </View>
+  //     </TouchableOpacity>
+  //   )
+  // },[isLogined, lang])
 
 
   // mounted
@@ -209,7 +212,14 @@ type menu ={
         )
       })
       .value()}
-              {loginItem}
+                 <TouchableOpacity onPress={()=>navigation.navigate('LogIn')}>
+        <View   style={styles.itemWrapper}  >
+        <View style={styles.itemParents} >
+            <Image style={styles.itemParentsImage} source={isLogined ? require(`../assets/images/drawer/logout.png`) : require(`../assets/images/drawer/login.png`)} />
+         <Text>{isLogined ? globalText.logOut[lang] : globalText.logIn[lang]}</Text>
+        </View>
+   </View>
+      </TouchableOpacity>
               </View>
            </View>
       
@@ -220,10 +230,6 @@ type menu ={
       <Drawer.Screen name="Main" component={TabNavigator} 
        options={{    
         headerShown:false,
-      //   headerLeft:(()=>(
-      //    <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.dispatch(DrawerActions.openDrawer())}>
-      //      <Image source={require('../assets/images/drawer/hamburger.png')} /></TouchableOpacity>
-      //  ))
        }}
          />
       <Drawer.Screen name="MyPage" component={MyPage} 
@@ -257,6 +263,25 @@ type menu ={
                  <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
              ))
              }}
+      />
+      <Drawer.Screen name="LogIn" component={LogIn} 
+            options={{ 
+              headerShown:false   
+              // // headerLeft:(()=>(
+              // //   <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
+              // //     <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
+              // // )),
+              // // headerLeftLabelVisible:true,
+              // headerTitle:(()=>(
+              //   <TouchableOpacity  onPress={() => navigation.goBack()}>
+              //   <Image source={require('../assets/images/header/logo.png')} />
+              //   </TouchableOpacity>
+              // )),
+              // headerRight:(()=>(
+
+              // ))
+             }}
+
       />
     </Drawer.Navigator>
   );
@@ -305,7 +330,6 @@ color:'#fff'
     width:chartWidth-32,
     backgroundColor:'#fff',
     padding:24,
-    // margin:16,
     marginVertical:8,
     marginHorizontal:16,
     borderRadius:8
