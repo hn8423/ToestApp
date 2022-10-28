@@ -144,7 +144,12 @@ const Home = ({ navigation }:NavigationProps) => {
       lineHeight:20,
       letterSpacing:0.25,      
     },
+    boxImage:{
+    width:chartWidth-32,
+    resizeMode:'contain'
+    }
   })
+
 
   return (
       <>
@@ -155,12 +160,12 @@ const Home = ({ navigation }:NavigationProps) => {
          <View {...style.boxWrapper} >
             <View {...style.box1}>
               <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >TEST AS A SERVICE</Text></View>
-              <Image source={require('../assets/images/home/box1.png')} />
+              <Image {...style.boxImage} source={require('../assets/images/home/box1.png')} />
               <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.testAsDes}</Text></View>
             </View>
             <View {...style.box2}>
               <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.bigData}</Text></View>
-              <Image source={require('../assets/images/home/box1.png')} />
+              <Image {...style.boxImage} source={require('../assets/images/home/box1.png')} />
               <View {...style.boxTitleWrapper}><Text {...style.boxTitle} >{textLan.userFriendly}</Text></View>
             </View>
          </View>
