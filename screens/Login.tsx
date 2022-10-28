@@ -9,8 +9,6 @@ import Button from "../component/Button";
 type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LogIn'>;
 const LogIn = ({ navigation,route }:DrawerScreenProp) => {
 
-    /**@type {} */
-    // type InputRef = [React.MutableRefObject<HTMLInputElement>, React.MutableRefObject<HTMLInputElement>]
     const inputPw = useRef<React.MutableRefObject<HTMLInputElement>>(null)
 
     const lang = 'en'
