@@ -1,15 +1,16 @@
-import { ColorValue, Text, View } from "react-native"
+import { ColorValue, Text, TouchableOpacity, View } from "react-native"
 import useGetStyle from '../hooks/use-style'
 
 type Props = {
   children: string;
   color?: ColorValue;
   backgroundColor?: ColorValue;
-  width?: string | number
+  width?: string | number;
+  onPress?: any
   
 }
 
-const Button = ({children = '', color = '#fff', backgroundColor = '#4AC1E8', width='auto'}:Props) =>{
+const Button = ({children = '', color = '#fff', backgroundColor = '#4AC1E8', width='auto', onPress=()=>{}}:Props) =>{
   const style = useGetStyle({
     wrapper: {
       height:48,
@@ -18,7 +19,7 @@ const Button = ({children = '', color = '#fff', backgroundColor = '#4AC1E8', wid
       textAlign: "center",
       padding:8,
       backgroundColor,
-      borderRadius:2
+      borderRadius:8
     },
     text:{
       color,
@@ -26,9 +27,11 @@ const Button = ({children = '', color = '#fff', backgroundColor = '#4AC1E8', wid
     }
   })
   return (
-    <View {...style.wrapper}>
-      <Text {...style.text}>{children}</Text>
-    </View>
+    <TouchableOpacity onPress={onPress}>
+      <View {...style.wrapper}>
+        <Text {...style.text}>{children}</Text>
+      </View>
+    </TouchableOpacity>
   )
 }
 

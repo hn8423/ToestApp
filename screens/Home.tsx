@@ -69,16 +69,16 @@ const Home = ({ navigation }:NavigationProps) => {
           // theme_dark: true,
         },
       },
-      // {
-      //   key: '',
-      //   location: '/images/mobile/main/mobile-bg4.png',
-      //   textContents: {
-      //     subtitle: 'Behavioral Test',
-      //     title: 'Psychoeducational\nEvaluations',
-      //     description: textLan.psycho,
-      //     // theme_dark: true,
-      //   },
-      // },
+      {
+  
+        location:require('../assets/images/home/4.png'),
+        textContents: {
+          subtitle: '',
+          title: '',
+          description:'',
+        },
+      },
+
     ],
     [textLan],
   )

@@ -3,11 +3,12 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import _ from 'lodash';
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import TabNavigator from "./TabNavigator";
+import { LoginStackNavigator } from "./StackNavigator";
 import MyPage from "../screens/MyPage";
 import ToestIntro from "../screens/ToestIntro";
 import PrivacyPolicy from "../screens/PrivacyPolicy";
 import TermsOfUse from "../screens/TermsOfUse";
-import LogIn from "../screens/Login";
+import Header from "../component/Header";
 import { DrawerParamList } from "../type";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View,Dimensions, Text,TouchableOpacity, Image, ScrollView, StatusBar } from "react-native";
@@ -116,7 +117,6 @@ type menu ={
       name: 'Need a help?',
       icon: require(`../assets/images/drawer/email.png`),
       link: '',
-      // disable: true,
     },
   ])
 
@@ -139,21 +139,6 @@ type menu ={
   // renderMap
   // renderMap
 
-
-
-
-  // const loginItem = useMemo(()=>{
-  //   return (
-  //     <TouchableOpacity onPress={()=>navigation.navigate('LogIn')}>
-  //       <View   style={styles.itemWrapper}  >
-  //       <View style={styles.itemParents} >
-  //           <Image style={styles.itemParentsImage} source={isLogined ? require(`../assets/images/drawer/logout.png`) : require(`../assets/images/drawer/login.png`)} />
-  //        <Text>{isLogined ? globalText.logOut[lang] : globalText.logIn[lang]}</Text>
-  //       </View>
-  //  </View>
-  //     </TouchableOpacity>
-  //   )
-  // },[isLogined, lang])
 
 
   // mounted
@@ -212,7 +197,7 @@ type menu ={
         )
       })
       .value()}
-                 <TouchableOpacity onPress={()=>navigation.navigate('LogIn')}>
+                 <TouchableOpacity onPress={()=>navigation.navigate('LoginStackNavigator')}>
         <View   style={styles.itemWrapper}  >
         <View style={styles.itemParents} >
             <Image style={styles.itemParentsImage} source={isLogined ? require(`../assets/images/drawer/logout.png`) : require(`../assets/images/drawer/login.png`)} />
@@ -264,24 +249,10 @@ type menu ={
              ))
              }}
       />
-      <Drawer.Screen name="LogIn" component={LogIn} 
+      <Drawer.Screen name="LoginStackNavigator" component={LoginStackNavigator} 
             options={{ 
               headerShown:false   
-              // // headerLeft:(()=>(
-              // //   <TouchableOpacity style={styles.headerLeft} onPress={()=>navigation.goBack()}>
-              // //     <Image source={require('../assets/images/drawer/goBack.png')} /></TouchableOpacity>
-              // // )),
-              // // headerLeftLabelVisible:true,
-              // headerTitle:(()=>(
-              //   <TouchableOpacity  onPress={() => navigation.goBack()}>
-              //   <Image source={require('../assets/images/header/logo.png')} />
-              //   </TouchableOpacity>
-              // )),
-              // headerRight:(()=>(
-
-              // ))
              }}
-
       />
     </Drawer.Navigator>
   );

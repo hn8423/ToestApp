@@ -27,6 +27,7 @@ export type DrawerParamList = {
   ToestIntro: undefined;
   PrivacyPolicy: undefined;
   TermsOfUse: undefined;
-  LogIn?: undefined;
+  LoginStackNavigator?: undefined;
   LogOut?: undefined;
+  Header: undefined
 }
