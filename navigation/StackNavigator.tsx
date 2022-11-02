@@ -8,6 +8,9 @@ import Test from "../screens/Test";
 import TestDetail from "../screens/Test/Detail";
 import Result from "../screens/Result";
 import MyPage from "../screens/MyPage";
+import LogIn from "../screens/Login";
+import SignUpComplete from "../screens/SignUpComplete";
+import SignUp from "../screens/SignUp";
 
 const Stack = createStackNavigator();
 
@@ -55,9 +58,17 @@ const ResultStackNavigator = () => {
 const MyPageStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="MyPageStack" component={MyPage} />
+      <Stack.Screen name="MyPage" component={MyPage} />
     </Stack.Navigator>
   );
 }
-
-export { MainStackNavigator,ApplyStackNavigator,TestStackNavigator,ResultStackNavigator,MyPageStackNavigator };
+const LoginStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="SignUpComplete" component={SignUpComplete} />
+      <Stack.Screen name="SignUp" component={SignUp} />
+    </Stack.Navigator>
+  );
+}
+export { MainStackNavigator,ApplyStackNavigator,TestStackNavigator,ResultStackNavigator,MyPageStackNavigator,LoginStackNavigator };

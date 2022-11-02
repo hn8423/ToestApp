@@ -1,13 +1,14 @@
-import React, { useEffect,useState,useRef,useMemo } from "react";
-import { View, Text, StyleSheet, Image, Touchable, TouchableHighlight, TextInput } from "react-native";
+import React, { useState,useRef,useMemo } from "react";
+import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity } from "react-native";
 import { DrawerParamList } from "../type";
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
+import { StackActions } from '@react-navigation/native';
 
 import Button from "../component/Button";
-type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LogIn'>;
-const LogIn = ({ navigation,route }:DrawerScreenProp) => {
+type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>;
+const LogIn = ({ navigation}:DrawerScreenProp) => {
 
     const inputPw = useRef<React.MutableRefObject<HTMLInputElement>>(null)
 
@@ -106,7 +107,6 @@ const LogIn = ({ navigation,route }:DrawerScreenProp) => {
   // memo
   // memo
 
-  // const signinFailedMsg = useMemo(() => (router.query.error ? router.query.error : ''), [router.query.error])
 
   const isFull = useMemo(() => {
     return Boolean(email && password)
@@ -199,12 +199,6 @@ const LogIn = ({ navigation,route }:DrawerScreenProp) => {
       marginTop:18
     }
   })
-  useEffect(()=>{
-   if(!route.params){
-    return
-   }
-  //  console.log(route.params.defaultScreen)
-  },[route.params])
   return (
    <>
       <Header/>
@@ -225,10 +219,15 @@ const LogIn = ({ navigation,route }:DrawerScreenProp) => {
             {...style.textInput}
             placeholder={globalText.passwordInput[lang]}
           />
-          <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
+          <TouchableOpacity onPress={()=>navigation.dispatch(
+  StackActions.push('SignUp')
+)} >
+  <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
+  </TouchableOpacity>
         </View>
         <View {...style.button}>
-          <Button width={'100%'} children={globalText.signInButton[lang]} ></Button>
+          <Button width={328}  
+          children={globalText.signInButton[lang]} ></Button>
         </View>
       </View>
    </>

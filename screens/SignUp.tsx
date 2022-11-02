@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from 'react'
-import { View,  Text, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, TouchableHighlight } from 'react-native'
+import React, { useMemo, useState, useRef } from 'react'
+import { View,  Text, ScrollView, Dimensions, Image, TouchableOpacity,  NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
 import { NavigationProps } from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
 import Button from '../component/Button'
 import SearchInput from '../component/SearchInput'
-import { Shadow } from 'react-native-shadow-2'
+import { TextInput } from 'react-native-gesture-handler'
+import Toast from '../component/Toest'
 const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 
@@ -127,8 +128,8 @@ const globalText = {
     ko: '입력되지 않은 항목이 있습니다!',
   },
   isValid: {
-    en: 'Enter correctly',
-    ko: '올바르게 입력하세요',
+    en: 'Password and re-enter password do not match',
+    ko: '비밀번호와 재입력 비밀번호가 맞지 않습니다',
   },
   isStandard: {
     en: 'Check the password',
@@ -171,10 +172,18 @@ const globalText = {
     en: 'You really should read it.',
     ko: '개인정보정책을 반드시 읽어 주시길 바랍니다.',
   },
+  isNameValid:{
+    en: 'Please fill in your name correctly',
+    ko: '이름을 올바로 기입해주세요'
+  }
 }
 
 const SignUp = ({ navigation }: NavigationProps) => {
   const language = 'en'
+  type ToestRef = {
+      show: (message: string) => void  
+  }
+  const toastRef = useRef<ToestRef>();
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -182,9 +191,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
   const [pwValidate, setPwValidate] = useState('')
   const [agree, setAgree] = useState('')
   const [chapter, setChapter] = useState(0)
-  const [eye, setEye] = useState(false)
   const [code, setCode] = useState('')
-  const [userInfo, setUserInfo] = useState({})
   const [isDown,setIsDown ] = useState(false)
   const [isAgree, setIsAgree] = useState(false)
 
@@ -234,23 +241,23 @@ const SignUp = ({ navigation }: NavigationProps) => {
         break
       case 1:
         if (!isFull) {
-          // alert(globalText.isFull[language])
+          toastRef.current?.show(globalText.isFull[language])
           return
         }
         if (!isValid) {
-          // alert(globalText.isValid[language])
+          toastRef.current?.show(globalText.isValid[language])
           return
         }
         if (!isStandard) {
-          // alert(globalText.isStandard[language])
+          toastRef.current?.show(globalText.isStandard[language])
           return
         }
         if (!isEmailValid) {
-          // alert(globalText.isEmailValid[language])
+          toastRef.current?.show(globalText.isEmailValid[language])
           return
         }
         if (!isNameValid) {
-          // alert(globalText.isNameValid[language])
+          toastRef.current?.show(globalText.isNameValid[language])
           return
         }
         const body = { name, password, email, countryCode: code }
@@ -314,40 +321,22 @@ const SignUp = ({ navigation }: NavigationProps) => {
     setCode(e.detail)
   }
 
-  // countryCode
-  // const countryCodeList = useMemo(() => _(countryCode.countryCodeList), [])
-  // const countryCodeListKO = useMemo(() => {
-  //   return countryCodeList
-  //     .orderBy((v) => v.code_ko)
-  //     .map(({ alpha_2, code_en, code_ko }) => ({ value: alpha_2, text: code_ko }))
-  //     .value()
-  // }, [countryCodeList])
-  // const countryCodeListEN = useMemo(() => {
-  //   return countryCodeList
-  //     .orderBy((v) => v.code_en)
-  //     .map(({ alpha_2, code_en, code_ko }) => ({ value: alpha_2, text: code_en }))
-  //     .value()
-  // }, [countryCodeList])
-  // const countryCodeListByLang = useMemo(() => {
-  //   if (language === 'en') {
-  //     return countryCodeListEN
-  //   } else {
-  //     return countryCodeListKO
-  //   }
-  // }, [countryCodeListEN, countryCodeListKO, language])
+  function setTargetValue(setState:React.Dispatch<React.SetStateAction<string>>) {
+    return (e:NativeSyntheticEvent<TextInputChangeEventData>) => {
+      setState(e.nativeEvent.text)
+    }
+  }
+
+
 
   const style = useGetStyle({
     container: {
+      minHeight:chartHeight,
       backgroundColor: '#fff',
       paddingHorizontal: 16,
       paddingVertical: 24,
     },
-    chapter0: {      
-      minHeight:chartHeight-150
-    },
-    chapter1:{
 
-    },
     progressBar: {
       flex: 0.2,
       display: 'flex',
@@ -382,7 +371,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
       borderRadius: 10,
     },
     text: {
-      flex: 0.5,
+      // flex: 0.5,
       justifyContent: 'center',
       alignItems: 'center',
       marginTop:32
@@ -453,8 +442,8 @@ const SignUp = ({ navigation }: NavigationProps) => {
       color: "#191919",
         },
     button: {
-      flex: 0.4,
-      marginTop:16
+      // flex: 0.4,
+      marginTop:32
     },
     inputText:{
       fontStyle: 'normal',
@@ -463,12 +452,35 @@ const SignUp = ({ navigation }: NavigationProps) => {
       lineHeight: 24,
       letterSpacing: 0.1,
       color: '#767676',
-    }
+      marginTop:24,
+    },
+    input:{
+      height:44,
+      borderBottomColor: '#DBDBDB',
+      borderBottomWidth:1,
+      width:'100%',
+      justifyContent:'center'
+    },
+    passwordCorrect:{
+
+    },
+    passwordValid:{
+      color:'#8a8a8a',
+    },
+    passwordIcon:{
+      position:'absolute',
+      right:10,
+      bottom:10,
+    },
+    toest:{
+      marginHorizontal:'auto'
+    }    
   })
+
   return (
     <>
       <Header />
-      <ScrollView>
+      <ScrollView nestedScrollEnabled = {true}>
         <View {...style.container}>
           <View {...style.progressBar}>
             <View {...style.progress}>
@@ -483,7 +495,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
                 <Text {...style.textStyle2}>{chapter === 0 && globalText.contentstitle[language]}</Text>
               </View>
           {chapter === 0 && (
-            <View {...style.chapter0}>
+            <View>
               <View {...style.textArea}>
                 <View {...style.textAreaShort}>
                 <View {...style.textAreaShortLeft}>
@@ -496,7 +508,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
                 </TouchableOpacity>                
                 </View>                
                   {isDown && 
-                 <ScrollView {...style.textContentWrapper} >
+                 <ScrollView {...style.textContentWrapper} nestedScrollEnabled = {true} >
                       <View {...style.textContent} >
                         <Text>{globalText.contents[language]}</Text>
                       </View>
@@ -524,17 +536,63 @@ const SignUp = ({ navigation }: NavigationProps) => {
              </TouchableOpacity>
      
               </View>
-              <View {...style.button}>
-                <Button backgroundColor={'#4AC1E8'} width={'100%'} onPress={clickNext} >NEXT</Button>
-              </View>
+        
             </View>
           )}
           {chapter === 1 && 
-          <View {...style.chapter1}>
+          <View >
             <Text {...style.inputText}>{globalText.country[language]}</Text>
-            <SearchInput/>
+            <SearchInput setCode={setCode} />
+            <Text {...style.inputText}>{globalText.email[language]}</Text>
+            <TextInput {...style.input}
+              placeholder={globalText.emailInput[language]}
+              onChange={setTargetValue(setEmail)}
+            />
+            <Text {...style.inputText}>{globalText.userName[language]}</Text>
+            <TextInput {...style.input}
+              placeholder={globalText.nameInput[language]}
+              onChange={setTargetValue(setName)}
+            />
+            <Text {...style.inputText}>{globalText.passWord[language]}</Text>
+           <View>
+              <TextInput {...style.input}
+                placeholder={globalText.passwordInput[language]}
+                onChange={setTargetValue(setPassword)}
+                secureTextEntry={passwordType.visible}
+              />
+             <TouchableOpacity onPress={handlePasswordType}>
+               {passwordType.visible === true ? 
+                <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
+                :
+                <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
+              }
+             </TouchableOpacity>
+           </View>
+            <Text {...style.passwordValid}>{globalText.pwValidate[language]}</Text>
+           <View>
+              <TextInput {...style.input}
+                placeholder={globalText.rePasswordInput[language]}
+                onChange={setTargetValue(setPwValidate)}
+                secureTextEntry={passwordType2.visible}
+              />
+                    <TouchableOpacity onPress={handlePasswordType2}>
+               {passwordType2.visible === true ? 
+                <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
+                :
+                <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
+              }
+             </TouchableOpacity>
+           </View>
           </View>
           }
+          {chapter === 2 && 
+            <View><Text>2</Text></View>
+          }
+            {chapter !== 2 && 
+            <View {...style.button}>
+            <Button backgroundColor={'#4AC1E8'} width={'100%'} onPress={clickNext} >NEXT</Button>
+          </View>}
+          <Toast {...style.toest} ref={toastRef}/>
         </View>
       </ScrollView>
     </>
