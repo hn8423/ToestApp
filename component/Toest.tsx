@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
         paddingVertical: 9,
         paddingHorizontal: 23,
         borderRadius: 100,
+        marginHorizontal:'auto'
     },
     message: {
         color: "rgb(255, 255, 255)",

@@ -31,3 +31,7 @@ export type DrawerParamList = {
   LogOut?: undefined;
   Header: undefined
 }
+
+export type ToestRef = {
+  show: (message: string) => void  
+}

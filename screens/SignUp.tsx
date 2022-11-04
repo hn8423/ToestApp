@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef } from 'react'
 import { View,  Text, ScrollView, Dimensions, Image, TouchableOpacity,  NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
-import { NavigationProps } from '../type'
+import { NavigationProps,ToestRef } from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
@@ -10,6 +10,9 @@ import { TextInput } from 'react-native-gesture-handler'
 import Toast from '../component/Toest'
 const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
+import useRegister from '../hooks/useRegister'
+
+
 
 const globalText = {
   title: {
@@ -180,9 +183,7 @@ const globalText = {
 
 const SignUp = ({ navigation }: NavigationProps) => {
   const language = 'en'
-  type ToestRef = {
-      show: (message: string) => void  
-  }
+
   const toastRef = useRef<ToestRef>();
 
   const [name, setName] = useState('')
@@ -203,6 +204,8 @@ const SignUp = ({ navigation }: NavigationProps) => {
     type: 'password',
     visible: false,
   })
+
+
 
   // memo
   const isValid = useMemo(() => {
@@ -260,22 +263,13 @@ const SignUp = ({ navigation }: NavigationProps) => {
           toastRef.current?.show(globalText.isNameValid[language])
           return
         }
-        const body = { name, password, email, countryCode: code }
-        try {
-          // let result = await req2srv.signup(body)
-          // setUserInfo(result)
-          // req2srvSendCheckMail.sendMail(result)
-          setChapter((s) => s + 1)
-        } catch (err) {
-          // if (err.message === 'email') {
-          //   // alert(globalText.signuped[language])
-          // } else {
-          //   // alert(globalText.signupUnknown[language])
-          // }
+        if(isLoading){
+          return
         }
-        break
-      case 2:
-        setChapter((s) => s + 1)
+        const body = { name, password, email, countryCode: code }
+          register(body)
+          setChapter((s) => s + 1)
+        
     }
   }
 
@@ -297,6 +291,15 @@ const SignUp = ({ navigation }: NavigationProps) => {
       return { type: 'password', visible: false }
     })
   }
+
+  const {mutate: register, isLoading: registerLoading} = useRegister()
+
+  const isLoading = registerLoading
+
+
+  //onPress
+  //onPress
+  //onPress
 
   const onClickagree = () => {
     setAgree('agree')

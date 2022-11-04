@@ -1,25 +1,21 @@
 import React, { useState,useRef,useMemo } from "react";
-import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity } from "react-native";
-import { DrawerParamList } from "../type";
+import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity,ActivityIndicator } from "react-native";
+import { DrawerParamList,ToestRef } from "../type";
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
 import { StackActions } from '@react-navigation/native';
-
+import useLogin from "../hooks/useLogin";
 import Button from "../component/Button";
+import Toast from '../component/Toest'
 type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>;
 const LogIn = ({ navigation}:DrawerScreenProp) => {
 
-    const inputPw = useRef<React.MutableRefObject<HTMLInputElement>>(null)
 
+    const toastRef = useRef<ToestRef>();
     const lang = 'en'
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordType, setPasswordType] = useState({
-      type: 'password',
-      visible: false,
-    })
-    const [isFind, setIsFind] = useState(false)
 
   const [globalText] = useState({
  
@@ -68,6 +64,10 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
     sendEmail: {
       en: 'SEND EMAIL',
       ko: '매일 보내기',
+    },
+    loginLoading:{
+      en: 'is logining',
+      ko: '로그인 중입니다.'
     },
     toLogin: {
       en: 'TO SIGN IN',
@@ -127,27 +127,37 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
     return Boolean(email)
   }, [email])
 
+  //sever connect
+  //sever connect
+  //sever connect
+  const {mutate: login, isLoading:loginLoading} = useLogin()
+
+
     //method
   //method
   //method
 
-  function clickNext(fn:any) {
-    return () => {
+  function clickNext() {
       if (!isFull) {
-        // alert(globalText.isFull[lang])
+        toastRef.current?.show(globalText.isFull[lang])
         return
       }
 
       if (!isStandard) {
-        // alert(globalText.isStandard[lang])
+        toastRef.current?.show(globalText.isStandard[lang])
         return
       }
       if (!isEmailValid) {
-        // alert(globalText.isEmailValid[lang])
+        toastRef.current?.show(globalText.isEmailValid[lang])
         return
       }
-      fn()
-    }
+      if(loginLoading){
+        toastRef.current?.show(globalText.loginLoading[lang])
+        return
+      }
+      const body = {email, password}
+      login(body)
+    
   }
 
   const style = useGetStyle({
@@ -201,35 +211,43 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
   })
   return (
    <>
-      <Header/>
-      <View {...style.container}>
-        <View {...style.social}>
-          <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/google.png')}/></TouchableHighlight>
-          <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/facebook.png')}/></TouchableHighlight>
-          <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/kakao.png')}/></TouchableHighlight>
+      {loginLoading ? 
+      <ActivityIndicator size='small' color='white' />
+      :
+      <>
+        <Header/>
+        <View {...style.container}>
+          <View {...style.social}>
+            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/google.png')}/></TouchableHighlight>
+            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/facebook.png')}/></TouchableHighlight>
+            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/kakao.png')}/></TouchableHighlight>
+          </View>
+          <View {...style.input}>
+            <Text {...style.inputTitle} >Email</Text>
+            <TextInput
+              {...style.textInput}
+              placeholder={globalText.emailInput[lang]}
+              onChangeText={text => setEmail(text)}  
+            />
+            <Text {...style.inputTitle} >Password</Text>
+            <TextInput
+              {...style.textInput}
+              placeholder={globalText.passwordInput[lang]}
+              onChangeText={text => setPassword(text)}  
+            />
+            <TouchableOpacity onPress={()=>navigation.dispatch(
+    StackActions.push('SignUp')
+  )} >
+    <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
+    </TouchableOpacity>
+          </View>
+          <View {...style.button}>
+          <Button backgroundColor={'#4AC1E8'} width={328} onPress={clickNext} >{globalText.signInButton[lang]}</Button>
+          </View>
+          <Toast ref={toastRef}/>
         </View>
-        <View {...style.input}>
-          <Text {...style.inputTitle} >Email</Text>
-          <TextInput
-            {...style.textInput}
-            placeholder={globalText.emailInput[lang]}
-          />
-          <Text {...style.inputTitle} >Password</Text>
-          <TextInput
-            {...style.textInput}
-            placeholder={globalText.passwordInput[lang]}
-          />
-          <TouchableOpacity onPress={()=>navigation.dispatch(
-  StackActions.push('SignUp')
-)} >
-  <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
-  </TouchableOpacity>
-        </View>
-        <View {...style.button}>
-          <Button width={328}  
-          children={globalText.signInButton[lang]} ></Button>
-        </View>
-      </View>
+      </>
+      }
    </>
   );
 };

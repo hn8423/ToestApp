@@ -11,6 +11,7 @@ specifiers:
   '@react-navigation/drawer': ^6.5.0
   '@react-navigation/native': ^6.0.13
   '@react-navigation/stack': ^6.3.2
+  '@tanstack/react-query': ^4.14.1
   '@tsconfig/react-native': ^2.0.2
   '@types/jest': ^26.0.23
   '@types/lodash': ^4.14.186
@@ -36,6 +37,7 @@ specifiers:
   react-native-shadow-2: ^7.0.6
   react-native-svg: ^13.4.0
   react-test-renderer: 18.1.0
+  recoil: ^0.7.6
   typescript: ^4.8.3
 
 dependencies:
@@ -46,6 +48,7 @@ dependencies:
   '@react-navigation/drawer': 6.5.0_g5hkocqeyhgqrfogit5p46hoqq
   '@react-navigation/native': 6.0.13_li67rxuecrv4t7nknbczgycq3a
   '@react-navigation/stack': 6.3.2_z2hjc6p55e6rny5qgtajmg2dpm
+  '@tanstack/react-query': 4.14.1_li67rxuecrv4t7nknbczgycq3a
   evento-react: 1.0.0_react@18.1.0
   lodash: 4.17.21
   react: 18.1.0
@@ -58,6 +61,7 @@ dependencies:
   react-native-screens: 3.18.2_li67rxuecrv4t7nknbczgycq3a
   react-native-shadow-2: 7.0.6_moslbcew6tggi4gpmtks6kwd5m
   react-native-svg: 13.4.0_li67rxuecrv4t7nknbczgycq3a
+  recoil: 0.7.6_li67rxuecrv4t7nknbczgycq3a
 
 devDependencies:
   '@babel/core': 7.19.6
@@ -2086,6 +2090,28 @@ packages:
     dependencies:
       '@sinonjs/commons': 1.8.3
     dev: true
+
+  /@tanstack/query-core/4.14.1:
+    resolution: {integrity: sha512-mUejKoFDe4NZB8jQJR1uuAl6IwvkUpOD2m8NcuTVPOu0pcxeeFPdrnHaljwOEFPtlqXoiiIIQGYy6whjCMN+iQ==}
+    dev: false
+
+  /@tanstack/react-query/4.14.1_li67rxuecrv4t7nknbczgycq3a:
+    resolution: {integrity: sha512-cRgNzigw4GSPwGlTEkXi8hi/xgUnSEt9jCkiC8oAT3PEIdsQ50onZcpXd+JNJcZk2RTh8KM1fGyWz6xYLiY8bg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.14.1
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+      use-sync-external-store: 1.2.0_react@18.1.0
+    dev: false
 
   /@tootallnate/once/1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
@@ -4257,6 +4283,10 @@ packages:
     resolution: {integrity: sha512-+xGQY0YyAWCnqy7Cd++hc2JqMYzlm0dG30Jd0beaA64sROr8C4nt8Yc9V5Ro3avlSUDTN0ulqP/VBKi1/lLygw==}
     dev: true
     optional: true
+
+  /hamt_plus/1.0.2:
+    resolution: {integrity: sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==}
+    dev: false
 
   /has-bigints/1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
@@ -6780,6 +6810,23 @@ packages:
       esprima: 4.0.1
       source-map: 0.6.1
       tslib: 2.4.0
+    dev: false
+
+  /recoil/0.7.6_li67rxuecrv4t7nknbczgycq3a:
+    resolution: {integrity: sha512-hsBEw7jFdpBCY/tu2GweiyaqHKxVj6EqF2/SfrglbKvJHhpN57SANWvPW+gE90i3Awi+A5gssOd3u+vWlT+g7g==}
+    peerDependencies:
+      react: '>=16.13.1'
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      hamt_plus: 1.0.2
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
     dev: false
 
   /regenerate-unicode-properties/10.1.0:
