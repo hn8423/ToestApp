@@ -1,4 +1,4 @@
-import React, { useState,useRef,useMemo } from "react";
+import React, { useState,useRef,useMemo, useEffect } from "react";
 import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity,ActivityIndicator } from "react-native";
 import { DrawerParamList,ToestRef } from "../type";
 import {DrawerScreenProps} from "@react-navigation/drawer"
@@ -8,10 +8,15 @@ import { StackActions } from '@react-navigation/native';
 import useLogin from "../hooks/useLogin";
 import Button from "../component/Button";
 import Toast from '../component/Toest'
+import {useRecoilValue} from 'recoil'
+import { AuthState } from "../atoms/auth";
 type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>;
 const LogIn = ({ navigation}:DrawerScreenProp) => {
 
-
+  const user = useRecoilValue(AuthState)
+  useEffect(()=>{
+    console.log('auth in login : ',user)
+  },[user])
     const toastRef = useRef<ToestRef>();
     const lang = 'en'
     const [email, setEmail] = useState('')

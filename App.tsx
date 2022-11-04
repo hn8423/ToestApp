@@ -16,21 +16,22 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { RecoilRoot } from 'recoil';
 
 const queryClient = new QueryClient()
 
 const App = () => {
 
   return (    
-    <QueryClientProvider client={queryClient}>
-  <SafeAreaProvider>
-     <NavigationContainer>
-       <DrawerNavigator />
-     </NavigationContainer>
-  </SafeAreaProvider>
-    </QueryClientProvider>
-
-
+   <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+    <SafeAreaProvider>
+       <NavigationContainer>
+         <DrawerNavigator />
+       </NavigationContainer>
+    </SafeAreaProvider>
+      </QueryClientProvider>
+   </RecoilRoot>
     );
 };
 
