@@ -4,7 +4,7 @@ import { DrawerParamList,ToestRef } from "../type";
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
-import { StackActions } from '@react-navigation/native';
+import { StackActions,TabActions } from '@react-navigation/native';
 import useLogin from "../hooks/useLogin";
 import Button from "../component/Button";
 import Toast from '../component/Toest'
@@ -15,9 +15,7 @@ type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>
 const LogIn = ({ navigation}:DrawerScreenProp) => {
 
   const user = useRecoilValue(AuthState)
-  useEffect(()=>{
-    console.log('auth in login : ',user)
-  },[user])
+
     const toastRef = useRef<ToestRef>();
     const lang = 'en'
     const [email, setEmail] = useState('')
@@ -167,7 +165,7 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       }
       const body = {email, password}
       login(body)
-      
+      navigation.dispatch(TabActions.jumpTo('Main'))
     
   }
 
