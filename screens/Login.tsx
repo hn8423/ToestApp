@@ -1,5 +1,5 @@
 import React, { useState,useRef,useMemo, useEffect } from "react";
-import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity,ActivityIndicator } from "react-native";
+import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity,ActivityIndicator, Dimensions, ScrollView } from "react-native";
 import { DrawerParamList,ToestRef } from "../type";
 import {DrawerScreenProps} from "@react-navigation/drawer"
 import Header from '../component/Header'
@@ -10,6 +10,7 @@ import Button from "../component/Button";
 import Toast from '../component/Toest'
 import {useRecoilValue} from 'recoil'
 import { AuthState } from "../atoms/auth";
+const chartHeight = Dimensions.get('window').height
 type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>;
 const LogIn = ({ navigation}:DrawerScreenProp) => {
 
@@ -21,6 +22,10 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
     const lang = 'en'
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [passwordType, setPasswordType] = useState({
+      type: 'password',
+      visible: false,
+    })
 
   const [globalText] = useState({
  
@@ -138,7 +143,7 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
   const {mutate: login, isLoading:loginLoading} = useLogin()
 
 
-    //method
+  //method
   //method
   //method
 
@@ -162,12 +167,24 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       }
       const body = {email, password}
       login(body)
+      
     
   }
 
+    //password type 변경하는 함수
+    const handlePasswordType = (e: any) => {
+      setPasswordType(() => {
+        if (!passwordType.visible) {
+          return { type: 'text', visible: true }
+        }
+        return { type: 'password', visible: false }
+      })
+    }
+
   const style = useGetStyle({
     container:{
-      flexGrow: 1,
+      // flexGrow: 1,
+      height: chartHeight,
       backgroundColor:'#fff'  
     },
     social:{
@@ -187,7 +204,8 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       flex:0.4,      
       justifyContent:'center',
       alignItems:'center',
-      
+      marginTop:50,
+      marginBottom:100
     },
     inputTitle:{
       fontStyle:'normal',
@@ -211,8 +229,14 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
     textInput:{
       borderBottomColor: '#999999',
       borderBottomWidth: 1,
-      marginTop:18
-    }
+      marginTop:18,
+      // paddingVertical:8
+    },
+    passwordIcon:{
+      position:'absolute',
+      right:10,
+      bottom:10,
+    },
   })
   return (
    <>
@@ -221,36 +245,49 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       :
       <>
         <Header/>
-        <View {...style.container}>
-          <View {...style.social}>
-            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/google.png')}/></TouchableHighlight>
-            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/facebook.png')}/></TouchableHighlight>
-            <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/kakao.png')}/></TouchableHighlight>
+       <ScrollView>
+          <View {...style.container}>
+  
+              <View {...style.social}>
+                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/google.png')}/></TouchableHighlight>
+                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/facebook.png')}/></TouchableHighlight>
+                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/kakao.png')}/></TouchableHighlight>
+              </View>
+              <View {...style.input}>
+                <Text {...style.inputTitle} >Email</Text>
+                  <TextInput
+                    {...style.textInput}
+                    placeholder={globalText.emailInput[lang]}
+                    onChangeText={text => setEmail(text)}  
+                  />
+                <Text {...style.inputTitle} >Password</Text>
+                <View>
+                  <TextInput
+                    {...style.textInput}
+                    placeholder={globalText.passwordInput[lang]}
+                    onChangeText={text => setPassword(text)}  
+                    secureTextEntry={!passwordType.visible}
+                    onSubmitEditing={clickNext}
+                    returnKeyType='done'
+                  />
+                    <TouchableOpacity onPress={handlePasswordType}>
+                    {passwordType.visible === true ? 
+                    <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
+                    :
+                    <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
+                  }
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={()=>navigation.dispatch(StackActions.push('SignUp'))} >
+                <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
+                </TouchableOpacity>
+              <View {...style.button}>
+              <Button backgroundColor={'#4AC1E8'} width={328} onPress={clickNext} >{globalText.signInButton[lang]}</Button>
+              </View>
+              </View>
+              <Toast ref={toastRef}/>
           </View>
-          <View {...style.input}>
-            <Text {...style.inputTitle} >Email</Text>
-            <TextInput
-              {...style.textInput}
-              placeholder={globalText.emailInput[lang]}
-              onChangeText={text => setEmail(text)}  
-            />
-            <Text {...style.inputTitle} >Password</Text>
-            <TextInput
-              {...style.textInput}
-              placeholder={globalText.passwordInput[lang]}
-              onChangeText={text => setPassword(text)}  
-            />
-            <TouchableOpacity onPress={()=>navigation.dispatch(
-    StackActions.push('SignUp')
-  )} >
-    <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
-    </TouchableOpacity>
-          </View>
-          <View {...style.button}>
-          <Button backgroundColor={'#4AC1E8'} width={328} onPress={clickNext} >{globalText.signInButton[lang]}</Button>
-          </View>
-          <Toast ref={toastRef}/>
-        </View>
+       </ScrollView>
       </>
       }
    </>

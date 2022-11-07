@@ -17,18 +17,31 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { RecoilRoot } from 'recoil';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import useGetStyle from './hooks/use-style'
 
 const queryClient = new QueryClient()
 
 const App = () => {
 
+  const style = useGetStyle({
+    avoid: {
+      flex:1
+    }
+  })
+
   return (    
    <RecoilRoot>
       <QueryClientProvider client={queryClient}>
     <SafeAreaProvider>
-       <NavigationContainer>
-         <DrawerNavigator />
-       </NavigationContainer>
+      <KeyboardAvoidingView
+          behavior={Platform.select({ios: 'padding', android: undefined})}
+          {...style.avoid}
+      >
+         <NavigationContainer>
+           <DrawerNavigator />
+         </NavigationContainer>
+      </KeyboardAvoidingView>
     </SafeAreaProvider>
       </QueryClientProvider>
    </RecoilRoot>
