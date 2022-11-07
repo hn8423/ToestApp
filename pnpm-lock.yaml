@@ -28,6 +28,7 @@ specifiers:
   metro-react-native-babel-preset: 0.72.3
   react: 18.1.0
   react-native: 0.70.3
+  react-native-dropdown-picker: ^5.4.2
   react-native-gesture-handler: ^2.7.1
   react-native-gradle-plugin: ^0.71.4
   react-native-reanimated: ^2.11.0
@@ -53,6 +54,7 @@ dependencies:
   lodash: 4.17.21
   react: 18.1.0
   react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+  react-native-dropdown-picker: 5.4.2_li67rxuecrv4t7nknbczgycq3a
   react-native-gesture-handler: 2.7.1_li67rxuecrv4t7nknbczgycq3a
   react-native-gradle-plugin: 0.71.4
   react-native-reanimated: 2.11.0_3czbkggvrmibboi24l5aa7shum
@@ -6574,6 +6576,16 @@ packages:
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
+    dev: false
+
+  /react-native-dropdown-picker/5.4.2_li67rxuecrv4t7nknbczgycq3a:
+    resolution: {integrity: sha512-cZBPyN+k52jA9XguFnKoF5tLf31z6gjZ8GijO/pfVNSSEtPwZ14UTUrr87JiiOnMh5K/O2kRzZ/jZN8D0MmUMA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
     dev: false
 
   /react-native-gesture-handler/2.7.1_li67rxuecrv4t7nknbczgycq3a:

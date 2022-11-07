@@ -1,32 +1,43 @@
-import React, { useState,useRef,useMemo, useEffect } from "react";
-import { View, Text,  Image, TouchableHighlight, TextInput, TouchableOpacity,ActivityIndicator, Dimensions, ScrollView } from "react-native";
-import { DrawerParamList,ToestRef } from "../type";
-import {DrawerScreenProps} from "@react-navigation/drawer"
+import React, {useState, useRef, useMemo, useEffect} from 'react'
+import {
+  View,
+  Text,
+  Image,
+  TouchableHighlight,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+} from 'react-native'
+import {DrawerParamList, ToestRef} from '../type'
+import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
-import { StackActions,TabActions } from '@react-navigation/native';
-import useLogin from "../hooks/useLogin";
-import Button from "../component/Button";
+import {StackActions, TabActions} from '@react-navigation/native'
+import useLogin from '../hooks/useLogin'
+import Button from '../component/Button'
 import Toast from '../component/Toest'
 import {useRecoilValue} from 'recoil'
-import { AuthState } from "../atoms/auth";
+import {AuthState} from '../atoms/auth'
 const chartHeight = Dimensions.get('window').height
-type DrawerScreenProp = DrawerScreenProps<DrawerParamList,'LoginStackNavigator'>;
-const LogIn = ({ navigation}:DrawerScreenProp) => {
-
+type DrawerScreenProp = DrawerScreenProps<
+  DrawerParamList,
+  'LoginStackNavigator'
+>
+const LogIn = ({navigation}: DrawerScreenProp) => {
   const user = useRecoilValue(AuthState)
 
-    const toastRef = useRef<ToestRef>();
-    const lang = 'en'
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordType, setPasswordType] = useState({
-      type: 'password',
-      visible: false,
-    })
+  const toastRef = useRef<ToestRef>()
+  const lang = 'en'
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordType, setPasswordType] = useState({
+    type: 'password',
+    visible: false,
+  })
 
   const [globalText] = useState({
- 
     passwordInput: {
       en: 'Enter your Password',
       ko: '비밀번호를 입력하세요',
@@ -64,7 +75,7 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       en: 'Enter the email format correctly',
       ko: '이메일 형식을 올바르게 입력하세요',
     },
-    email: { en: 'Email', ko: '매일' },
+    email: {en: 'Email', ko: '매일'},
     emailInput: {
       en: 'Enter your email address',
       ko: '이메일을 입력하세요.',
@@ -73,9 +84,9 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
       en: 'SEND EMAIL',
       ko: '매일 보내기',
     },
-    loginLoading:{
+    loginLoading: {
       en: 'is logining',
-      ko: '로그인 중입니다.'
+      ko: '로그인 중입니다.',
     },
     toLogin: {
       en: 'TO SIGN IN',
@@ -111,17 +122,17 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
     },
   })
 
-   // memo
   // memo
   // memo
-
+  // memo
 
   const isFull = useMemo(() => {
     return Boolean(email && password)
   }, [email, password])
 
   const isStandard = useMemo(() => {
-    const reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
+    const reg =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
     return reg.test(password)
   }, [password])
 
@@ -138,160 +149,188 @@ const LogIn = ({ navigation}:DrawerScreenProp) => {
   //sever connect
   //sever connect
   //sever connect
-  const {mutate: login, isLoading:loginLoading} = useLogin()
-
+  const {mutate: login, isLoading: loginLoading} = useLogin()
 
   //method
   //method
   //method
 
   function clickNext() {
-      if (!isFull) {
-        toastRef.current?.show(globalText.isFull[lang])
-        return
-      }
-
-      if (!isStandard) {
-        toastRef.current?.show(globalText.isStandard[lang])
-        return
-      }
-      if (!isEmailValid) {
-        toastRef.current?.show(globalText.isEmailValid[lang])
-        return
-      }
-      if(loginLoading){
-        toastRef.current?.show(globalText.loginLoading[lang])
-        return
-      }
-      const body = {email, password}
-      login(body)
-      navigation.dispatch(TabActions.jumpTo('Main'))
-    
-  }
-
-    //password type 변경하는 함수
-    const handlePasswordType = (e: any) => {
-      setPasswordType(() => {
-        if (!passwordType.visible) {
-          return { type: 'text', visible: true }
-        }
-        return { type: 'password', visible: false }
-      })
+    if (!isFull) {
+      toastRef.current?.show(globalText.isFull[lang])
+      return
     }
 
+    if (!isStandard) {
+      toastRef.current?.show(globalText.isStandard[lang])
+      return
+    }
+    if (!isEmailValid) {
+      toastRef.current?.show(globalText.isEmailValid[lang])
+      return
+    }
+    if (loginLoading) {
+      toastRef.current?.show(globalText.loginLoading[lang])
+      return
+    }
+    const body = {email, password}
+    login(body)
+    navigation.dispatch(TabActions.jumpTo('Main'))
+  }
+
+  //password type 변경하는 함수
+  const handlePasswordType = (e: any) => {
+    setPasswordType(() => {
+      if (!passwordType.visible) {
+        return {type: 'text', visible: true}
+      }
+      return {type: 'password', visible: false}
+    })
+  }
+
   const style = useGetStyle({
-    container:{
+    container: {
       // flexGrow: 1,
       height: chartHeight,
-      backgroundColor:'#fff'  
+      backgroundColor: '#fff',
     },
-    social:{
-      flexGrow:0.5,      
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
+    social: {
+      flexGrow: 0.5,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    socialLogo:{
-      marginHorizontal:10
+    socialLogo: {
+      marginHorizontal: 10,
     },
-    input:{
-      flex:1,      
-      paddingHorizontal:30
+    input: {
+      flex: 1,
+      paddingHorizontal: 30,
     },
-    button:{
-      flex:0.4,      
-      justifyContent:'center',
-      alignItems:'center',
-      marginTop:50,
-      marginBottom:100
+    button: {
+      flex: 0.4,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
+      marginBottom: 100,
     },
-    inputTitle:{
-      fontStyle:'normal',
-      fontWeight:'500',
-      fontSize:14,
-      lineHeight:24,
-      letterSpacing:0.1,
-      color:'#767676',
-      marginTop:24
+    inputTitle: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 14,
+      lineHeight: 24,
+      letterSpacing: 0.1,
+      color: '#767676',
+      marginTop: 24,
     },
-    signupText:{
-      fontStyle:'normal',
-      fontWeight:'500',
-      fontSize:14,
-      lineHeight:16,
-      letterSpacing:1.25,
-      textTransform:'uppercase',
-      color:'#4AC1E8',
-      marginTop:16 
+    signupText: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 14,
+      lineHeight: 16,
+      letterSpacing: 1.25,
+      textTransform: 'uppercase',
+      color: '#4AC1E8',
+      marginTop: 16,
     },
-    textInput:{
+    textInput: {
       borderBottomColor: '#999999',
       borderBottomWidth: 1,
-      marginTop:18,
+      marginTop: 18,
       // paddingVertical:8
     },
-    passwordIcon:{
-      position:'absolute',
-      right:10,
-      bottom:10,
+    passwordIcon: {
+      position: 'absolute',
+      right: 10,
+      bottom: 10,
     },
   })
   return (
-   <>
-      {loginLoading ? 
-      <ActivityIndicator size='small' color='white' />
-      :
-      <>
-        <Header/>
-       <ScrollView>
-          <View {...style.container}>
-  
+    <>
+      {loginLoading ? (
+        <ActivityIndicator size="small" color="white" />
+      ) : (
+        <>
+          <Header />
+          <ScrollView>
+            <View {...style.container}>
               <View {...style.social}>
-                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/google.png')}/></TouchableHighlight>
-                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/facebook.png')}/></TouchableHighlight>
-                <TouchableHighlight><Image {...style.socialLogo} source={require('../assets/images/login/kakao.png')}/></TouchableHighlight>
+                <TouchableHighlight>
+                  <Image
+                    {...style.socialLogo}
+                    source={require('../assets/images/login/google.png')}
+                  />
+                </TouchableHighlight>
+                <TouchableHighlight>
+                  <Image
+                    {...style.socialLogo}
+                    source={require('../assets/images/login/facebook.png')}
+                  />
+                </TouchableHighlight>
+                <TouchableHighlight>
+                  <Image
+                    {...style.socialLogo}
+                    source={require('../assets/images/login/kakao.png')}
+                  />
+                </TouchableHighlight>
               </View>
               <View {...style.input}>
-                <Text {...style.inputTitle} >Email</Text>
-                  <TextInput
-                    {...style.textInput}
-                    placeholder={globalText.emailInput[lang]}
-                    onChangeText={text => setEmail(text)}  
-                  />
-                <Text {...style.inputTitle} >Password</Text>
+                <Text {...style.inputTitle}>Email</Text>
+                <TextInput
+                  {...style.textInput}
+                  placeholder={globalText.emailInput[lang]}
+                  onChangeText={text => setEmail(text)}
+                />
+                <Text {...style.inputTitle}>Password</Text>
                 <View>
                   <TextInput
                     {...style.textInput}
                     placeholder={globalText.passwordInput[lang]}
-                    onChangeText={text => setPassword(text)}  
+                    onChangeText={text => setPassword(text)}
                     secureTextEntry={!passwordType.visible}
                     onSubmitEditing={clickNext}
-                    returnKeyType='done'
+                    returnKeyType="done"
                   />
-                    <TouchableOpacity onPress={handlePasswordType}>
-                    {passwordType.visible === true ? 
-                    <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
-                    :
-                    <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
-                  }
+                  <TouchableOpacity onPress={handlePasswordType}>
+                    {passwordType.visible === true ? (
+                      <Image
+                        {...style.passwordIcon}
+                        source={require('../assets/images/login/invisible.png')}
+                      />
+                    ) : (
+                      <Image
+                        {...style.passwordIcon}
+                        source={require('../assets/images/login/visible.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={()=>navigation.dispatch(StackActions.push('SignUp'))} >
-                <Text {...style.signupText} >{globalText.signUpButton[lang]}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.dispatch(StackActions.push('SignUp'))
+                  }
+                >
+                  <Text {...style.signupText}>
+                    {globalText.signUpButton[lang]}
+                  </Text>
                 </TouchableOpacity>
-              <View {...style.button}>
-              <Button backgroundColor={'#4AC1E8'} width={328} onPress={clickNext} >{globalText.signInButton[lang]}</Button>
+                <View {...style.button}>
+                  <Button
+                    backgroundColor={'#4AC1E8'}
+                    width={328}
+                    onPress={clickNext}
+                  >
+                    {globalText.signInButton[lang]}
+                  </Button>
+                </View>
               </View>
-              </View>
-              <Toast ref={toastRef}/>
-          </View>
-       </ScrollView>
-      </>
-      }
-   </>
-  );
-};
+              <Toast ref={toastRef} />
+            </View>
+          </ScrollView>
+        </>
+      )}
+    </>
+  )
+}
 
-
-
-export default LogIn;
+export default LogIn
