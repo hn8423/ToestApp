@@ -10,7 +10,7 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native'
-import {DrawerParamList, ToestRef} from '../type'
+import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
@@ -25,7 +25,7 @@ type DrawerScreenProp = DrawerScreenProps<
   DrawerParamList,
   'LoginStackNavigator'
 >
-const LogIn = ({navigation}: DrawerScreenProp) => {
+const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
 
   const toastRef = useRef<ToestRef>()

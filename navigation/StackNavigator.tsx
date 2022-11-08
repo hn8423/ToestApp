@@ -1,74 +1,85 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import React from 'react'
+import {createStackNavigator} from '@react-navigation/stack'
 
-import Home from "../screens/Home";
-import Apply from "../screens/Apply";
-import ApplyDetail from "../screens/Apply/Detail";
-import Test from "../screens/Test";
-import TestDetail from "../screens/Test/Detail";
-import Result from "../screens/Result";
-import MyPage from "../screens/MyPage";
-import LogIn from "../screens/Login";
-import SignUpComplete from "../screens/SignUpComplete";
-import SignUp from "../screens/SignUp";
+import Home from '../screens/Home'
+import Apply from '../screens/Apply'
+import ApplyDetail from '../screens/Apply/Detail'
+import Test from '../screens/Test'
+import TestDetail from '../screens/Test/Detail'
+import Result from '../screens/Result'
+import MyPage from '../screens/MyPage'
+import LogIn from '../screens/Login'
+import SignUpComplete from '../screens/SignUpComplete'
+import SignUp from '../screens/SignUp'
+import {MainStackParams} from '../type'
 
-const Stack = createStackNavigator();
+const StackMain = createStackNavigator<MainStackParams>()
+const StackApply = createStackNavigator()
+const StackTest = createStackNavigator()
+const StackResult = createStackNavigator()
+const StackMyPage = createStackNavigator()
+const StackLogin = createStackNavigator()
 
 const screenOptionStyle = {
   headerStyle: {
-    backgroundColor: "#9AC4F8",
+    backgroundColor: '#9AC4F8',
   },
-  headerTintColor: "white",
-  headerBackTitle: "Back",
-  headerShown:false
-};
+  headerTintColor: 'white',
+  headerBackTitle: 'Back',
+  headerShown: false,
+}
 const MainStackNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={screenOptionStyle}
-    >
-      <Stack.Screen name="HomeStack" component={Home} />
-    </Stack.Navigator>
-  );
+    <StackMain.Navigator screenOptions={screenOptionStyle}>
+      <StackMain.Screen name="HomeStack" component={Home} />
+    </StackMain.Navigator>
+  )
 }
 
 const ApplyStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="ApplyStack" component={Apply} />
-      <Stack.Screen name="ApplyDetail" component={ApplyDetail} />
-    </Stack.Navigator>
-  );
+    <StackApply.Navigator screenOptions={screenOptionStyle}>
+      <StackApply.Screen name="ApplyStack" component={Apply} />
+      <StackApply.Screen name="ApplyDetail" component={ApplyDetail} />
+    </StackApply.Navigator>
+  )
 }
 const TestStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="TestStack" component={Test} />
-      <Stack.Screen name="TestDetail" component={TestDetail} />
-    </Stack.Navigator>
-  );
+    <StackTest.Navigator screenOptions={screenOptionStyle}>
+      <StackTest.Screen name="TestStack" component={Test} />
+      <StackTest.Screen name="TestDetail" component={TestDetail} />
+    </StackTest.Navigator>
+  )
 }
 const ResultStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="ResultStack" component={Result} />
-    </Stack.Navigator>
-  );
+    <StackResult.Navigator screenOptions={screenOptionStyle}>
+      <StackResult.Screen name="ResultStack" component={Result} />
+    </StackResult.Navigator>
+  )
 }
 const MyPageStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="MyPage" component={MyPage} />
-    </Stack.Navigator>
-  );
+    <StackMyPage.Navigator screenOptions={screenOptionStyle}>
+      <StackMyPage.Screen name="MyPage" component={MyPage} />
+    </StackMyPage.Navigator>
+  )
 }
 const LoginStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="LogIn" component={LogIn} />
-      <Stack.Screen name="SignUpComplete" component={SignUpComplete} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-    </Stack.Navigator>
-  );
+    <StackLogin.Navigator screenOptions={screenOptionStyle}>
+      <StackLogin.Screen name="LogIn" component={LogIn} />
+      <StackLogin.Screen name="SignUpComplete" component={SignUpComplete} />
+      <StackLogin.Screen name="SignUp" component={SignUp} />
+    </StackLogin.Navigator>
+  )
 }
-export { MainStackNavigator,ApplyStackNavigator,TestStackNavigator,ResultStackNavigator,MyPageStackNavigator,LoginStackNavigator };
+export {
+  MainStackNavigator,
+  ApplyStackNavigator,
+  TestStackNavigator,
+  ResultStackNavigator,
+  MyPageStackNavigator,
+  LoginStackNavigator,
+}

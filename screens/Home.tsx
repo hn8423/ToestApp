@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react'
 import {View, Text, ScrollView, Dimensions, Image} from 'react-native'
-import {NavigationProps} from '../type'
+import {MainStackParams, SC} from '../type'
 import Header from '../component/Header'
 import ImageSlider from '../component/ImageSlider'
 import {useRecoilValue} from 'recoil'
@@ -29,7 +29,7 @@ type GlobalTextProps = {
   }
 }
 
-const Home = ({navigation}: NavigationProps) => {
+const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
   const lang = useRecoilValue(langState)
 
   const [globalText] = useState<any>({
@@ -131,7 +131,6 @@ const Home = ({navigation}: NavigationProps) => {
       top: -50,
       left: 16,
       width: chartWidth - 32,
-      // height:300,
       backgroundColor: '#fff',
       borderRadius: 16,
     },
@@ -140,7 +139,6 @@ const Home = ({navigation}: NavigationProps) => {
       top: 310,
       left: 16,
       width: chartWidth - 32,
-      // height:300,
       backgroundColor: '#fff',
       borderRadius: 16,
     },

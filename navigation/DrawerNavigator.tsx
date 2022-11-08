@@ -126,7 +126,7 @@ const DrawerNavigator = () => {
         {
           name: globalText.toestIntro[lang],
           link: '/toest_intro',
-          component: 'PrivacyPolicy',
+          component: 'ToestIntro',
         },
         {
           name: globalText.privacyPolicy[lang],
@@ -357,14 +357,7 @@ const DrawerNavigator = () => {
         name="ToestIntro"
         component={ToestIntro}
         options={{
-          headerLeft: () => (
-            <TouchableOpacity
-              {...style.headerLeft}
-              onPress={() => navigation.goBack()}
-            >
-              <Image source={require('../assets/images/drawer/goBack.png')} />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
       />
       <Drawer.Screen
