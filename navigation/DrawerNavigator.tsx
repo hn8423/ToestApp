@@ -1,4 +1,4 @@
-import React, {useRef, useState, useMemo, useEffect, useCallback} from 'react'
+import React, {useState, useMemo} from 'react'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import _ from 'lodash'
 import {DrawerScreenProps} from '@react-navigation/drawer'
@@ -8,7 +8,6 @@ import MyPage from '../screens/MyPage'
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
-import Header from '../component/Header'
 import {DrawerParamList} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
 import {useRecoilState, useRecoilValue} from 'recoil'
@@ -23,7 +22,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  StatusBar,
 } from 'react-native'
 import useGetStyle from '../hooks/use-style'
 const chartHeight = Dimensions.get('window').height
@@ -94,19 +92,11 @@ type menu = {
   children?: children[]
 }
 const DrawerNavigator = () => {
-  // const navigation = useNavigation<drawerScreenProp>();
   const navigation = useNavigation()
   const lang = useRecoilValue(langState)
-  // const lang = 'en'
-
-  // const user = useRecoilValue(AuthState)
   const [user, setUser] = useRecoilState(AuthState)
   const isLogined = useMemo(() => {
     return !!user
-  }, [user])
-
-  useEffect(() => {
-    console.log('drawer : ', user)
   }, [user])
 
   const [menuTree, setMenu] = useState<menu[]>([
@@ -179,13 +169,74 @@ const DrawerNavigator = () => {
     navigation.dispatch(TabActions.jumpTo('Main'))
   }
 
-  // renderMap
-  // renderMap
-  // renderMap
+  //style
+  //style
+  //style
+  const style = useGetStyle({
+    container: {
+      flex: 1,
+      backgroundColor: '#F8F8FA',
+    },
 
-  // mounted
-  // mounted
-  // mounted
+    header: {
+      height: 200,
+      backgroundColor: '#4ac1eb',
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerClose: {
+      position: 'absolute',
+      right: 10,
+      top: 10,
+    },
+    headerTextTitle: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      color: '#fff',
+    },
+    headerTextSub: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 14,
+      lineHeight: 20,
+      color: '#fff',
+    },
+    body: {
+      paddingBottom: 16,
+      paddingTop: 8,
+    },
+    itemWrapper: {
+      width: chartWidth - 32,
+      backgroundColor: '#fff',
+      padding: 24,
+      marginVertical: 8,
+      marginHorizontal: 16,
+      borderRadius: 8,
+    },
+    itemParents: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+    },
+    itemParentsText: {
+      color: '#191919',
+    },
+    itemParentsImage: {
+      marginRight: 4,
+    },
+    itemChildren: {
+      marginTop: 16,
+    },
+    itemChildrenText: {
+      color: '#767676',
+    },
+    headerLeft: {
+      zIndex: 100,
+    },
+  })
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -201,22 +252,22 @@ const DrawerNavigator = () => {
       drawerContent={({navigation}) => (
         <SafeAreaView>
           <ScrollView>
-            <View style={styles.container}>
-              <View style={styles.header}>
+            <View {...style.container}>
+              <View {...style.header}>
                 <TouchableOpacity
-                  style={styles.headerClose}
+                  {...style.headerClose}
                   onPress={() => navigation.closeDrawer()}
                 >
                   <Image source={require('../assets/images/drawer/x.png')} />
                 </TouchableOpacity>
-                <Text style={styles.headerTextTitle}>
-                  {user !== null ? user.name : ''}
+                <Text {...style.headerTextTitle}>
+                  {user !== null ? user.name : 'TOEST'}
                 </Text>
-                <Text style={styles.headerTextSub}>
+                <Text {...style.headerTextSub}>
                   {user !== null ? user.email : ''}
                 </Text>
               </View>
-              <View style={styles.body}>
+              <View {...style.body}>
                 {_(menuTree)
                   .map((v, i) => {
                     const child =
@@ -224,7 +275,7 @@ const DrawerNavigator = () => {
                       _(v.children)
                         .map((j, i) => (
                           <TouchableOpacity
-                            style={styles.itemChildren}
+                            {...style.itemChildren}
                             key={j.name + i}
                             onPress={
                               j.component === 'MyPage'
@@ -235,20 +286,15 @@ const DrawerNavigator = () => {
                                 : () => navigation.navigate(j.component)
                             }
                           >
-                            <Text style={styles.itemChildrenText}>
-                              {j.name}
-                            </Text>
+                            <Text {...style.itemChildrenText}>{j.name}</Text>
                           </TouchableOpacity>
                         ))
                         .value()
                     return (
-                      <View key={v.name + i} style={styles.itemWrapper}>
-                        <View style={styles.itemParents}>
-                          <Image
-                            style={styles.itemParentsImage}
-                            source={v.icon}
-                          />
-                          <Text style={styles.itemParentsText}>{v.name}</Text>
+                      <View key={v.name + i} {...style.itemWrapper}>
+                        <View {...style.itemParents}>
+                          <Image {...style.itemParentsImage} source={v.icon} />
+                          <Text {...style.itemParentsText}>{v.name}</Text>
                         </View>
                         <View>{child}</View>
                       </View>
@@ -262,10 +308,10 @@ const DrawerNavigator = () => {
                       : () => navigation.navigate('LoginStackNavigator')
                   }
                 >
-                  <View style={styles.itemWrapper}>
-                    <View style={styles.itemParents}>
+                  <View {...style.itemWrapper}>
+                    <View {...style.itemParents}>
                       <Image
-                        style={styles.itemParentsImage}
+                        {...style.itemParentsImage}
                         source={
                           isLogined
                             ? require(`../assets/images/drawer/logout.png`)
@@ -299,7 +345,7 @@ const DrawerNavigator = () => {
         options={{
           headerLeft: () => (
             <TouchableOpacity
-              style={styles.headerLeft}
+              {...style.headerLeft}
               onPress={() => navigation.goBack()}
             >
               <Image source={require('../assets/images/drawer/goBack.png')} />
@@ -313,7 +359,7 @@ const DrawerNavigator = () => {
         options={{
           headerLeft: () => (
             <TouchableOpacity
-              style={styles.headerLeft}
+              {...style.headerLeft}
               onPress={() => navigation.goBack()}
             >
               <Image source={require('../assets/images/drawer/goBack.png')} />
@@ -327,7 +373,7 @@ const DrawerNavigator = () => {
         options={{
           headerLeft: () => (
             <TouchableOpacity
-              style={styles.headerLeft}
+              {...style.headerLeft}
               onPress={() => navigation.goBack()}
             >
               <Image source={require('../assets/images/drawer/goBack.png')} />
@@ -341,7 +387,7 @@ const DrawerNavigator = () => {
         options={{
           headerLeft: () => (
             <TouchableOpacity
-              style={styles.headerLeft}
+              {...style.headerLeft}
               onPress={() => navigation.goBack()}
             >
               <Image source={require('../assets/images/drawer/goBack.png')} />
@@ -359,71 +405,5 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F8FA',
-  },
-
-  header: {
-    height: 200,
-    backgroundColor: '#4ac1eb',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerClose: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  headerTextTitle: {
-    fontStyle: 'normal',
-    fontWeight: '700',
-    fontSize: 20,
-    lineHeight: 24,
-    color: '#fff',
-  },
-  headerTextSub: {
-    fontStyle: 'normal',
-    fontWeight: '400',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#fff',
-  },
-  body: {
-    paddingBottom: 16,
-    paddingTop: 8,
-  },
-  itemWrapper: {
-    width: chartWidth - 32,
-    backgroundColor: '#fff',
-    padding: 24,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 8,
-  },
-  itemParents: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
-  itemParentsText: {
-    color: '#191919',
-  },
-  itemParentsImage: {
-    marginRight: 4,
-  },
-  itemChildren: {
-    marginTop: 16,
-  },
-  itemChildrenText: {
-    color: '#767676',
-  },
-  headerLeft: {
-    zIndex: 100,
-  },
-})
 
 export default DrawerNavigator

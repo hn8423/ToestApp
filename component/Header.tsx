@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {TouchableOpacity, Image, View, Text} from 'react-native'
+import {
+  TouchableOpacity,
+  Image,
+  View,
+  Text,
+  Modal,
+  Pressable,
+  Platform,
+} from 'react-native'
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context'
 import useGetStyle from '../hooks/use-style'
 import {
@@ -9,27 +17,14 @@ import {
 } from '@react-navigation/native'
 import {useRecoilState} from 'recoil'
 import {langState} from '../atoms/lang'
-import DropDownPicker from 'react-native-dropdown-picker'
 
 const Header = () => {
   const {top} = useSafeAreaInsets()
   const navigation = useNavigation()
-  const [isdrop, setIsdrop] = useState(false)
   const [lang, setLang] = useRecoilState(langState)
-  const [value, setValue] = useState(['en', 'ko'])
-  const [items, setItems] = useState([
-    {label: 'Spain', value: 'spain'},
-    {label: 'Madrid', value: 'madrid', parent: 'spain'},
-    {label: 'Barcelona', value: 'barcelona', parent: 'spain'},
-
-    {label: 'Italy', value: 'italy'},
-    {label: 'Rome', value: 'rome', parent: 'italy'},
-
-    {label: 'Finland', value: 'finland'},
-  ])
+  const [modalVisible, setModalVisible] = useState(false)
   const style = useGetStyle({
     container: {
-      // position: 'relative',
       height: 56 + top,
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -40,57 +35,120 @@ const Header = () => {
     logo: {
       marginBottom: 5,
     },
-    drop: {
-      zIndex: 100,
+    containerOnPress: {
+      flex: 1,
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-end',
+      marginTop: Platform.select({
+        ios: 90,
+        android: 40,
+      }),
+    },
+    modalView: {
+      margin: 10,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+      color: '#000',
+    },
+    modalTextBottom: {
+      // marginBottom: ,
+      textAlign: 'center',
+      color: '#000',
     },
   })
-
-  const OnPressDrop = () => {
-    setIsdrop(!isdrop)
-  }
-
-  useEffect(() => {
-    console.log(isdrop)
-  }, [isdrop])
 
   const OnPressLogo = () => {
     navigation.dispatch(StackActions.popToTop())
     navigation.dispatch(DrawerActions.jumpTo('Main'))
   }
 
-  return (
-    <SafeAreaView edges={['left', 'right']}>
-      <View {...style.container}>
-        <TouchableOpacity
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-        >
-          <Image source={require('../assets/images/header/hamburger.png')} />
-        </TouchableOpacity>
+  const OnPressKorean = () => {
+    setLang('ko')
+    setModalVisible(!modalVisible)
+  }
+  const OnPressEnglish = () => {
+    setLang('en')
+    setModalVisible(!modalVisible)
+  }
 
-        <TouchableOpacity {...style.logo} onPress={OnPressLogo}>
-          <Image source={require('../assets/images/header/logo.png')} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={OnPressDrop}>
-          <Image source={require('../assets/images/header/circle.png')} />
-        </TouchableOpacity>
-        <DropDownPicker
-          open={isdrop}
-          value={value}
-          items={items}
-          setOpen={setIsdrop}
-          setValue={setValue}
-          setItems={setItems}
-          multiple={true}
-          {...style.drop}
-        />
-      </View>
-      {/* <TouchableOpacity {...style.logo} onPress={OnPressLogo}>
-        <View {...style.drop}>
-          <Text>ko</Text>
-          <Text>en</Text>
+  return (
+    <>
+      <SafeAreaView edges={['left', 'right']}>
+        <View {...style.container}>
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          >
+            <Image source={require('../assets/images/header/hamburger.png')} />
+          </TouchableOpacity>
+
+          <TouchableOpacity {...style.logo} onPress={OnPressLogo}>
+            <Image source={require('../assets/images/header/logo.png')} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Image source={require('../assets/images/header/circle.png')} />
+          </TouchableOpacity>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible)
+            }}
+          >
+            <Pressable
+              {...style.containerOnPress}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <View {...style.centeredView}>
+                <View {...style.modalView}>
+                  <Pressable
+                    {...[style.button, style.buttonClose]}
+                    onPress={OnPressEnglish}
+                  >
+                    <Text {...style.modalText}> ENGLISH</Text>
+                  </Pressable>
+                  <Pressable
+                    {...[style.button, style.buttonClose]}
+                    onPress={OnPressKorean}
+                  >
+                    <Text {...style.modalTextBottom}>한국어</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Pressable>
+          </Modal>
         </View>
-      </TouchableOpacity> */}
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   )
 }
 

@@ -1,20 +1,31 @@
-import React, { useMemo, useState, useRef } from 'react'
-import { View,  Text, ScrollView, Dimensions, Image, TouchableOpacity,  NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
-import { NavigationProps,ToestRef } from '../type'
+import React, {useMemo, useState, useRef} from 'react'
+import {
+  View,
+  Text,
+  ScrollView,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  Platform,
+} from 'react-native'
+import {NavigationProps, ToestRef} from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
 import Button from '../component/Button'
 import SearchInput from '../component/SearchInput'
-import { TextInput } from 'react-native-gesture-handler'
+import {TextInput} from 'react-native-gesture-handler'
 import Toast from '../component/Toest'
 const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 import useRegister from '../hooks/useRegister'
+import {useRecoilValue} from 'recoil'
+import {langState} from '../atoms/lang'
+import {DrawerActions, StackActions} from '@react-navigation/native'
 
-
-
-const globalText = {
+const globalText: any = {
   title: {
     en: 'SIGN UP',
     ko: '회원가입',
@@ -175,16 +186,25 @@ const globalText = {
     en: 'You really should read it.',
     ko: '개인정보정책을 반드시 읽어 주시길 바랍니다.',
   },
-  isNameValid:{
+  isNameValid: {
     en: 'Please fill in your name correctly',
-    ko: '이름을 올바로 기입해주세요'
-  }
+    ko: '이름을 올바로 기입해주세요',
+  },
+  finish1: {
+    en: `Hello.`,
+    ko: ``,
+  },
+  finish2: {
+    en: `Welcome to Toest.`,
+    ko: `님 환영합니다!`,
+  },
 }
 
-const SignUp = ({ navigation }: NavigationProps) => {
-  const language = 'en'
+const SignUp = ({navigation}: NavigationProps) => {
+  const language = useRecoilValue(langState)
+  // const language = 'en'
 
-  const toastRef = useRef<ToestRef>();
+  const toastRef = useRef<ToestRef>()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -193,7 +213,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
   const [agree, setAgree] = useState('')
   const [chapter, setChapter] = useState(0)
   const [code, setCode] = useState('')
-  const [isDown,setIsDown ] = useState(false)
+  const [isDown, setIsDown] = useState(false)
   const [isAgree, setIsAgree] = useState(false)
 
   const [passwordType, setPasswordType] = useState({
@@ -204,8 +224,6 @@ const SignUp = ({ navigation }: NavigationProps) => {
     type: 'password',
     visible: false,
   })
-
-
 
   // memo
   const isValid = useMemo(() => {
@@ -220,7 +238,8 @@ const SignUp = ({ navigation }: NavigationProps) => {
   }, [email, name, password, pwValidate, code])
 
   const isStandard = useMemo(() => {
-    const reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
+    const reg =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
     return reg.test(password)
   }, [password])
 
@@ -239,7 +258,7 @@ const SignUp = ({ navigation }: NavigationProps) => {
     switch (chapter) {
       case 0:
         if (isDown && isAgree) {
-          setChapter((s) => s + 1)
+          setChapter(s => s + 1)
         }
         break
       case 1:
@@ -263,13 +282,16 @@ const SignUp = ({ navigation }: NavigationProps) => {
           toastRef.current?.show(globalText.isNameValid[language])
           return
         }
-        if(isLoading){
+        if (isLoading) {
           return
         }
-        const body = { name, password, email, countryCode: code }
-          register(body)
-          setChapter((s) => s + 1)
-        
+        const body = {name, password, email, countryCode: code}
+        register(body)
+        setChapter(s => s + 1)
+      case 2:
+        navigation.dispatch(StackActions.popToTop())
+        navigation.dispatch(DrawerActions.jumpTo('Main'))
+        break
     }
   }
 
@@ -277,18 +299,18 @@ const SignUp = ({ navigation }: NavigationProps) => {
   const handlePasswordType = (e: any) => {
     setPasswordType(() => {
       if (!passwordType.visible) {
-        return { type: 'text', visible: true }
+        return {type: 'text', visible: true}
       }
-      return { type: 'password', visible: false }
+      return {type: 'password', visible: false}
     })
   }
   //password type 변경하는 함수
   const handlePasswordType2 = (e: any) => {
     setPasswordType2(() => {
       if (!passwordType2.visible) {
-        return { type: 'text', visible: true }
+        return {type: 'text', visible: true}
       }
-      return { type: 'password', visible: false }
+      return {type: 'password', visible: false}
     })
   }
 
@@ -296,17 +318,9 @@ const SignUp = ({ navigation }: NavigationProps) => {
 
   const isLoading = registerLoading
 
-
   //onPress
   //onPress
   //onPress
-
-  const onClickagree = () => {
-    setAgree('agree')
-  }
-  const onClickNotAgree = () => {
-    setAgree('disagree')
-  }
 
   const isAgreed = useMemo(() => {
     return agree === 'agree'
@@ -320,31 +334,29 @@ const SignUp = ({ navigation }: NavigationProps) => {
     setIsAgree(!isAgree)
   }
 
-  const handleSelect = (e: any) => {
-    setCode(e.detail)
-  }
-
-  function setTargetValue(setState:React.Dispatch<React.SetStateAction<string>>) {
-    return (e:NativeSyntheticEvent<TextInputChangeEventData>) => {
+  function setTargetValue(
+    setState: React.Dispatch<React.SetStateAction<string>>,
+  ) {
+    return (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
       setState(e.nativeEvent.text)
     }
   }
 
-
-
   const style = useGetStyle({
     container: {
-      minHeight:chartHeight,
+      minHeight: chartHeight,
       backgroundColor: '#fff',
       paddingHorizontal: 16,
       paddingVertical: 24,
     },
 
     progressBar: {
-      flex: 0.2,
+      flex: Platform.select({
+        ios: 0.1,
+        android: 0.4,
+      }),
       display: 'flex',
       flexDirection: 'row',
-      // backgroundColor:'red',
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -374,10 +386,9 @@ const SignUp = ({ navigation }: NavigationProps) => {
       borderRadius: 10,
     },
     text: {
-      // flex: 0.5,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop:32
+      marginTop: 32,
     },
     textStyle1: {
       fontStyle: 'normal',
@@ -408,82 +419,89 @@ const SignUp = ({ navigation }: NavigationProps) => {
     },
     textAreaShort: {
       width: '100%',
-      flexDirection:'row',
-      alignItems:"center",
-      justifyContent:"space-between",
-      marginBottom:16
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16,
     },
-    textAreaShortLeft:{
-      flexDirection:'row',
-      alignItems:'center'
+    textAreaShortLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
-    textContentWrapper:{
+    textContentWrapper: {
       height: 300,
     },
-    textContent:{
-      width:chartWidth-100,
-      borderRadius:8,
-      padding:8,
-
+    textContent: {
+      width: chartWidth - 100,
+      borderRadius: 8,
+      padding: 8,
     },
     toggle: {
       flex: 0.7,
     },
-    togglePart:{
-      flexDirection:'row',
-      alignItems:'center',
+    togglePart: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
-    togglePartItem:{
-      paddingLeft:10
+    togglePartItem: {
+      paddingLeft: 10,
     },
-    toggleText:{
+    toggleText: {
       fontStyle: 'normal',
       fontWeight: '400',
       fontSize: 16,
       lineHeight: 24,
       letterSpacing: 0.5,
-      color: "#191919",
-        },
+      color: '#191919',
+    },
     button: {
       // flex: 0.4,
-      marginTop:32
+      marginTop: 32,
     },
-    inputText:{
+    inputText: {
       fontStyle: 'normal',
       fontWeight: '500',
       fontSize: 14,
       lineHeight: 24,
       letterSpacing: 0.1,
       color: '#767676',
-      marginTop:24,
+      marginTop: 24,
     },
-    input:{
-      height:44,
+    input: {
+      height: 44,
       borderBottomColor: '#DBDBDB',
-      borderBottomWidth:1,
-      width:'100%',
-      justifyContent:'center'
+      borderBottomWidth: 1,
+      width: '100%',
+      justifyContent: 'center',
     },
-    passwordCorrect:{
-
+    passwordCorrect: {},
+    passwordValid: {
+      color: '#8a8a8a',
     },
-    passwordValid:{
-      color:'#8a8a8a',
+    passwordIcon: {
+      position: 'absolute',
+      right: 10,
+      bottom: 10,
     },
-    passwordIcon:{
-      position:'absolute',
-      right:10,
-      bottom:10,
+    chapter2: {
+      flex: 0.7,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
     },
-    toest:{
-      marginHorizontal:'auto'
-    }    
+    finishImage: {
+      width: 280,
+      height: 280,
+      resizeMode: 'cover',
+    },
+    toest: {
+      marginHorizontal: 'auto',
+    },
   })
 
   return (
     <>
       <Header />
-      <ScrollView nestedScrollEnabled = {true}>
+      <ScrollView nestedScrollEnabled={true}>
         <View {...style.container}>
           <View {...style.progressBar}>
             <View {...style.progress}>
@@ -493,109 +511,173 @@ const SignUp = ({ navigation }: NavigationProps) => {
             </View>
             <Text>{chapter + 1}/3</Text>
           </View>
-              <View {...style.text}>
-                <Text {...style.textStyle1}>{globalText.title[language]}</Text>
-                <Text {...style.textStyle2}>{chapter === 0 && globalText.contentstitle[language]}</Text>
-              </View>
+          <View {...style.text}>
+            <Text {...style.textStyle1}>{globalText.title[language]}</Text>
+            <Text {...style.textStyle2}>
+              {chapter === 0 && globalText.contentstitle[language]}
+            </Text>
+          </View>
           {chapter === 0 && (
             <View>
               <View {...style.textArea}>
                 <View {...style.textAreaShort}>
-                <View {...style.textAreaShortLeft}>
-                    <Image source={require('../assets/images/login/warning.png')}/>
+                  <View {...style.textAreaShortLeft}>
+                    <Image
+                      source={require('../assets/images/login/warning.png')}
+                    />
                     <Text>{globalText.shouldRead[language]}</Text>
+                  </View>
+                  <TouchableOpacity onPress={onPressUpDown}>
+                    {isDown ? (
+                      <Image
+                        source={require('../assets/images/login/up.png')}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../assets/images/login/down.png')}
+                      />
+                    )}
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={onPressUpDown}>
-                    {isDown ? <Image source={require('../assets/images/login/up.png')}/> 
-                    : <Image source={require('../assets/images/login/down.png')}/>}
-                </TouchableOpacity>                
-                </View>                
-                  {isDown && 
-                 <ScrollView {...style.textContentWrapper} nestedScrollEnabled = {true} >
-                      <View {...style.textContent} >
-                        <Text>{globalText.contents[language]}</Text>
-                      </View>
-                 </ScrollView>
-                } 
+                {isDown && (
+                  <ScrollView
+                    {...style.textContentWrapper}
+                    nestedScrollEnabled={true}
+                  >
+                    <View {...style.textContent}>
+                      <Text>{globalText.contents[language]}</Text>
+                    </View>
+                  </ScrollView>
+                )}
               </View>
               <View {...style.toggle}>
-             <TouchableOpacity {...style.togglePart}  onPress={onPressAgree} >
-               <>
-                  {isAgree ? <Image source={require('../assets/images/login/agree.png')}/>
-                  :
-                  <Image  source={require('../assets/images/login/disagree.png')}/>
-                  }
-                  <View {...style.togglePartItem}><Text {...style.toggleText}>{globalText.agree[language]}</Text></View>
-               </>
-             </TouchableOpacity>
-             <TouchableOpacity {...style.togglePart}  onPress={onPressAgree} >
-               <>
-                  {!isAgree ? <Image source={require('../assets/images/login/agree.png')}/>
-                  :
-                  <Image  source={require('../assets/images/login/disagree.png')}/>
-                  }
-                  <View {...style.togglePartItem}><Text {...style.toggleText}>{globalText.disAgree[language]}</Text></View>
-               </>
-             </TouchableOpacity>
-     
+                <TouchableOpacity {...style.togglePart} onPress={onPressAgree}>
+                  <>
+                    {isAgree ? (
+                      <Image
+                        source={require('../assets/images/login/agree.png')}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../assets/images/login/disagree.png')}
+                      />
+                    )}
+                    <View {...style.togglePartItem}>
+                      <Text {...style.toggleText}>
+                        {globalText.agree[language]}
+                      </Text>
+                    </View>
+                  </>
+                </TouchableOpacity>
+                <TouchableOpacity {...style.togglePart} onPress={onPressAgree}>
+                  <>
+                    {!isAgree ? (
+                      <Image
+                        source={require('../assets/images/login/agree.png')}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../assets/images/login/disagree.png')}
+                      />
+                    )}
+                    <View {...style.togglePartItem}>
+                      <Text {...style.toggleText}>
+                        {globalText.disAgree[language]}
+                      </Text>
+                    </View>
+                  </>
+                </TouchableOpacity>
               </View>
-        
             </View>
           )}
-          {chapter === 1 && 
-          <View >
-            <Text {...style.inputText}>{globalText.country[language]}</Text>
-            <SearchInput setCode={setCode} />
-            <Text {...style.inputText}>{globalText.email[language]}</Text>
-            <TextInput {...style.input}
-              placeholder={globalText.emailInput[language]}
-              onChange={setTargetValue(setEmail)}
-            />
-            <Text {...style.inputText}>{globalText.userName[language]}</Text>
-            <TextInput {...style.input}
-              placeholder={globalText.nameInput[language]}
-              onChange={setTargetValue(setName)}
-            />
-            <Text {...style.inputText}>{globalText.passWord[language]}</Text>
-           <View>
-              <TextInput {...style.input}
-                placeholder={globalText.passwordInput[language]}
-                onChange={setTargetValue(setPassword)}
-                secureTextEntry={passwordType.visible}
+          {chapter === 1 && (
+            <View>
+              <Text {...style.inputText}>{globalText.country[language]}</Text>
+              <SearchInput setCode={setCode} />
+              <Text {...style.inputText}>{globalText.email[language]}</Text>
+              <TextInput
+                {...style.input}
+                placeholder={globalText.emailInput[language]}
+                onChange={setTargetValue(setEmail)}
               />
-             <TouchableOpacity onPress={handlePasswordType}>
-               {passwordType.visible === true ? 
-                <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
-                :
-                <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
-              }
-             </TouchableOpacity>
-           </View>
-            <Text {...style.passwordValid}>{globalText.pwValidate[language]}</Text>
-           <View>
-              <TextInput {...style.input}
-                placeholder={globalText.rePasswordInput[language]}
-                onChange={setTargetValue(setPwValidate)}
-                secureTextEntry={passwordType2.visible}
+              <Text {...style.inputText}>{globalText.userName[language]}</Text>
+              <TextInput
+                {...style.input}
+                placeholder={globalText.nameInput[language]}
+                onChange={setTargetValue(setName)}
               />
-                    <TouchableOpacity onPress={handlePasswordType2}>
-               {passwordType2.visible === true ? 
-                <Image {...style.passwordIcon} source={require('../assets/images/login/invisible.png')}/> 
-                :
-                <Image {...style.passwordIcon} source={require('../assets/images/login/visible.png')}/> 
-              }
-             </TouchableOpacity>
-           </View>
+              <Text {...style.inputText}>{globalText.passWord[language]}</Text>
+              <View>
+                <TextInput
+                  {...style.input}
+                  placeholder={globalText.passwordInput[language]}
+                  onChange={setTargetValue(setPassword)}
+                  secureTextEntry={!passwordType.visible}
+                />
+                <TouchableOpacity onPress={handlePasswordType}>
+                  {passwordType.visible === false ? (
+                    <Image
+                      {...style.passwordIcon}
+                      source={require('../assets/images/login/invisible.png')}
+                    />
+                  ) : (
+                    <Image
+                      {...style.passwordIcon}
+                      source={require('../assets/images/login/visible.png')}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <Text {...style.passwordValid}>
+                {globalText.pwValidate[language]}
+              </Text>
+              <View>
+                <TextInput
+                  {...style.input}
+                  placeholder={globalText.rePasswordInput[language]}
+                  onChange={setTargetValue(setPwValidate)}
+                  secureTextEntry={!passwordType2.visible}
+                />
+                <TouchableOpacity onPress={handlePasswordType2}>
+                  {passwordType2.visible === false ? (
+                    <Image
+                      {...style.passwordIcon}
+                      source={require('../assets/images/login/invisible.png')}
+                    />
+                  ) : (
+                    <Image
+                      {...style.passwordIcon}
+                      source={require('../assets/images/login/visible.png')}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {chapter === 2 && (
+            <View {...style.chapter2}>
+              <Image
+                {...style.finishImage}
+                source={require('../assets/images/login/finish.png')}
+              />
+              <Text>
+                {globalText.finish1[language]} {name}{' '}
+                {globalText.finish2[language]}
+              </Text>
+            </View>
+          )}
+          {/* {chapter !== 2 && ( */}
+          <View {...style.button}>
+            <Button
+              backgroundColor={'#4AC1E8'}
+              width={'100%'}
+              onPress={clickNext}
+            >
+              NEXT
+            </Button>
           </View>
-          }
-          {chapter === 2 && 
-            <View><Text>2</Text></View>
-          }
-            {chapter !== 2 && 
-            <View {...style.button}>
-            <Button backgroundColor={'#4AC1E8'} width={'100%'} onPress={clickNext} >NEXT</Button>
-          </View>}
-          <Toast {...style.toest} ref={toastRef}/>
+          {/* )} */}
+          <Toast {...style.toest} ref={toastRef} />
         </View>
       </ScrollView>
     </>
@@ -603,4 +685,3 @@ const SignUp = ({ navigation }: NavigationProps) => {
 }
 
 export default SignUp
-
