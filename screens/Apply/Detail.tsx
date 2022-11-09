@@ -1,24 +1,26 @@
-import React from "react";
-import { View, Button, Text, StyleSheet } from "react-native";
-import { NavigationProps } from "../../type";
+import React from 'react'
+import {View, Button, Text, StyleSheet} from 'react-native'
+import {NavigationProps} from '../../type'
 
-const ApplyDetail = ({ navigation }:NavigationProps) => {
+const ApplyDetail = ({navigation}: NavigationProps) => {
   return (
     <View style={styles.center}>
       <Text>This is the home screen</Text>
-      <Button title="Go to About Screen"         onPress={() => navigation.navigate("About")} // We added an onPress event which would navigate to the About screen
- />
+      <Button
+        title="Go to About Screen"
+        onPress={() => navigation.navigate('About')} // We added an onPress event which would navigate to the About screen
+      />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
-});
+})
 
-export default ApplyDetail;
+export default ApplyDetail

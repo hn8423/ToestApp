@@ -62,3 +62,13 @@ export type LoginStackParams = {
 export type SC<T extends ParamListBase, K extends keyof T> = FC<
   StackScreenProps<T, K>
 >
+
+type value = {
+  [x: string]: string
+}
+export type LangMap1 = {
+  [x in 'en' | 'ko']: value
+}
+export type LangMap2 = {
+  [x: string]: value
+}

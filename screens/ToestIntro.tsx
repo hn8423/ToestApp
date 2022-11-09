@@ -1,22 +1,15 @@
 import React, {useState, useMemo} from 'react'
 import {View, ScrollView, Image, Dimensions, Text} from 'react-native'
-import {NavigationProps} from '../type'
+import {NavigationProps, LangMap1} from '../type'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 const chartWidth = Dimensions.get('window').width
 
-type value = {
-  [x: string]: string
-}
-type langMap = {
-  [x in 'en' | 'ko']: value
-}
-
 const ToestIntro = ({navigation}: NavigationProps) => {
   const lang = useRecoilValue(langState) as 'en' | 'ko'
-  const [globalText] = useState<langMap>({
+  const [globalText] = useState<LangMap1>({
     en: {
       mainDes:
         'A global test platfrom to evaluate\n future competencies and aptitude\n of learners worldwide.',
