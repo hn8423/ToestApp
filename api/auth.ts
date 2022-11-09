@@ -1,21 +1,21 @@
 import baseURL from '../api/baseURL'
 
-export async function register(params: RegisterParams){
+export async function register(params: RegisterParams) {
   const response = await fetch(`${baseURL}/api/signup`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
   })
   return response.json()
 }
 
-export async function login(params: LoginParams){
+export async function login(params: LoginParams) {
   const response = await fetch(`${baseURL}/api/mobile/signin`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
   })
@@ -23,14 +23,13 @@ export async function login(params: LoginParams){
 }
 
 type LoginParams = {
-  email: string;
-  password : string;
+  email: string
+  password: string
 }
 
-
 type RegisterParams = {
-  name: string;
-  email: string;
-  password:string;
-  countryCode:string
+  name: string
+  email: string
+  password: string
+  countryCode: string
 }
