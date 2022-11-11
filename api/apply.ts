@@ -16,8 +16,8 @@ export async function detail(params: DetailParams) {
   return response.json()
 }
 
-export async function preventPay(params: PreventParams) {
-  const response = await fetch(`${baseURL}/api/payment/preventPay`, {
+export async function freepay(params: PreventParams) {
+  const response = await fetch(`${baseURL}/api/application/apply/freepay`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

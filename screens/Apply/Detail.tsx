@@ -1,22 +1,17 @@
-import {
-  NavigationContainer,
-  RouteProp,
-  useRoute,
-} from '@react-navigation/native'
+import {RouteProp, useRoute} from '@react-navigation/native'
 import React, {useEffect, useMemo, useState, useRef} from 'react'
 import {
   View,
   Text,
-  StyleSheet,
   Dimensions,
   Image,
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
 import Toast from '../../component/Toest'
-import {ToestRef, LangMap2, SC, ApplyStackParams} from '../../type'
+import {ToestRef, SC, ApplyStackParams} from '../../type'
 import useGetStyle from '../../hooks/use-style'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useMutation} from '@tanstack/react-query'
 import {detail} from '../../api/apply'
 import useTestInfo from '../../hooks/useTestInfo'
 import {useRecoilState, useRecoilValue} from 'recoil'
@@ -25,9 +20,9 @@ import {langState} from '../../atoms/lang'
 import _ from 'lodash'
 import Button from '../../component/Button'
 import {AuthState} from '../../atoms/auth'
-import {StackActions, DrawerActions} from '@react-navigation/native'
+import {DrawerActions} from '@react-navigation/native'
+import {freepay} from '../../api/apply'
 const chartWidth = Dimensions.get('window').width
-// :SC<ApplyStackParams, 'ApplyDetail'>
 type DetailScreenRouteProp = RouteProp<ApplyStackParams, 'ApplyDetail'>
 const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({navigation}) => {
   // data
@@ -36,6 +31,10 @@ const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({navigation}) => {
 
   const globalText = useMemo(() => {
     return {
+      overlap: {
+        ko: '이미 신청한 레벨입니다.',
+        en: 'already register level',
+      },
       inputPlaceHolderText: {
         ko: '전화번호를 입력하세요',
         en: 'Enter your phone number.',
@@ -161,7 +160,6 @@ Go to the login page.`,
     }
   }, [])
   const {params} = useRoute<DetailScreenRouteProp>()
-  // console.log(params?.times)
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
   const [testName, setTestName] = useState(params?.testName || '')
@@ -170,6 +168,21 @@ Go to the login page.`,
   const [checked, setCheck] = useState(false)
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
+
+  const mutationFreepay = useMutation(freepay, {
+    onSuccess: data => {
+      console.log('freepay : ', data)
+      if (data.message === 'invalid call') {
+        toastRef.current?.show(globalText.overlap[lang])
+        return
+      }
+      setcompleted(true)
+    },
+    onError: error => {
+      console.log('err :', error)
+    },
+  })
+
   //sever connect
   //sever connect
   //sever connect
@@ -192,8 +205,8 @@ Go to the login page.`,
         return require(`../../assets/images/apply/smclong.png`)
       case 'E~TEST':
         return require(`../../assets/images/apply/e-testlong.png`)
-      // case 'GPST':
-      //   return require(`../../assets/images/apply/gpstlong.png`)
+      default:
+        return require(`../../assets/images/apply/gpstlong.png`)
     }
   }, [testName])
 
@@ -206,7 +219,6 @@ Go to the login page.`,
           description: testInfo[0]?.descriptionEn,
           name: testInfo[0]?.name,
           levels: testInfo[0]?.levels,
-          // ...rest,
         }
       }
       case 'ko': {
@@ -216,7 +228,6 @@ Go to the login page.`,
           description: testInfo[0]?.descriptionKo,
           name: testInfo[0]?.name,
           levels: testInfo[0]?.levels,
-          // ...rest,
         }
       }
     }
@@ -227,7 +238,6 @@ Go to the login page.`,
       .orderBy(o => o.order, 'asc')
       .map(v => {
         const {descriptionEn, descriptionKo, priceEn, priceKo, ...rest} = v
-        // const price = region === 'korea' ? priceKo : priceEn
         switch (lang) {
           case 'en': {
             return {description: descriptionEn, ...rest}
@@ -239,10 +249,15 @@ Go to the login page.`,
       })
       .value()
   }, [lang, testLang.levels])
-  //onPress
-  //onPress
-  //onPress
 
+  const testLangLevelMap = useMemo(() => {
+    return _(levels)
+      .keyBy(v => v.name)
+      .value()
+  }, [levels])
+  //onPress
+  //onPress
+  //onPress
   function onPressSetTargetValue(name: string) {
     return () => {
       selectLevel(name)
@@ -255,6 +270,7 @@ Go to the login page.`,
 
   function onPressGoMyTicket() {
     navigation.dispatch(DrawerActions.jumpTo('MyPage'))
+    navigation.goBack()
   }
 
   function onPressPayment() {
@@ -273,9 +289,10 @@ Go to the login page.`,
       toastRef.current?.show(globalText.check[lang])
       return
     }
-    setcompleted(true)
-  }
 
+    const testLevelId = testLangLevelMap[selectedLevel].id
+    mutationFreepay.mutate({testLevelId, userId: user[0].id})
+  }
   //render
   //render
   //render
@@ -341,7 +358,6 @@ Go to the login page.`,
   const style = useGetStyle({
     center: {
       flex: 1,
-      // justifyContent: 'center',
       alignItems: 'center',
       textAlign: 'center',
       paddingHorizontal: 16,
@@ -349,7 +365,6 @@ Go to the login page.`,
     },
     block: {
       justifyContent: 'center',
-      // alignItems: 'center',
       width: chartWidth - 32,
       padding: 24,
       backgroundColor: '#fff',
@@ -361,7 +376,6 @@ Go to the login page.`,
       borderRadius: 8,
       resizeMode: 'cover',
       marginTop: 8,
-      // marginHorizontal: 'auto',
     },
     toest: {
       marginHorizontal: 'auto',
@@ -376,21 +390,16 @@ Go to the login page.`,
       color: '#191919',
       paddingVertical: 16,
     },
-    contentWrapper: {
-      // width: chartWidth - 32,
-      // backgroundColor: 'red',
-    },
+
     line: {
       borderWidth: 1,
       borderColor: '#DBDBDB',
       width: '100%',
-      // width: 280,
     },
     volume: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingTop: 16,
-      // width: 280,
     },
     volumeLevel: {
       fontStyle: 'normal',
@@ -433,7 +442,7 @@ Go to the login page.`,
     <ScrollView>
       <View {...style.center}>
         <View {...style.block}>
-          <View {...style.contentWrapper}>
+          <View>
             {completed && (
               <Text {...style.toggleLevel}>{globalText.completed[lang]}</Text>
             )}
