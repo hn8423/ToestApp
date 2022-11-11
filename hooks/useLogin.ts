@@ -7,7 +7,9 @@ export default function useLogin() {
   const [auth, setAuth] = useRecoilState(AuthState)
   const mutation = useMutation(login, {
     onSuccess: data => {
+      // let json = data.json()
       setAuth(data)
+      // console.log('data : ', data)
     },
     onError: error => {
       console.log('err :', error)

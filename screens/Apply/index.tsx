@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
-import {NavigationProps, LangMap2} from '../../type'
+import {NavigationProps, LangMap2, SC, ApplyStackParams} from '../../type'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
@@ -49,7 +49,7 @@ type QueryKeyTestList = {
   thumbnail: string
   thumbnailLong: string
 }
-const Apply = ({navigation}: NavigationProps) => {
+const Apply: SC<ApplyStackParams, 'ApplyStack'> = ({navigation}) => {
   //data
   //data
   //data
@@ -173,6 +173,9 @@ const Apply = ({navigation}: NavigationProps) => {
                       key={i}
                       title={v.name}
                       description={v.shortDescription}
+                      times={v.times}
+                      navigation={navigation}
+                      routeName="ApplyDetail"
                     />
                   )
                 })}

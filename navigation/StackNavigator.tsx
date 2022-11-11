@@ -22,10 +22,10 @@ const StackLogin = createStackNavigator()
 
 const screenOptionStyle = {
   headerStyle: {
-    backgroundColor: '#9AC4F8',
+    backgroundColor: '#fff',
   },
-  headerTintColor: 'white',
-  headerBackTitle: 'Back',
+  headerTintColor: '#000',
+  headerBackTitle: '',
   headerShown: false,
 }
 const MainStackNavigator = () => {
@@ -40,7 +40,11 @@ const ApplyStackNavigator = () => {
   return (
     <StackApply.Navigator screenOptions={screenOptionStyle}>
       <StackApply.Screen name="ApplyStack" component={Apply} />
-      <StackApply.Screen name="ApplyDetail" component={ApplyDetail} />
+      <StackApply.Screen
+        name="ApplyDetail"
+        component={ApplyDetail}
+        options={{headerShown: true, headerTitle: 'Payment Statement'}}
+      />
     </StackApply.Navigator>
   )
 }

@@ -3,5 +3,6 @@ module.exports = {
   extends: ['@react-native-community', 'prettier'],
   rules: {
     '@typescript-eslint/no-unused-vars': 0,
+    'prettier/prettier': [0],
   },
 }

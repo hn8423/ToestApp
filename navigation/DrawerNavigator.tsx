@@ -261,10 +261,10 @@ const DrawerNavigator = () => {
                   <Image source={require('../assets/images/drawer/x.png')} />
                 </TouchableOpacity>
                 <Text {...style.headerTextTitle}>
-                  {user !== null ? user.name : 'TOEST'}
+                  {user !== null ? user[0].name : 'TOEST'}
                 </Text>
                 <Text {...style.headerTextSub}>
-                  {user !== null ? user.email : ''}
+                  {user !== null ? user[0].email : ''}
                 </Text>
               </View>
               <View {...style.body}>

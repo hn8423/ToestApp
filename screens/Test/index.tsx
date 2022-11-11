@@ -189,6 +189,9 @@ const Test = ({navigation}: NavigationProps) => {
                       key={i}
                       title={v.name}
                       description={v.shortDescription}
+                      times={v.times}
+                      navigation={navigation}
+                      routeName="TestDetail"
                     />
                   )
                 })}

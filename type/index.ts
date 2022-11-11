@@ -41,7 +41,10 @@ export type MainStackParams = {
 }
 export type ApplyStackParams = {
   ApplyStack?: {}
-  ApplyDetail?: {}
+  ApplyDetail?: {
+    testName: string
+    times: number
+  }
 }
 export type TestStackParams = {
   TestStack?: {}

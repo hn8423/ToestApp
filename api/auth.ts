@@ -12,13 +12,14 @@ export async function register(params: RegisterParams) {
 }
 
 export async function login(params: LoginParams) {
-  const response = await fetch(`${baseURL}/api/mobile/signin`, {
+  const response = await fetch(`${baseURL}/api/application/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
   })
+  // console.log('response :', response.json())
   return response.json()
 }
 

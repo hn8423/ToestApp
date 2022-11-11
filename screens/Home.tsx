@@ -7,27 +7,6 @@ import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 const chartWidth = Dimensions.get('window').width
-type GlobalTextProps = {
-  en: {
-    gpst: string
-    smc: string
-    etest: string
-    title: string
-    bigData: string
-    userFriendly: string
-    testAsDes: string
-  }
-  ko: {
-    gpst: string
-    smc: string
-    etest: string
-    title: string
-    text: string
-    bigData: string
-    userFriendly: string
-    testAsDes: string
-  }
-}
 
 const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
   const lang = useRecoilValue(langState)
