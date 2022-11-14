@@ -3,8 +3,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer'
 import _ from 'lodash'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import TabNavigator from './TabNavigator'
-import {LoginStackNavigator} from './StackNavigator'
-import MyPage from '../screens/MyPage'
+import {LoginStackNavigator, MyPageStackNavigator} from './StackNavigator'
+import MyPage from '../screens/MyPage/AccountSetting'
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
@@ -341,7 +341,7 @@ const DrawerNavigator = () => {
       />
       <Drawer.Screen
         name="MyPage"
-        component={MyPage}
+        component={MyPageStackNavigator}
         options={{
           headerLeft: () => (
             <TouchableOpacity

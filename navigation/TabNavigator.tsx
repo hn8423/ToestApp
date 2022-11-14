@@ -22,6 +22,7 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
         },
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tab.Screen

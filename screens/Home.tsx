@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react'
 import {View, Text, ScrollView, Dimensions, Image} from 'react-native'
-import {MainStackParams, SC} from '../type'
+import {MainStackParams, SC, LangMap1} from '../type'
 import Header from '../component/Header'
 import ImageSlider from '../component/ImageSlider'
 import {useRecoilValue} from 'recoil'

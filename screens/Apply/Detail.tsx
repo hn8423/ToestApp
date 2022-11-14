@@ -171,7 +171,6 @@ Go to the login page.`,
 
   const mutationFreepay = useMutation(freepay, {
     onSuccess: data => {
-      console.log('freepay : ', data)
       if (data.message === 'invalid call') {
         toastRef.current?.show(globalText.overlap[lang])
         return

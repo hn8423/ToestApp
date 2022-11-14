@@ -7,7 +7,8 @@ import ApplyDetail from '../screens/Apply/Detail'
 import Test from '../screens/Test'
 import TestDetail from '../screens/Test/Detail'
 import Result from '../screens/Result'
-import MyPage from '../screens/MyPage'
+import AccountSetting from '../screens/MyPage/AccountSetting'
+import Payment from '../screens/MyPage/Payment'
 import LogIn from '../screens/Login'
 import SignUpComplete from '../screens/SignUpComplete'
 import SignUp from '../screens/SignUp'
@@ -66,7 +67,8 @@ const ResultStackNavigator = () => {
 const MyPageStackNavigator = () => {
   return (
     <StackMyPage.Navigator screenOptions={screenOptionStyle}>
-      <StackMyPage.Screen name="MyPage" component={MyPage} />
+      <StackMyPage.Screen name="AccountSetting" component={AccountSetting} />
+      <StackMyPage.Screen name="Payment" component={Payment} />
     </StackMyPage.Navigator>
   )
 }

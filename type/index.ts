@@ -54,7 +54,8 @@ export type ResultStackParams = {
   ResultStack?: {}
 }
 export type MyPageStackParams = {
-  MyPage?: {}
+  AccountSetting?: {}
+  Payment?: {}
 }
 export type LoginStackParams = {
   LogIn?: {}
