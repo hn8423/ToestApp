@@ -13,9 +13,9 @@ export type User = [
   },
 ]
 
-type AuthState = User | null
+export type AuthStateParams = User | null
 
-export const AuthState = atom<AuthState>({
+export const AuthState = atom<AuthStateParams>({
   key: 'authState',
   default: null,
 })

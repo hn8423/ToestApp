@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {
   TouchableOpacity,
   Image,
@@ -14,6 +14,7 @@ import {
   useNavigation,
   DrawerActions,
   StackActions,
+  TabActions,
 } from '@react-navigation/native'
 import {useRecoilState} from 'recoil'
 import {langState} from '../atoms/lang'
@@ -80,7 +81,6 @@ const Header = () => {
       color: '#000',
     },
     modalTextBottom: {
-      // marginBottom: ,
       textAlign: 'center',
       color: '#000',
     },
@@ -89,6 +89,7 @@ const Header = () => {
   const OnPressLogo = () => {
     navigation.dispatch(StackActions.popToTop())
     navigation.dispatch(DrawerActions.jumpTo('Main'))
+    navigation.dispatch(TabActions.jumpTo('Home'))
   }
 
   const OnPressKorean = () => {

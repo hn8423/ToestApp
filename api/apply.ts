@@ -16,8 +16,8 @@ export async function detail(params: DetailParams) {
   return response.json()
 }
 
-export async function freepay(params: PreventParams) {
-  const response = await fetch(`${baseURL}/api/application/apply/freepay`, {
+export async function pay(params: PayParams) {
+  const response = await fetch(`${baseURL}/api/application/apply/pay`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,7 +32,12 @@ type DetailParams = {
   times: number
 }
 
-type PreventParams = {
+type PayParams = {
   testLevelId: string
   userId: string
+  payType: string
+  PayMethod: string
+  GoodsName: string
+  Amt: string
+  BuyerTel: string
 }

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react'
+import React, {useCallback, useEffect, useState, useMemo, useRef} from 'react'
 import {
   View,
   Text,
@@ -9,15 +9,17 @@ import {
   TextInputChangeEventData,
   ScrollView,
 } from 'react-native'
-import {MyPageStackParams, SC, LangMap2} from '../../type'
+import {MyPageStackParams, SC, LangMap2, ToestRef} from '../../type'
 import Header from '../../component/Header'
-import {DrawerScreenProps} from '@react-navigation/drawer'
 import {useMutation} from '@tanstack/react-query'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import useGetStyle from '../../hooks/use-style'
 import {AuthState} from '../../atoms/auth'
 import {langState} from '../../atoms/lang'
 import Button from '../../component/Button'
+import Toast from '../../component/Toest'
+import {DrawerActions} from '@react-navigation/native'
+import {updateAccount} from '../../api/mypage'
 const chartWidth = Dimensions.get('window').width
 
 import SearchInput from '../../component/SearchInput'
@@ -94,6 +96,10 @@ const globalText: LangMap2 = {
   change: {
     en: `CHANGE`,
     ko: `정보 변경`,
+  },
+  checkChange: {
+    en: 'account changed',
+    ko: '계정 정보가 변경 되었습니다.',
   },
   id: {
     en: `ORDER NO. `,
@@ -279,6 +285,22 @@ const globalText: LangMap2 = {
     en: 'No refund',
     ko: '환불 없음',
   },
+  samePw: {
+    en: 'Enter the same password',
+    ko: '비밀번호를 모두 동일하게 입력하세요',
+  },
+  currPw: {
+    en: 'Enter your current password',
+    ko: '현재 비밀번호를 입력하세요',
+  },
+  testDonRefund: {
+    en: 'You cannot refund because test completed it.',
+    ko: '태스트를 완료 하였기에 환불 할 수 없습니다. ',
+  },
+  requireLogin: {
+    en: 'please login',
+    ko: '로그인이 필요합니다.',
+  },
 }
 
 const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
@@ -291,14 +313,20 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
   const [code, setCode] = useState('')
+  const toastRef = useRef<ToestRef>()
 
   useEffect(() => {
     if (user) {
       setName(user[0].name)
       setEmail(user[0].email)
       setCode(user[0].countryCode)
+    } else {
+      toastRef.current?.show(globalText.requireLogin[language])
+      setTimeout(() => {
+        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      }, 3000)
     }
-  }, [user])
+  }, [language, navigation, user])
 
   function setTargetValue(
     setState: React.Dispatch<React.SetStateAction<string>>,
@@ -319,27 +347,60 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     return password === rePassword
   }, [password, rePassword])
   const isExistCurrPW = useMemo(() => !!password, [password])
+  //server connect
+  //server connect
+  //server connect
+  const [auth, setAuth] = useRecoilState(AuthState)
+  const mutationFreepay = useMutation(updateAccount, {
+    onSuccess: data => {
+      let copy: any = user
+      copy[0].name = data.name
+      copy[0].email = data.email
+      copy[0].countryCode = data.countryCode
+      copy[0].password = data.password
+      setAuth(copy)
+      toastRef.current?.show(globalText.checkChange[language])
+      setTimeout(() => {
+        navigation.replace('AccountSetting')
+      }, 3000)
+    },
+    onError: error => {
+      console.log('err :', error)
+    },
+  })
 
   const clickChange = useCallback(
     async function clickChange() {
       try {
-        if (!isLocal) {
-          // await req2srv.changeAccount({name, code})
-        } else {
-          if (!chPwValid) {
-            // alert(globalText.changeAlert.samePw[language])
-            return
-          }
-          if (!isExistCurrPW) {
-            // alert(globalText.changeAlert.currPw[language])
-            return
-          }
-          // await req2srv.changeAccount({name, currPW, chPW, code})
+        if (!user) {
+          toastRef.current?.show(globalText.requireLogin[language])
+          setTimeout(() => {
+            navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+          }, 3000)
+          return
         }
-        // router.reload()
-      } catch (err) {}
+
+        if (!rePassword) {
+          let body = {name, code, email, userId: user[0].id}
+          mutationFreepay.mutate(body)
+        } else {
+          let body1 = {name, chPW: rePassword, email, code, userId: user[0].id}
+          mutationFreepay.mutate(body1)
+        }
+      } catch (err) {
+        console.log('fire err')
+      }
     },
-    [chPwValid, isExistCurrPW, isLocal],
+    [
+      code,
+      email,
+      language,
+      mutationFreepay,
+      name,
+      navigation,
+      rePassword,
+      user,
+    ],
   )
 
   const style = useGetStyle({
@@ -347,9 +408,6 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       flex: 1,
       paddingVertical: 32,
       paddingHorizontal: 16,
-      // justifyContent: 'center',
-      // alignItems: 'center',
-      // textAlign: 'center',
     },
     topTab: {
       flexDirection: 'row',
@@ -424,6 +482,9 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     buttonWrapper: {
       paddingTop: 32,
     },
+    toest: {
+      marginHorizontal: 'auto',
+    },
   })
   return (
     <>
@@ -440,6 +501,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       </View>
       <ScrollView>
         <View {...style.wrapper}>
+          <Toast {...style.toest} ref={toastRef} />
           <View {...style.whiteBox}>
             <Text {...style.title}>{globalText.accountTitle[language]}</Text>
             <Text {...style.inputTitle}>
@@ -461,14 +523,14 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
             <TextInput
               {...style.input}
               placeholder={globalText.emailInput[language]}
-              onChange={setTargetValue(setName)}
+              onChange={setTargetValue(setEmail)}
               defaultValue={user ? email : ''}
             />
           </View>
           <View {...style.whiteBox}>
             <Text {...style.title}>{globalText.accountPassword[language]}</Text>
             <Text {...style.inputTitle}>
-              {globalText.currentpassword[language]}
+              {globalText.changepassword[language]}
             </Text>
             <TextInput
               {...style.input}
@@ -491,7 +553,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
             />
           </View>
           <View {...style.buttonWrapper}>
-            <Button>{globalText.change[language]}</Button>
+            <Button onPress={clickChange}>{globalText.change[language]}</Button>
           </View>
         </View>
       </ScrollView>

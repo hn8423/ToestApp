@@ -21,7 +21,7 @@ import _ from 'lodash'
 import Button from '../../component/Button'
 import {AuthState} from '../../atoms/auth'
 import {DrawerActions} from '@react-navigation/native'
-import {freepay} from '../../api/apply'
+import {pay} from '../../api/apply'
 const chartWidth = Dimensions.get('window').width
 type DetailScreenRouteProp = RouteProp<ApplyStackParams, 'ApplyDetail'>
 const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({navigation}) => {
@@ -169,7 +169,7 @@ Go to the login page.`,
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
 
-  const mutationFreepay = useMutation(freepay, {
+  const mutationPay = useMutation(pay, {
     onSuccess: data => {
       if (data.message === 'invalid call') {
         toastRef.current?.show(globalText.overlap[lang])
@@ -254,6 +254,10 @@ Go to the login page.`,
       .keyBy(v => v.name)
       .value()
   }, [levels])
+
+  const goodsName = useMemo(() => {
+    return `${testName} - ${selectedLevel}`
+  }, [selectedLevel, testName])
   //onPress
   //onPress
   //onPress
@@ -276,6 +280,7 @@ Go to the login page.`,
     if (!user) {
       toastRef.current?.show(globalText.notLogined[lang])
       setTimeout(() => {
+        navigation.goBack()
         navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
       }, 3000)
       return
@@ -290,7 +295,16 @@ Go to the login page.`,
     }
 
     const testLevelId = testLangLevelMap[selectedLevel].id
-    mutationFreepay.mutate({testLevelId, userId: user[0].id})
+    let body = {
+      testLevelId,
+      userId: user[0].id,
+      payType: 'local',
+      PayMethod: 'CARD',
+      GoodsName: goodsName,
+      Amt: 'free',
+      BuyerTel: '000-0000-0000',
+    }
+    mutationPay.mutate(body)
   }
   //render
   //render

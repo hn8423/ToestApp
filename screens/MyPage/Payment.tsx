@@ -1,14 +1,23 @@
-import React, {useCallback, useEffect} from 'react'
-import {View, Button, Text, Dimensions, TouchableOpacity} from 'react-native'
-import {MyPageStackParams, SC, LangMap2} from '../../type'
+import React, {useEffect, useMemo, useRef} from 'react'
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from 'react-native'
+import {MyPageStackParams, SC, LangMap2, ToestRef} from '../../type'
 import Header from '../../component/Header'
-import {DrawerScreenProps} from '@react-navigation/drawer'
-import {useMutation} from '@tanstack/react-query'
-import {freepayment} from '../../api/mypage'
-import {useRecoilState, useRecoilValue} from 'recoil'
+import {useRecoilValue} from 'recoil'
 import {AuthState} from '../../atoms/auth'
 import useGetStyle from '../../hooks/use-style'
 import {langState} from '../../atoms/lang'
+import {DrawerActions} from '@react-navigation/native'
+import Toast from '../../component/Toest'
+import useGetTicket from '../../hooks/useGetTicket'
+import {PayInfoState} from '../../atoms/payInfo'
+
 const chartWidth = Dimensions.get('window').width
 
 const globalText: LangMap2 = {
@@ -197,16 +206,6 @@ const globalText: LangMap2 = {
     en: 'year.month.date',
     ko: '년.월.일',
   },
-  // changeAlert: {
-  //   samePw: {
-  //     en: 'Enter the same password',
-  //     ko: '비밀번호를 모두 동일하게 입력하세요',
-  //   },
-  //   currPw: {
-  //     en: 'Enter your current password',
-  //     ko: '현재 비밀번호를 입력하세요',
-  //   },
-  // },
   countryInput: {
     en: 'Select Country/Region',
     ko: '국가를 선택하세요',
@@ -280,35 +279,37 @@ const globalText: LangMap2 = {
   },
 }
 
-const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation, route}) => {
+const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
   const language = useRecoilValue(langState)
-  // const mutationFreepayment = useMutation(freepayment, {
-  //   onSuccess: data => {
-  //     console.log('freepayment : ', data)
+  const toastRef = useRef<ToestRef>()
+  //server connect
+  //server connect
+  //server connect
+  const {mutate: getTicketMutate, isLoading} = useGetTicket()
+  const payInfo = useRecoilValue(PayInfoState)
 
-  //     // setcompleted(true)
-  //   },
-  //   onError: error => {
-  //     console.log('err :', error)
-  //   },
-  // })
+  useEffect(() => {
+    if (user) {
+    } else {
+      toastRef.current?.show(globalText.requireLogin[language])
+      setTimeout(() => {
+        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      }, 3000)
+    }
+  }, [language, navigation, user])
 
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log(user)
-  //     mutationFreepayment.mutate({userId: user[0].id})
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (!payInfo && user) {
+      getTicketMutate({userId: user[0].id})
+    }
+  }, [getTicketMutate, payInfo, user])
 
   const style = useGetStyle({
     wrapper: {
       flex: 1,
       paddingVertical: 32,
       paddingHorizontal: 16,
-      // justifyContent: 'center',
-      // alignItems: 'center',
-      // textAlign: 'center',
     },
     topTab: {
       flexDirection: 'row',
@@ -348,22 +349,95 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation, route}) => {
       letterSpacing: 0.1,
       color: '#999999',
     },
+    contentBox: {
+      width: '100%',
+      borderRadius: 8,
+      backgroundColor: '#fff',
+      marginTop: 16,
+      padding: 24,
+    },
+    date: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      color: '#191919',
+    },
+    contentMain: {
+      flexDirection: 'row',
+      marginTop: 16,
+    },
+    img: {
+      borderRadius: 8,
+      width: 88,
+      height: 88,
+    },
+    textWrapper: {
+      marginLeft: 16,
+      justifyContent: 'space-evenly',
+    },
+    title: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 14,
+      lineHeight: 24,
+      letterSpacing: 0.1,
+      color: '#191919',
+    },
+    completed: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 12,
+      lineHeight: 16,
+      letterSpacing: 0.4,
+      color: '#767676',
+    },
   })
+
+  const cardList = useMemo(() => {
+    if (!payInfo) {
+      return
+    }
+    const result = payInfo.map((v, i) => {
+      let date = v.date.split('T')[0].replace(/-/g, '.')
+      return (
+        <View {...style.contentBox} key={'cardList' + i}>
+          <Text {...style.date}>{date}</Text>
+          <View {...style.contentMain}>
+            <Image
+              {...style.img}
+              source={require('../../assets/images/apply/gpst.png')}
+            />
+            <View {...style.textWrapper}>
+              <Text {...style.title}>{v.GoodsName}</Text>
+              <Text {...style.completed}>{globalText.completed[language]}</Text>
+              <Text {...style.title}>{v.Amt}</Text>
+            </View>
+          </View>
+        </View>
+      )
+    })
+    return result
+  }, [language, payInfo, style])
 
   return (
     <>
       <Header />
-      <View {...style.topTab}>
-        <TouchableOpacity onPress={() => navigation.push('AccountSetting')}>
-          <View {...style.tabBox2}>
-            <Text {...style.BoxText2}>{globalText.menu3[language]}</Text>
+      <ScrollView>
+        <View {...style.topTab}>
+          <TouchableOpacity onPress={() => navigation.push('AccountSetting')}>
+            <View {...style.tabBox2}>
+              <Text {...style.BoxText2}>{globalText.menu3[language]}</Text>
+            </View>
+          </TouchableOpacity>
+          <View {...style.tabBox1}>
+            <Text {...style.BoxText1}>{globalText.menu4[language]}</Text>
           </View>
-        </TouchableOpacity>
-        <View {...style.tabBox1}>
-          <Text {...style.BoxText1}>{globalText.menu4[language]}</Text>
         </View>
-      </View>
-      <View {...style.wrapper}></View>
+        <View {...style.wrapper}>{cardList}</View>
+        <Toast />
+      </ScrollView>
     </>
   )
 }
