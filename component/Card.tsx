@@ -7,6 +7,7 @@ type Props = {
   times: number
   navigation: any
   routeName: string
+  level?: string
 }
 const Card = ({
   title = '',
@@ -14,6 +15,7 @@ const Card = ({
   times = 0,
   navigation,
   routeName = '',
+  level = '',
 }: Props) => {
   const style = useGetStyle({
     wrapper: {
@@ -58,7 +60,9 @@ const Card = ({
   }, [title])
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate(routeName, {testName: title, times})}
+      onPress={() =>
+        navigation.navigate(routeName, {testName: title, times, level})
+      }
     >
       <View {...style.wrapper}>
         <Image source={img} />

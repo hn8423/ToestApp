@@ -8,8 +8,8 @@ export type TestInfo = {
   endApplicationPeriod: Date
   descriptionKo: string
   descriptionEn: string
-  startContestDate: Date
-  endContestDate: Date
+  startContestDate: string
+  endContestDate: string
   resultOpenDate: number
   announcementKo: string
   announcementEn: string

@@ -1,4 +1,3 @@
-import {RouteProp, useRoute} from '@react-navigation/native'
 import React, {useEffect, useMemo, useState, useRef} from 'react'
 import {
   View,
@@ -12,7 +11,6 @@ import Toast from '../../component/Toest'
 import {ToestRef, SC, ApplyStackParams} from '../../type'
 import useGetStyle from '../../hooks/use-style'
 import {useMutation} from '@tanstack/react-query'
-import {detail} from '../../api/apply'
 import useTestInfo from '../../hooks/useTestInfo'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import {TestInfoState} from '../../atoms/testInfo'
@@ -24,8 +22,14 @@ import {DrawerActions} from '@react-navigation/native'
 import {pay} from '../../api/apply'
 import useGetTicket from '../../hooks/useGetTicket'
 const chartWidth = Dimensions.get('window').width
-type DetailScreenRouteProp = RouteProp<ApplyStackParams, 'ApplyDetail'>
-const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({navigation}) => {
+type paramsType = {
+  testName: string
+  times: number
+}
+const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({
+  navigation,
+  route,
+}) => {
   // data
   // data
   // data
@@ -160,7 +164,8 @@ Go to the login page.`,
       },
     }
   }, [])
-  const {params} = useRoute<DetailScreenRouteProp>()
+  // const {params} = useRoute<DetailScreenRouteProp>()
+  const params = route.params as paramsType
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
   const [testName, setTestName] = useState(params?.testName || '')
@@ -170,6 +175,7 @@ Go to the login page.`,
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
   const {mutate: getTicketMutate} = useGetTicket()
+  // const {}
 
   const mutationPay = useMutation(pay, {
     onSuccess: data => {

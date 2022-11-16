@@ -1,13 +1,16 @@
-import React from 'react'
+import React, {useEffect, useRef, useMemo} from 'react'
 import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
-import {NavigationProps, LangMap2} from '../../type'
+import {NavigationProps, LangMap2, ToestRef} from '../../type'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
 import Header from '../../component/Header'
-import {useQuery} from '@tanstack/react-query'
-import {testList} from '../../api/apply'
 import Card from '../../component/Card'
+import {DrawerActions} from '@react-navigation/native'
+import {RegisterTestInfoState} from '../../atoms/registertesInfo'
+import {AuthState} from '../../atoms/auth'
+import useRegisterTestList from '../../hooks/useRegistertestList'
+import Toast from '../../component/Toest'
 const chartWidth = Dimensions.get('window').width
 const globalText: LangMap2 = {
   unlock: {
@@ -73,12 +76,70 @@ const Test = ({navigation}: NavigationProps) => {
   //data
   //data
 
-  const {data, isLoading} = useQuery<QueryKeyTestList[], Error>({
-    queryKey: ['testlist'],
-    queryFn: testList,
-  })
+  const toastRef = useRef<ToestRef>()
+  const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
 
+  const RegistedTestList = useRecoilValue(RegisterTestInfoState)
+
+  const {mutate: registedTestListMutate, isLoading} = useRegisterTestList()
+  useEffect(() => {
+    if (user) {
+    } else {
+      toastRef.current?.show(globalText.requireLogin[lang])
+      setTimeout(() => {
+        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      }, 3000)
+    }
+  }, [lang, navigation, user])
+  useEffect(() => {
+    if (user) {
+      registedTestListMutate({userId: user[0].id})
+    }
+  }, [registedTestListMutate, user])
+
+  const testListLang = useMemo(() => {
+    if (!RegistedTestList) {
+      return
+    }
+
+    return RegistedTestList.map(v => {
+      return {
+        title: `${v.testLevel.test.name} - ${v.testLevel.name}`,
+        description:
+          lang === 'en' ? v.testLevel.descriptionEn : v.testLevel.descriptionKo,
+        thumbnail: v.testLevel.test.thumbnail,
+        times: v.testLevel.test.times,
+        level: v.testLevel.name,
+        link: `/mobile/test/detail/${v.testLevel.test.name}/${v.testLevel.test.times}/${v.testLevel.name}`,
+      }
+    })
+  }, [RegistedTestList, lang])
+
+  // renderMap
+  // renderMap
+  // renderMap
+
+  const cardList = useMemo(() => {
+    if (!testListLang) {
+      return
+    }
+
+    return testListLang.map((v, i) => {
+      // console.log(v)
+      return (
+        <Card
+          key={i}
+          title={v.title}
+          description={v.description}
+          navigation={navigation}
+          times={v.times}
+          level={v.level}
+          routeName="TestDetail"
+        ></Card>
+      )
+    })
+  }, [navigation, testListLang])
   //style
   //style
   //style
@@ -96,13 +157,24 @@ const Test = ({navigation}: NavigationProps) => {
       paddingVertical: 32,
       paddingHorizontal: 16,
     },
-    text: {
+    textArea: {
+      flexDirection: 'row',
+    },
+    text1: {
       fontStyle: 'normal',
       fontWeight: '700',
       fontSize: 20,
       lineHeight: 24,
       letterSpacing: 0.15,
       color: '#4AC1E8',
+    },
+    text2: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      color: '#191919',
     },
     cardWrapper: {
       flexDirection: 'row',
@@ -180,24 +252,14 @@ const Test = ({navigation}: NavigationProps) => {
             />
           </View>
           <View {...style.bottomWrapper}>
-            <Text {...style.text}>{globalText.test2[lang]}</Text>
-            <View {...style.cardWrapper}>
-              {data &&
-                data.map((v, i) => {
-                  return (
-                    <Card
-                      key={i}
-                      title={v.name}
-                      description={v.shortDescription}
-                      times={v.times}
-                      navigation={navigation}
-                      routeName="TestDetail"
-                    />
-                  )
-                })}
+            <View {...style.textArea}>
+              <Text {...style.text1}>{globalText.test1[lang]} </Text>
+              <Text {...style.text2}>{globalText.test2[lang]}</Text>
             </View>
+            <View {...style.cardWrapper}>{cardList}</View>
           </View>
         </View>
+        <Toast />
       </ScrollView>
     </>
   )
