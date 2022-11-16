@@ -22,6 +22,7 @@ import Button from '../../component/Button'
 import {AuthState} from '../../atoms/auth'
 import {DrawerActions} from '@react-navigation/native'
 import {pay} from '../../api/apply'
+import useGetTicket from '../../hooks/useGetTicket'
 const chartWidth = Dimensions.get('window').width
 type DetailScreenRouteProp = RouteProp<ApplyStackParams, 'ApplyDetail'>
 const ApplyDetail: SC<ApplyStackParams, 'ApplyDetail'> = ({navigation}) => {
@@ -168,6 +169,7 @@ Go to the login page.`,
   const [checked, setCheck] = useState(false)
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
+  const {mutate: getTicketMutate} = useGetTicket()
 
   const mutationPay = useMutation(pay, {
     onSuccess: data => {
@@ -175,7 +177,10 @@ Go to the login page.`,
         toastRef.current?.show(globalText.overlap[lang])
         return
       }
-      setcompleted(true)
+      if (user) {
+        getTicketMutate({userId: user[0].id})
+        setcompleted(true)
+      }
     },
     onError: error => {
       console.log('err :', error)
