@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
 import {NavigationProps, LangMap2, SC, ApplyStackParams} from '../../type'
 import {useRecoilValue} from 'recoil'
@@ -59,6 +59,26 @@ const Apply: SC<ApplyStackParams, 'ApplyStack'> = ({navigation}) => {
     queryFn: testList,
   })
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+
+  const cardList = useMemo(() => {
+    if (!data) {
+      return
+    }
+
+    return data.map((v, i) => {
+      // console.log(v)
+      return (
+        <Card
+          key={i}
+          title={v.name}
+          description={v.shortDescription}
+          times={v.times}
+          navigation={navigation}
+          routeName="ApplyDetail"
+        ></Card>
+      )
+    })
+  }, [data, navigation])
 
   //style
   //style
@@ -165,21 +185,7 @@ const Apply: SC<ApplyStackParams, 'ApplyStack'> = ({navigation}) => {
           </View>
           <View {...style.bottomWrapper}>
             <Text {...style.text}>{globalText.test[lang]}</Text>
-            <View {...style.cardWrapper}>
-              {data &&
-                data.map((v, i) => {
-                  return (
-                    <Card
-                      key={i}
-                      title={v.name}
-                      description={v.shortDescription}
-                      times={v.times}
-                      navigation={navigation}
-                      routeName="ApplyDetail"
-                    />
-                  )
-                })}
-            </View>
+            <View {...style.cardWrapper}>{cardList}</View>
           </View>
         </View>
       </ScrollView>

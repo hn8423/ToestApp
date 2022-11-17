@@ -1,101 +1,119 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import {View, Button, Text, StyleSheet, ScrollView} from 'react-native'
-import {TestStackParams, SC} from '../type'
+import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native'
+import {TestStackParams, SC, LangMap2} from '../type'
 import useGetStyle from '../hooks/use-style'
 import Header from '../component/Header'
 import ImageSmallSlider from '../component/ImageSmallSlider'
-import useTestInfo from '../hooks/useTestInfo'
 import {TestInfoState} from '../atoms/testInfo'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
+import Button from './Button'
+const chartWidth = Dimensions.get('window').width
+type TestLangType = {
+  announcement: string | undefined
+  areasOfEvaluation: string | undefined
+  description: string | undefined
+  name: string | undefined
+  levels: any
+  startContestDate: string | undefined
+  endContestDate: string | undefined
+}
 type paramsType = {
   testName: string
   times: number
+  testLang: TestLangType
+  setIsApply: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Description: SC<TestStackParams, 'TestDetail'> = ({
-  navigation,
-  route,
-}) => {
-  const params = route.params as paramsType
-  const [testName, setTestName] = useState('')
-  const [times, setTimes] = useState(0)
-  const {mutate, isLoading} = useTestInfo()
+const globalText: LangMap2 = {
+  apply: {
+    en: 'APPLY',
+    ko: '응시 하기',
+  },
+  notApplicationPeriod: {
+    en: `Not application period`,
+    ko: `접수기간이 아닙니다.`,
+  },
+}
+
+const Description = ({
+  testName = '',
+  times = 0,
+  testLang,
+  setIsApply,
+}: paramsType) => {
   const testInfo = useRecoilValue(TestInfoState)
   const lang = useRecoilValue(langState) as 'ko' | 'en'
-  useEffect(() => {
-    if (params !== undefined) {
-      setTestName(params.testName.split(' ')[0])
-      setTimes(params.times)
-      mutate({testName, times})
-    }
-  }, [mutate, params, testName, times])
   const isEng = useMemo(() => lang === 'en', [lang])
-  const testLang = useMemo(() => {
-    if (!testInfo) {
-      return
-    }
-    switch (lang) {
-      case 'en': {
-        return {
-          announcement: testInfo?.announcementEn,
-          areasOfEvaluation: testInfo?.areasOfEvaluationEn,
-          description: testInfo?.descriptionEn,
-          name: testInfo?.name,
-          levels: testInfo?.levels,
-        }
-      }
-      case 'ko': {
-        return {
-          announcement: testInfo?.announcementKo,
-          areasOfEvaluation: testInfo?.areasOfEvaluationKo,
-          description: testInfo?.descriptionKo,
-          name: testInfo?.name,
-          levels: testInfo?.levels,
-        }
-      }
-    }
-  }, [lang, testInfo])
+  // memo
+  // memo
+  // memo
 
   const resultDate = useMemo(() => {
     if (!(lang && testInfo)) {
       return ''
     }
-    let start = new Date()
-    // let tempDate = moment(testInfo.endContestDate).add(testInfo.resultOpenDate, 'd').utc()
+    let tempDate = dayjs(testInfo.endContestDate)
+      .add(testInfo.resultOpenDate, 'd')
+      .utc()
     if (lang === 'en') {
-      return testInfo.endContestDate
+      return tempDate.format('YYYY-MM-DD HH:mm z')
     }
-    return testInfo.endContestDate
+    return `${tempDate.utcOffset('+0900').format('YYYY-MM-DD HH:mm')} KST`
   }, [lang, testInfo])
+
+  const startContest = useMemo(() => {
+    let startContestDate = dayjs(testLang.startContestDate).utc()
+    let en = `${startContestDate.format('YYYY-MM-DD HH:mm z')}`
+    let ko = `${startContestDate
+      .utcOffset('+0900')
+      .format('YYYY-MM-DD HH:mm')} KST`
+    return lang === 'ko' ? ko : en
+  }, [lang, testLang.startContestDate])
+
+  const endContest = useMemo(() => {
+    let endContestDate = dayjs(testLang.endContestDate).utc()
+    let en = `${endContestDate.format('YYYY-MM-DD HH:mm z')}`
+    let ko = `${endContestDate
+      .utcOffset('+0900')
+      .format('YYYY-MM-DD HH:mm')} KST`
+    return lang === 'ko' ? ko : en
+  }, [lang, testLang.endContestDate])
 
   const images = useMemo(
     () => [
       {
-        location: require('../../assets/images/test/gpst1.png'),
+        location: require('../assets/images/test/gpst1.png'),
       },
       {
-        location: require('../../assets/images/test/gpst2.png'),
+        location: require('../assets/images/test/gpst2.png'),
       },
       {
-        location: require('../../assets/images/test/gpst3.png'),
+        location: require('../assets/images/test/gpst3.png'),
       },
       {
-        location: require('../../assets/images/test/gpst4.png'),
+        location: require('../assets/images/test/gpst4.png'),
       },
     ],
     [],
   )
-
-  // memo
-  // memo
-  // memo
 
   const imageList = useMemo(() => {
     return images.map((v, i) => {
       return {...v, key: `imageSlider-${i}`}
     })
   }, [images])
+
+  //function
+  //function
+  //function
+
+  const onPressPass = () => {
+    setIsApply(true)
+  }
   //style
   //style
   //style
@@ -131,22 +149,41 @@ const Description: SC<TestStackParams, 'TestDetail'> = ({
       backgroundColor: '#DBDBDB',
       marginVertical: 8,
     },
+    buttonWrapper: {
+      margin: 16,
+    },
   })
   return (
     <>
-      <Header />
-      <ScrollView>
-        <View {...style.center}>
-          <ImageSmallSlider images={images} />
-          <View {...style.textBox}>
-            <Text {...style.title}>{testLang?.name}</Text>
-            <View {...style.line}></View>
-            <Text {...style.describe}>{testLang?.description}</Text>
-            <Text {...style.title}>{isEng ? 'Contest Date' : '응시일'}</Text>
-            <Text {...style.describe}>{resultDate}</Text>
-          </View>
+      {/* <Header />
+      <ScrollView> */}
+      <View {...style.center}>
+        <ImageSmallSlider images={images} />
+        <View {...style.textBox}>
+          <Text {...style.title}>{testLang?.name}</Text>
+          <View {...style.line}></View>
+          <Text {...style.describe}>{testLang?.description}</Text>
+          <Text {...style.title}>{isEng ? 'Contest Date' : '응시일'}</Text>
+          <Text {...style.describe}>{`${startContest} ~ ${endContest}`}</Text>
+          <Text {...style.title}>{isEng ? 'Announcement' : '발표일'}</Text>
+          <Text {...style.describe}>{resultDate}</Text>
+          <Text {...style.title}>
+            {isEng ? 'Areas of Evaluation' : '평가 영역'}
+          </Text>
+          <Text {...style.describe}>{testLang.areasOfEvaluation}</Text>
         </View>
-      </ScrollView>
+        <View {...style.buttonWrapper}>
+          <Button
+            color={'#fff'}
+            backgroundColor={'#4AC1E8'}
+            width={chartWidth - 32}
+            onPress={onPressPass}
+          >
+            {globalText.apply[lang]}
+          </Button>
+        </View>
+      </View>
+      {/* </ScrollView> */}
     </>
   )
 }

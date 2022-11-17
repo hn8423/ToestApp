@@ -86,10 +86,10 @@ const Test = ({navigation}: NavigationProps) => {
   useEffect(() => {
     if (user) {
     } else {
-      toastRef.current?.show(globalText.requireLogin[lang])
-      setTimeout(() => {
-        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      }, 3000)
+      // toastRef.current?.show(globalText.requireLogin[lang])
+      // setTimeout(() => {
+      navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      // }, 3000)
     }
   }, [lang, navigation, user])
   useEffect(() => {

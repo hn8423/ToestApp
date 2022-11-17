@@ -21,6 +21,7 @@ import {AuthState} from '../../atoms/auth'
 import {DrawerActions} from '@react-navigation/native'
 import {pay} from '../../api/apply'
 import useGetTicket from '../../hooks/useGetTicket'
+import Description from '../../component/Description'
 const chartWidth = Dimensions.get('window').width
 type paramsType = {
   testName: string
@@ -175,6 +176,7 @@ Go to the login page.`,
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
   const {mutate: getTicketMutate} = useGetTicket()
+  const [isApply, setIsApply] = useState(false)
   // const {}
 
   const mutationPay = useMutation(pay, {
@@ -229,6 +231,8 @@ Go to the login page.`,
           description: testInfo[0]?.descriptionEn,
           name: testInfo[0]?.name,
           levels: testInfo[0]?.levels,
+          startContestDate: testInfo[0]?.startContestDate,
+          endContestDate: testInfo[0]?.endContestDate,
         }
       }
       case 'ko': {
@@ -238,6 +242,8 @@ Go to the login page.`,
           description: testInfo[0]?.descriptionKo,
           name: testInfo[0]?.name,
           levels: testInfo[0]?.levels,
+          startContestDate: testInfo[0]?.startContestDate,
+          endContestDate: testInfo[0]?.endContestDate,
         }
       }
     }
@@ -464,74 +470,84 @@ Go to the login page.`,
 
   return (
     <ScrollView>
-      <View {...style.center}>
-        <View {...style.block}>
-          <View>
-            {completed && (
-              <Text {...style.toggleLevel}>{globalText.completed[lang]}</Text>
-            )}
-            <Image {...style.mainImg} source={img} />
-            <Text {...style.nameText}>{testLang.name}</Text>
-            <View {...style.line}></View>
-            {!!selectLevel && (
-              <View {...style.volume}>
-                <Text {...style.volumeLevel}>{selectedLevel}</Text>
-                <Text {...style.volumePrice}>free</Text>
-              </View>
-            )}
+      {!isApply && (
+        <Description
+          testLang={testLang}
+          testName={testName}
+          times={times}
+          setIsApply={setIsApply}
+        />
+      )}
+      {isApply && (
+        <View {...style.center}>
+          <View {...style.block}>
+            <View>
+              {completed && (
+                <Text {...style.toggleLevel}>{globalText.completed[lang]}</Text>
+              )}
+              <Image {...style.mainImg} source={img} />
+              <Text {...style.nameText}>{testLang.name}</Text>
+              <View {...style.line}></View>
+              {!!selectLevel && (
+                <View {...style.volume}>
+                  <Text {...style.volumeLevel}>{selectedLevel}</Text>
+                  {/* <Text {...style.volumePrice}>free</Text> */}
+                </View>
+              )}
+            </View>
           </View>
-        </View>
-        {!completed && (
-          <>
-            <View {...style.block}>
-              <View>
-                <Text {...style.toggleLevel}>Level</Text>
-                <View {...style.inputWrapper}>{levelList}</View>
+          {!completed && (
+            <>
+              <View {...style.block}>
+                <View>
+                  <Text {...style.toggleLevel}>Level</Text>
+                  <View {...style.inputWrapper}>{levelList}</View>
+                </View>
               </View>
-            </View>
-            <View {...style.checkWrapper}>
-              <TouchableOpacity
-                {...style.checkImg}
-                onPress={onPressToggleCheck}
-              >
-                {checked ? (
-                  <Image
-                    source={require('../../assets/images/apply/check.png')}
-                  />
-                ) : (
-                  <Image
-                    source={require('../../assets/images/apply/uncheck.png')}
-                  />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.dispatch(DrawerActions.jumpTo('TermsOfUse'))
-                }
-              >
-                <Text>{globalText.terms[lang]}</Text>
-              </TouchableOpacity>
-              <Text>{' ∙ '}</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.dispatch(DrawerActions.jumpTo('PrivacyPolicy'))
-                }
-              >
-                <Text>{globalText.privacy[lang]}</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-        <Button
-          color={'#fff'}
-          backgroundColor={'#4AC1E8'}
-          width={chartWidth - 32}
-          onPress={completed ? onPressGoMyTicket : onPressPayment}
-        >
-          {completed ? 'GO MYTICKET' : 'NEXT'}
-        </Button>
-        <Toast {...style.toest} ref={toastRef} />
-      </View>
+              <View {...style.checkWrapper}>
+                <TouchableOpacity
+                  {...style.checkImg}
+                  onPress={onPressToggleCheck}
+                >
+                  {checked ? (
+                    <Image
+                      source={require('../../assets/images/apply/check.png')}
+                    />
+                  ) : (
+                    <Image
+                      source={require('../../assets/images/apply/uncheck.png')}
+                    />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.jumpTo('TermsOfUse'))
+                  }
+                >
+                  <Text>{globalText.terms[lang]}</Text>
+                </TouchableOpacity>
+                <Text>{' ∙ '}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.jumpTo('PrivacyPolicy'))
+                  }
+                >
+                  <Text>{globalText.privacy[lang]}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+          <Button
+            color={'#fff'}
+            backgroundColor={'#4AC1E8'}
+            width={chartWidth - 32}
+            onPress={completed ? onPressGoMyTicket : onPressPayment}
+          >
+            {completed ? 'GO MYTICKET' : 'NEXT'}
+          </Button>
+          <Toast {...style.toest} ref={toastRef} />
+        </View>
+      )}
     </ScrollView>
   )
 }

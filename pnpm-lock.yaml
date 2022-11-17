@@ -21,6 +21,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.37.0
   '@typescript-eslint/parser': ^5.37.0
   babel-jest: ^26.6.3
+  dayjs: ^1.11.6
   eslint: ^7.32.0
   evento-react: ^1.0.0
   jest: ^26.6.3
@@ -49,6 +50,7 @@ dependencies:
   '@react-navigation/native': 6.0.13_li67rxuecrv4t7nknbczgycq3a
   '@react-navigation/stack': 6.3.2_z2hjc6p55e6rny5qgtajmg2dpm
   '@tanstack/react-query': 4.14.1_li67rxuecrv4t7nknbczgycq3a
+  dayjs: 1.11.6
   evento-react: 1.0.0_react@18.1.0
   lodash: 4.17.21
   react: 18.1.0
