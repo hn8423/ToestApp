@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {View, ScrollView} from 'react-native'
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native'
 import {TestStackParams, SC} from '../../type'
 import useGetStyle from '../../hooks/use-style'
 import Header from '../../component/Header'
@@ -7,10 +14,16 @@ import useTestInfo from '../../hooks/useTestInfo'
 import {TestInfoState} from '../../atoms/testInfo'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
+import Sound from 'react-native-sound'
+import Button from '../../component/Button'
+const chartWidth = Dimensions.get('window').width
+
 type paramsType = {
   testName: string
   times: number
 }
+
+const music = new Sound(require('../../assets/sounds/sound.mp3'), error => {})
 
 const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
   const [globalText] = useState({
@@ -41,7 +54,7 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
       autoSubmission: '제한 시간이 지나면 답안은 저장 후 자동 제출됩니다.',
       errorAndMistakes: '답안 작성 시 오류 및 실수는 응시자의 책임입니다.',
       reconnect:
-        '시험 중 네트워크 끊김이나 기기 오류 발생으로 시험 화면이 종료된 경우, \n 시험 창에 재접속하여 시험을 이어서 진행해주세요.',
+        '시험 중 네트워크 끊김이나 기기 오류 발생으로 시험 화면이 종료된 경우, 시험 창에 재접속하여 시험을 이어서 진행해주세요.',
       within30minutes:
         '30분 이내에 시험에 재접속 시 시험 시간은 그대로 유지됩니다.',
       noReconnectingAutomaticallySubmitted:
@@ -122,52 +135,12 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
   const lang = useRecoilValue(langState) as 'ko' | 'en'
   const [isTestFinish, setIsTestFinish] = useState(false)
   const [langForTest, setLangForTest] = useState('')
-  const [checked, setCheck] = useState(false)
-  // const isFinished = useMemo(() => {
-  //   return !!simpleData && simpleData.done
-  // }, [simpleData])
-  // const { togglePlayOrStop, documentObject, isPlaying } = useSoundPlayWithState('/sounds/soundCheck.mp3')
-  // method
-  // method
-  // method
-
-  function toggleCheck() {
-    setCheck(!checked)
-  }
-
-  // function onButtonClick() {
-  //   if (buttonDisabled) {
-  //     return
-  //   }
-  //   if (!checked) {
-  //     alert(textLan.checkAlert)
-  //     return
-  //   }
-  //   let { testName, level, times } = router.query
-
-  //   localStorage.removeItem('gpst-test-data')
-  //   openPopupPage(`/test/play/${testName}/${times}/${level}/q1?lang=${langForTest}`)
-  // }
-  // function onResearchClick() {
-  //   if (lang === 'ko') {
-  //     window.open('https://forms.gle/x3Cwm6Ss3hVM7GST8', '')
-  //   } else {
-  //     window.open('https://forms.gle/mNEdUZZdwBEzBPwM9', '')
-  //   }
-  // }
-  // function onDetailPage() {
-  //   router.reload()
-  // }
-
-  // memo
-  // memo
-  // memo
-
   const params = route.params as paramsType
 
   const [testName, setTestName] = useState('')
   const [times, setTimes] = useState(0)
   const [level, setLevel] = useState('')
+  const [isSound, setIsSound] = useState(false)
   const {mutate, isLoading} = useTestInfo()
   const testInfo = useRecoilValue(TestInfoState)
 
@@ -179,41 +152,277 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
     }
   }, [mutate, params, testName, times])
   // console.log(testInfo)
+
+  useEffect(() => {
+    if (isSound) {
+      music.play()
+    } else {
+      music.pause()
+    }
+  }, [isSound])
+
+  //onPress
+  //onPress
+  //onPress
+  const onPressSound = () => {
+    setIsSound(s => !s)
+  }
   //style
   //style
   //style
   const style = useGetStyle({
     center: {},
-    textBox: {
+    whiteBox: {
       margin: 16,
       padding: 24,
       backgroundColor: '#fff',
       borderRadius: 8,
     },
-    title: {
+
+    pleaseCheck: {
       fontStyle: 'normal',
       fontWeight: '500',
       fontSize: 16,
       lineHeight: 24,
-      letterSpacing: 0.15,
+      letterSpacing: 0.04,
+      textTransform: 'capitalize',
+      color: '#00A7E4',
+    },
+    testRequirements: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 16,
+      lineHeight: 24,
+      letterSpacing: 0.04,
       textTransform: 'capitalize',
       color: '#191919',
+      paddingLeft: 24,
     },
-    describe: {
+    vWrapper: {
+      flexDirection: 'row',
+    },
+    grayWrapper: {
+      flexDirection: 'row',
+      width: chartWidth - 120,
+      marginBottom: 8,
+    },
+    rowWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+
+    title: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      color: '#4AC1E8',
+      marginBottom: 24,
+    },
+    bullet: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 14,
+      lineHeight: 20,
+      color: '#393939',
+      marginBottom: 8,
+    },
+    circleTitle: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 16,
+      lineHeight: 24,
+      letterSpacing: -0.04,
+      color: '#393939',
+      marginBottom: 4,
+    },
+    circleSub: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 14,
+      lineHeight: 20,
+      letterSpacing: -0.04,
+      color: '#767676',
+    },
+    circleImg: {
+      backgroundColor: '#e5e5e5',
+      borderRadius: 50,
+    },
+    rowTitleWrapper: {
+      marginVertical: 8,
+      marginLeft: 20,
+    },
+    wave: {
+      marginLeft: 12,
+    },
+    grayBox: {
+      width: '100%',
+
+      backgroundColor: '#e5e5e5',
+      borderRadius: 8,
+      paddingVertical: 16,
+    },
+    testTitle: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      color: '#191919',
+      marginBottom: 8,
+    },
+    testSub: {
       fontStyle: 'normal',
       fontWeight: '400',
       fontSize: 14,
       lineHeight: 20,
       letterSpacing: 0.25,
-      color: '#393939',
+      color: '#767676',
       marginBottom: 8,
+    },
+    buttonWrapper: {
+      paddingVertical: 24,
     },
   })
   return (
     <>
       <Header />
       <ScrollView>
-        <View {...style.center}></View>
+        <View {...style.center}>
+          <View {...style.whiteBox}>
+            <View {...style.vWrapper}>
+              <Image source={require('../../assets/images/test/v.png')} />
+              <Text {...style.pleaseCheck}>{globalText[lang].pleaseCheck}</Text>
+            </View>
+            <Text {...style.testRequirements}>
+              {globalText[lang].testRequirements}
+            </Text>
+          </View>
+          <View {...style.whiteBox}>
+            <Text {...style.title}> {globalText[lang].testEnvironment}</Text>
+            <Text {...style.bullet}>
+              {`\u2022 ${globalText[lang].browserRecommend}`}
+            </Text>
+            <View {...style.rowWrapper}>
+              <Image
+                {...style.circleImg}
+                source={require('../../assets/images/test/pc.png')}
+              />
+              <View {...style.rowTitleWrapper}>
+                <Text {...style.circleTitle}>PC</Text>
+                <Text {...style.circleSub}>{globalText[lang].windows}</Text>
+                <Text {...style.circleSub}>{globalText[lang].mac}</Text>
+              </View>
+            </View>
+            <View {...style.rowWrapper}>
+              <Image
+                {...style.circleImg}
+                source={require('../../assets/images/test/mobile.png')}
+              />
+              <View {...style.rowTitleWrapper}>
+                <Text {...style.circleTitle}>PC</Text>
+                <Text {...style.circleSub}>{globalText[lang].android}</Text>
+                <Text {...style.circleSub}>{globalText[lang].ios}</Text>
+              </View>
+            </View>
+            <View {...style.rowWrapper}>
+              <Image
+                {...style.circleImg}
+                source={require('../../assets/images/test/browser.png')}
+              />
+              <View {...style.rowTitleWrapper}>
+                <Text {...style.circleTitle}>PC</Text>
+                <Text {...style.circleSub}>Chrome I Edge I Whale</Text>
+                <Text {...style.circleSub}>Safari I Samsung Internet</Text>
+              </View>
+            </View>
+            <Text {...style.bullet}>{`\u2022 ${globalText[lang].power}`}</Text>
+            <Text {...style.bullet}>
+              {`\u2022 ${globalText[lang].network}`}
+            </Text>
+            <Text {...style.bullet}>{`\u2022 ${globalText[lang].sound}`}</Text>
+            <View {...style.rowWrapper}>
+              {!isSound ? (
+                <>
+                  <TouchableOpacity onPress={onPressSound}>
+                    <Image
+                      source={require('../../assets/images/test/mute.png')}
+                    />
+                  </TouchableOpacity>
+                  <Image
+                    {...style.wave}
+                    source={require('../../assets/images/test/unwave.png')}
+                  />
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity onPress={onPressSound}>
+                    <Image
+                      source={require('../../assets/images/test/play.png')}
+                    />
+                  </TouchableOpacity>
+                  <Image
+                    {...style.wave}
+                    source={require('../../assets/images/test/actsound.gif')}
+                  />
+                </>
+              )}
+            </View>
+            <Text {...style.bullet}>
+              {`\u2022 ${globalText[lang].emptyRoom}`}
+            </Text>
+            <Text {...style.bullet}>
+              {`\u2022 ${globalText[lang].shutDownOtherApp}`}
+            </Text>
+            <Text {...style.bullet}>
+              {`\u2022 ${globalText[lang].ifDifficultySetting}`}
+            </Text>
+          </View>
+          <View {...style.whiteBox}>
+            <Text {...style.title}>{globalText[lang].precautions}</Text>
+            <Text
+              {...style.bullet}
+            >{`\u2022 ${globalText[lang].examChance}`}</Text>
+            <Text
+              {...style.bullet}
+            >{`\u2022 ${globalText[lang].saveRealTime}`}</Text>
+            <Text
+              {...style.bullet}
+            >{`\u2022 ${globalText[lang].autoSubmission}`}</Text>
+            <Text
+              {...style.bullet}
+            >{`\u2022 ${globalText[lang].errorAndMistakes}`}</Text>
+            <Text
+              {...style.bullet}
+            >{`\u2022 ${globalText[lang].reconnect}`}</Text>
+            <View {...style.grayBox}>
+              <View {...style.grayWrapper}>
+                <Image source={require('../../assets/images/test/v.png')} />
+                <Text {...style.pleaseCheck}>
+                  {globalText[lang].within30minutes}
+                </Text>
+              </View>
+              <View {...style.grayWrapper}>
+                <Image source={require('../../assets/images/test/v.png')} />
+                <Text {...style.pleaseCheck}>
+                  {globalText[lang].noReconnectingAutomaticallySubmitted}
+                </Text>
+              </View>
+            </View>
+            <Text {...style.bullet}>{`\u2022 ${globalText[lang].tools}`}</Text>
+            <Text {...style.bullet}>{`\u2022 ${globalText[lang].keys}`}</Text>
+          </View>
+          <View {...style.whiteBox}>
+            <Text {...style.testTitle}>GPST</Text>
+            <Text {...style.testTitle}>Global Problem Solving Test(GPST)</Text>
+            <View {...style.buttonWrapper}>
+              <Button color={'#fff'} backgroundColor={'#4AC1E8'} width={'100%'}>
+                Go test
+              </Button>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </>
   )
