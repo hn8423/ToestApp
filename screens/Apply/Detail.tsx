@@ -22,6 +22,7 @@ import {DrawerActions} from '@react-navigation/native'
 import {pay} from '../../api/apply'
 import useGetTicket from '../../hooks/useGetTicket'
 import Description from '../../component/Description'
+import useRegisterTestList from '../../hooks/useRegistertestList'
 const chartWidth = Dimensions.get('window').width
 type paramsType = {
   testName: string
@@ -176,6 +177,7 @@ Go to the login page.`,
   const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
   const {mutate: getTicketMutate} = useGetTicket()
+  const {mutate: registedTestListMutate} = useRegisterTestList()
   const [isApply, setIsApply] = useState(false)
   // const {}
 
@@ -187,6 +189,7 @@ Go to the login page.`,
       }
       if (user) {
         getTicketMutate({userId: user[0].id})
+        registedTestListMutate({userId: user[0].id})
         setcompleted(true)
       }
     },
