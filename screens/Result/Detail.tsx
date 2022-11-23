@@ -1,26 +1,35 @@
-import React from 'react'
-import {View, Button, Text, StyleSheet} from 'react-native'
-import {NavigationProps} from '../../type'
+import React, {useEffect} from 'react'
+import {View, Text} from 'react-native'
+import {ResultStackParams, SC} from '../../type'
+import useGetStyle from '../../hooks/use-style'
+import {useRecoilValue} from 'recoil'
+import {ResultDetailInfoState} from '../../atoms/resultDetailInfo'
+import useResultDetailInfo from '../../hooks/useResultDetailInfo'
 
-const Result = ({navigation}: NavigationProps) => {
-  return (
-    <View style={styles.center}>
-      <Text>This is the home screen</Text>
-      <Button
-        title="Go to About Screen"
-        onPress={() => navigation.navigate('About')} // We added an onPress event which would navigate to the About screen
-      />
-    </View>
-  )
+type paramsType = {
+  testName: string
+  times: number
+  level: string
+}
+const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
+  navigation,
+  route,
+}) => {
+  const style = useGetStyle({})
+  const params = route.params as paramsType
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const {mutate: resultDetailInfoListMutate} = useResultDetailInfo()
+  useEffect(() => {
+    if (params) {
+      const body = {
+        testName: params.testName.split(' ')[0],
+        level: params.level,
+        times: params.times,
+      }
+      resultDetailInfoListMutate(body)
+    }
+  }, [params, resultDetailInfoListMutate])
+  return <View></View>
 }
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-})
-
-export default Result
+export default ResultDetail
