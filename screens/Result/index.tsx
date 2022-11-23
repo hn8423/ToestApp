@@ -1,66 +1,46 @@
-import React, {useEffect, useRef, useMemo} from 'react'
+import React, {useEffect, useRef, useMemo, useState} from 'react'
 import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
-import {LangMap2, ToestRef, SC, TestStackParams} from '../../type'
+import {LangMap1, ToestRef, SC, ResultStackParams} from '../../type'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
 import Header from '../../component/Header'
 import Card from '../../component/Card'
 import {DrawerActions} from '@react-navigation/native'
-import {RegisterTestInfoState} from '../../atoms/registertesInfo'
 import {AuthState} from '../../atoms/auth'
-import useRegisterTestList from '../../hooks/useRegistertestList'
 import Toast from '../../component/Toest'
+import useResultInfo from '../../hooks/useResultInfo'
+import {ResultInfoState} from '../../atoms/resultInfo'
 const chartWidth = Dimensions.get('window').width
-const globalText: LangMap2 = {
-  unlock: {
-    en: 'Unlock',
-    ko: '미래 역량과 적성을',
-  },
-  learner: {
-    en: `learner's potential`,
-    ko: '진단해보세요!',
-  },
-  description1: {
-    en: 'Authentic assessment combines',
-    ko: '일상생활에서 온라인으로 진행되는 TOEST의 테스트는',
-  },
-  description2: {
-    en: 'mentoring, and learning to promote',
-    ko: '미래 역량과 적성을 진단하고 분석하는 평가도구일 뿐 아니라, ',
-  },
-  description3: {
-    en: 'higher-ordered thinking, and full',
-    ko: '고차원적인 사고를 촉진시키는 학습 활동입니다. ',
-  },
-  description4: {
-    en: 'participation of learners through daily',
-    ko: '',
-  },
-  description5: {
-    en: 'routines. ',
-    ko: '',
-  },
-  test1: {
-    en: 'YOUR',
-    ko: '시험',
-  },
-  test2: {
-    en: 'TEST',
-    ko: '응시',
-  },
-}
-const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
+
+const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
   //data
   //data
   //data
+  const [globalText] = useState<LangMap1>({
+    ko: {
+      imgTitle1: `TOEST AI 진단 리포트 `,
+      bannerDes: `
+      각 평가별로 AI가 진단한 상세리포트와 누적리포트를 제공합니다.`,
+      test1: `시험`,
+      test2: `결과`,
+    },
+    en: {
+      imgTitle1: `TOEST Portfolio`,
+
+      bannerDes:
+        ' Authentic assessment combines\nmentoring, and learning to promote\nhigher-ordered thinking, and full\nparticipation of learners through daily\nroutines.',
+      test1: `NEW`,
+      test2: `RESULT`,
+    },
+  })
 
   const toastRef = useRef<ToestRef>()
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
 
-  const RegistedTestList = useRecoilValue(RegisterTestInfoState)
-  const {mutate: registedTestListMutate, isLoading} = useRegisterTestList()
+  const testData = useRecoilValue(ResultInfoState)
+  const {mutate: resultInfoListMutate, isLoading} = useResultInfo()
   useEffect(() => {
     if (user) {
     } else {
@@ -69,37 +49,40 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
   }, [lang, navigation, user])
   useEffect(() => {
     if (user) {
-      registedTestListMutate({userId: user[0].id})
+      resultInfoListMutate({userId: user[0].id})
     }
-  }, [registedTestListMutate, user])
-
-  const testListLang = useMemo(() => {
-    if (!RegistedTestList) {
+  }, [resultInfoListMutate, user])
+  const isEng = useMemo(() => lang === 'en', [lang])
+  const testDataLang = useMemo(() => {
+    if (!testData) {
       return
     }
 
-    return RegistedTestList.map(v => {
+    return testData.map(v => {
       return {
         title: `${v.testLevel.test.name} - ${v.testLevel.name}`,
-        description:
-          lang === 'en' ? v.testLevel.descriptionEn : v.testLevel.descriptionKo,
-        thumbnail: v.testLevel.test.thumbnail,
+        description: isEng
+          ? v.testLevel.descriptionEn
+          : v.testLevel.descriptionKo,
         times: v.testLevel.test.times,
         level: v.testLevel.name,
+        thumbnail: v.testLevel.test.thumbnail,
+        link: `/result/${v.testLevel.test.name}/${v.testLevel.test.times}/${v.testLevel.name}`,
       }
     })
-  }, [RegistedTestList, lang])
+  }, [isEng, testData])
 
   // renderMap
   // renderMap
   // renderMap
 
   const cardList = useMemo(() => {
-    if (!testListLang) {
+    if (!testDataLang) {
       return
     }
 
-    return testListLang.map((v, i) => {
+    return testDataLang.map((v, i) => {
+      // console.log(v)
       return (
         <Card
           key={i}
@@ -108,11 +91,11 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
           navigation={navigation}
           times={v.times}
           level={v.level}
-          routeName="TestDetail"
+          routeName="ResultDetail"
         ></Card>
       )
     })
-  }, [navigation, testListLang])
+  }, [navigation, testDataLang])
   //style
   //style
   //style
@@ -182,8 +165,8 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
     },
     sub: {
       fontStyle: 'normal',
-      fontWeight: '400',
-      fontSize: 14,
+      fontWeight: '700',
+      fontSize: 16,
       lineHeight: 20,
       letterSpacing: 0.25,
       color: '#fff',
@@ -204,28 +187,23 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
           <View>
             <View {...style.textWrapper}>
               <View {...style.titleWrapper}>
-                <Text {...style.titleColor}>Unlock</Text>
+                <Text {...style.titleColor}>{globalText[lang].imgTitle1}</Text>
               </View>
-              <View {...style.titleWrapper}>
-                <Text {...style.title}>learner's potential</Text>
-              </View>
+
               <View>
-                <Text {...style.sub}>{globalText.description1[lang]}</Text>
-                <Text {...style.sub}>{globalText.description2[lang]}</Text>
-                <Text {...style.sub}>{globalText.description3[lang]}</Text>
-                <Text {...style.sub}>{globalText.description4[lang]}</Text>
+                <Text {...style.sub}>{globalText[lang].bannerDes}</Text>
               </View>
             </View>
             <View {...style.brithtness}></View>
             <Image
               {...style.mainImg}
-              source={require('../../assets/images/test/main.png')}
+              source={require('../../assets/images/result/main.png')}
             />
           </View>
           <View {...style.bottomWrapper}>
             <View {...style.textArea}>
-              <Text {...style.text1}>{globalText.test1[lang]} </Text>
-              <Text {...style.text2}>{globalText.test2[lang]}</Text>
+              <Text {...style.text1}>{globalText[lang].test1} </Text>
+              <Text {...style.text2}>{globalText[lang].test2}</Text>
             </View>
             <View {...style.cardWrapper}>{cardList}</View>
           </View>
@@ -236,4 +214,4 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
   )
 }
 
-export default Test
+export default Result

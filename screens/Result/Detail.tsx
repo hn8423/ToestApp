@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Button, Text, StyleSheet} from 'react-native'
-import {NavigationProps} from '../type'
+import {NavigationProps} from '../../type'
 
 const Result = ({navigation}: NavigationProps) => {
   return (

@@ -14,7 +14,7 @@ import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
-import {DrawerActions, StackActions, TabActions} from '@react-navigation/native'
+import {StackActions} from '@react-navigation/native'
 import useLogin from '../hooks/useLogin'
 import Button from '../component/Button'
 import Toast from '../component/Toest'
@@ -198,7 +198,6 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
     const fn = () => {
       const body = {email, password}
       login(body)
-      navigation.dispatch(TabActions.jumpTo('Main'))
     }
     setTimeout(fn, 1000)
   }

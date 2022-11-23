@@ -24,12 +24,12 @@ export default function useLogin() {
   })
   const mutation = useMutation(login, {
     onSuccess: data => {
-      if (data.length === 0) {
-        if (Platform.OS === 'ios') {
-          Alert.alert(globalText[lang].title, globalText[lang].message)
-        } else {
-          ToastAndroid.show(globalText[lang].message, ToastAndroid.SHORT)
-        }
+      if (data.length === 0 || data.err) {
+        // if (Platform.OS === 'ios') {
+        //   Alert.alert(globalText[lang].title, globalText[lang].message)
+        // } else {
+        //   ToastAndroid.show(globalText[lang].message, ToastAndroid.SHORT)
+        // }
       } else {
         setAuth(data)
         navigation.dispatch(TabActions.jumpTo('Main'))

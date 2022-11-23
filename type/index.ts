@@ -49,6 +49,7 @@ export type TestStackParams = {
 }
 export type ResultStackParams = {
   ResultStack?: {}
+  ResultDetail?: {}
 }
 export type MyPageStackParams = {
   AccountSetting?: {}

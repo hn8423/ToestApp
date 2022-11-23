@@ -7,6 +7,7 @@ import ApplyDetail from '../screens/Apply/Detail'
 import Test from '../screens/Test'
 import TestDetail from '../screens/Test/Detail'
 import Result from '../screens/Result'
+import ResultDetail from '../screens/Result/Detail'
 import AccountSetting from '../screens/MyPage/AccountSetting'
 import Payment from '../screens/MyPage/Payment'
 import LogIn from '../screens/Login'
@@ -61,6 +62,7 @@ const ResultStackNavigator = () => {
   return (
     <StackResult.Navigator screenOptions={screenOptionStyle}>
       <StackResult.Screen name="ResultStack" component={Result} />
+      <StackResult.Screen name="ResultDetail" component={ResultDetail} />
     </StackResult.Navigator>
   )
 }
