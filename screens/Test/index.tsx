@@ -81,15 +81,11 @@ const Test = ({navigation}: NavigationProps) => {
   const lang = useRecoilValue(langState) as 'en' | 'ko'
 
   const RegistedTestList = useRecoilValue(RegisterTestInfoState)
-
   const {mutate: registedTestListMutate, isLoading} = useRegisterTestList()
   useEffect(() => {
     if (user) {
     } else {
-      // toastRef.current?.show(globalText.requireLogin[lang])
-      // setTimeout(() => {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      // }, 3000)
     }
   }, [lang, navigation, user])
   useEffect(() => {
@@ -111,7 +107,6 @@ const Test = ({navigation}: NavigationProps) => {
         thumbnail: v.testLevel.test.thumbnail,
         times: v.testLevel.test.times,
         level: v.testLevel.name,
-        link: `/mobile/test/detail/${v.testLevel.test.name}/${v.testLevel.test.times}/${v.testLevel.name}`,
       }
     })
   }, [RegistedTestList, lang])
@@ -232,10 +227,8 @@ const Test = ({navigation}: NavigationProps) => {
             <View {...style.textWrapper}>
               <View {...style.titleWrapper}>
                 <Text {...style.titleColor}>Unlock</Text>
-                {/* <Text {...style.title}>iscover,</Text> */}
               </View>
               <View {...style.titleWrapper}>
-                {/* <Text {...style.titleColor}>E</Text> */}
                 <Text {...style.title}>learner's potential</Text>
               </View>
               <View>

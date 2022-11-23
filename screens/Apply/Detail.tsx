@@ -166,7 +166,6 @@ Go to the login page.`,
       },
     }
   }, [])
-  // const {params} = useRoute<DetailScreenRouteProp>()
   const params = route.params as paramsType
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
@@ -179,7 +178,6 @@ Go to the login page.`,
   const {mutate: getTicketMutate} = useGetTicket()
   const {mutate: registedTestListMutate} = useRegisterTestList()
   const [isApply, setIsApply] = useState(false)
-  // const {}
 
   const mutationPay = useMutation(pay, {
     onSuccess: data => {
@@ -494,7 +492,6 @@ Go to the login page.`,
               {!!selectLevel && (
                 <View {...style.volume}>
                   <Text {...style.volumeLevel}>{selectedLevel}</Text>
-                  {/* <Text {...style.volumePrice}>free</Text> */}
                 </View>
               )}
             </View>

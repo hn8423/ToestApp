@@ -298,9 +298,8 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
       }, 3000)
     }
   }, [language, navigation, user])
-
   useEffect(() => {
-    if (!payInfo && user) {
+    if (user) {
       getTicketMutate({userId: user[0].id})
     }
   }, [getTicketMutate, payInfo, user])

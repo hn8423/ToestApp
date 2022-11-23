@@ -91,6 +91,7 @@ type menu = {
   link: string
   children?: children[]
 }
+
 const DrawerNavigator = () => {
   const navigation = useNavigation()
   const lang = useRecoilValue(langState)
@@ -105,7 +106,6 @@ const DrawerNavigator = () => {
       icon: require(`../assets/images/drawer/mypage.png`),
       link: '',
       children: [
-        // { name: globalText.account[lang], link: '/my_page?to=accountsetting', component: ['MyPage',{defaultScreen: 'MyPage'}]},
         {
           name: globalText.account[lang],
           link: '/my_page?to=accountsetting',
@@ -144,19 +144,6 @@ const DrawerNavigator = () => {
     {
       name: 'Need a help?',
       icon: require(`../assets/images/drawer/email.png`),
-      link: '',
-    },
-  ])
-
-  const [loginTree, setLoginTree] = useState<menu[]>([
-    {
-      name: globalText.mypage[lang],
-      icon: require(`../assets/images/drawer/mypage.png`),
-      link: '',
-    },
-    {
-      name: globalText.mypage[lang],
-      icon: require(`../assets/images/drawer/mypage.png`),
       link: '',
     },
   ])

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useMemo, useEffect} from 'react'
+import React, {useState, useRef, useMemo, useEffect, useContext} from 'react'
 import {
   View,
   Text,
@@ -14,12 +14,15 @@ import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
-import {StackActions, TabActions} from '@react-navigation/native'
+import {DrawerActions, StackActions, TabActions} from '@react-navigation/native'
 import useLogin from '../hooks/useLogin'
 import Button from '../component/Button'
 import Toast from '../component/Toest'
 import {useRecoilValue} from 'recoil'
 import {AuthState} from '../atoms/auth'
+import {WebView} from 'react-native-webview'
+import baseURL from '../api/baseURL'
+import CookieManager from '@react-native-cookies/cookies'
 const chartHeight = Dimensions.get('window').height
 type DrawerScreenProp = DrawerScreenProps<
   DrawerParamList,
@@ -27,11 +30,12 @@ type DrawerScreenProp = DrawerScreenProps<
 >
 const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
-
+  const webRef = useRef<WebView>(null)
   const toastRef = useRef<ToestRef>()
   const lang = 'en'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [cookies, setCookies] = useState({})
   const [passwordType, setPasswordType] = useState({
     type: 'password',
     visible: false,
@@ -142,10 +146,6 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
     return reg.test(email)
   }, [email])
 
-  const isEmailFull = useMemo(() => {
-    return Boolean(email)
-  }, [email])
-
   //sever connect
   //sever connect
   //sever connect
@@ -155,7 +155,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   //method
   //method
 
-  function clickNext() {
+  const onClickSignin = () => {
     if (!isFull) {
       toastRef.current?.show(globalText.isFull[lang])
       return
@@ -173,9 +173,34 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
       toastRef.current?.show(globalText.loginLoading[lang])
       return
     }
-    const body = {email, password}
-    login(body)
-    navigation.dispatch(TabActions.jumpTo('Main'))
+
+    setTimeout(
+      webRef.current!.injectJavaScript,
+      100,
+      `
+      __application.signinFn.setPassword("e-test", "${password}")
+      __application.signinFn.setEmail("e-test", "${email}")
+     `,
+    )
+
+    setTimeout(
+      webRef.current!.injectJavaScript,
+      500,
+      `document.querySelector('#__next div[class*="signin_main"] div[class*="signin_main-input-button"]').click()
+      `,
+    )
+    setTimeout(() => {
+      // Get cookies for a url
+      CookieManager.get(`${baseURL}/mobile/signin`).then(cookies => {
+        console.log('CookieManager.get =>', cookies)
+      })
+    }, 500)
+    const fn = () => {
+      const body = {email, password}
+      login(body)
+      navigation.dispatch(TabActions.jumpTo('Main'))
+    }
+    setTimeout(fn, 1000)
   }
 
   //password type 변경하는 함수
@@ -251,7 +276,18 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
         <ActivityIndicator size="small" color="white" />
       ) : (
         <>
+          <WebView
+            ref={webRef}
+            source={{
+              uri: `${baseURL}/mobile/signin`,
+            }}
+            style={{
+              display: 'none',
+            }}
+          />
+
           <Header />
+
           <ScrollView>
             <View {...style.container}>
               <View {...style.social}>
@@ -288,7 +324,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                     placeholder={globalText.passwordInput[lang]}
                     onChangeText={text => setPassword(text)}
                     secureTextEntry={!passwordType.visible}
-                    onSubmitEditing={clickNext}
+                    onSubmitEditing={onClickSignin}
                     returnKeyType="done"
                   />
                   <TouchableOpacity onPress={handlePasswordType}>
@@ -318,7 +354,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                   <Button
                     backgroundColor={'#4AC1E8'}
                     width={328}
-                    onPress={clickNext}
+                    onPress={onClickSignin}
                   >
                     {globalText.signInButton[lang]}
                   </Button>

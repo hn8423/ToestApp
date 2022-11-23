@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef, useMemo} from 'react'
 import {
   View,
   ScrollView,
@@ -16,11 +16,16 @@ import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import Sound from 'react-native-sound'
 import Button from '../../component/Button'
+import baseURL from '../../api/baseURL'
 const chartWidth = Dimensions.get('window').width
-
+import {WebView} from 'react-native-webview'
+import {AuthState} from '../../atoms/auth'
+import useTestSimpleData from '../../hooks/useTestSimpleData'
+import {TestSimpleDataState} from '../../atoms/testSimpleData'
 type paramsType = {
   testName: string
   times: number
+  level: string
 }
 
 const music = new Sound(require('../../assets/sounds/sound.mp3'), error => {})
@@ -133,25 +138,27 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
     },
   })
   const lang = useRecoilValue(langState) as 'ko' | 'en'
-  const [isTestFinish, setIsTestFinish] = useState(false)
-  const [langForTest, setLangForTest] = useState('')
+  const user = useRecoilValue(AuthState)
   const params = route.params as paramsType
+  const webRef = useRef<WebView>(null)
 
   const [testName, setTestName] = useState('')
   const [times, setTimes] = useState(0)
   const [level, setLevel] = useState('')
   const [isSound, setIsSound] = useState(false)
   const {mutate, isLoading} = useTestInfo()
-  const testInfo = useRecoilValue(TestInfoState)
+  const [isTest, setIsTest] = useState(false)
+  const [userId, setUserId] = useState('')
+  const [userCountryCode, setUserCountryCode] = useState('')
 
   useEffect(() => {
     if (params !== undefined) {
       setTestName(params.testName.split(' ')[0])
       setTimes(params.times)
+      setLevel(params.level)
       mutate({testName, times})
     }
   }, [mutate, params, testName, times])
-  // console.log(testInfo)
 
   useEffect(() => {
     if (isSound) {
@@ -161,11 +168,49 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
     }
   }, [isSound])
 
+  useEffect(() => {
+    if (user) {
+      setUserId(user[0].id)
+      setUserCountryCode(user[0].countryCode)
+    }
+  }, [user])
+  const {mutate: getTestSimpleData, isLoading: TestSimpleDataLoading} =
+    useTestSimpleData()
+  const simpleData = useRecoilValue(TestSimpleDataState)
+  useEffect(() => {
+    if (user && params) {
+      const body = {
+        userId: user[0].id,
+        level: params.level,
+        testName: params.testName,
+        times: params.times,
+      }
+      getTestSimpleData(body)
+    }
+  }, [getTestSimpleData, level, params, testName, times, user, userId])
+
+  //memo
+  //memo
+  //memo
+  const isFinished = useMemo(() => {
+    if (!simpleData) {
+      return !simpleData
+    }
+    return !!simpleData && simpleData.done
+  }, [simpleData])
+
   //onPress
   //onPress
   //onPress
   const onPressSound = () => {
     setIsSound(s => !s)
+  }
+  const onPressGoTest = () => {
+    if (!user) {
+      return
+    }
+
+    setIsTest(v => !v)
   }
   //style
   //style
@@ -287,143 +332,189 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
   })
   return (
     <>
-      <Header />
-      <ScrollView>
-        <View {...style.center}>
-          <View {...style.whiteBox}>
-            <View {...style.vWrapper}>
-              <Image source={require('../../assets/images/test/v.png')} />
-              <Text {...style.pleaseCheck}>{globalText[lang].pleaseCheck}</Text>
-            </View>
-            <Text {...style.testRequirements}>
-              {globalText[lang].testRequirements}
-            </Text>
-          </View>
-          <View {...style.whiteBox}>
-            <Text {...style.title}> {globalText[lang].testEnvironment}</Text>
-            <Text {...style.bullet}>
-              {`\u2022 ${globalText[lang].browserRecommend}`}
-            </Text>
-            <View {...style.rowWrapper}>
-              <Image
-                {...style.circleImg}
-                source={require('../../assets/images/test/pc.png')}
-              />
-              <View {...style.rowTitleWrapper}>
-                <Text {...style.circleTitle}>PC</Text>
-                <Text {...style.circleSub}>{globalText[lang].windows}</Text>
-                <Text {...style.circleSub}>{globalText[lang].mac}</Text>
-              </View>
-            </View>
-            <View {...style.rowWrapper}>
-              <Image
-                {...style.circleImg}
-                source={require('../../assets/images/test/mobile.png')}
-              />
-              <View {...style.rowTitleWrapper}>
-                <Text {...style.circleTitle}>PC</Text>
-                <Text {...style.circleSub}>{globalText[lang].android}</Text>
-                <Text {...style.circleSub}>{globalText[lang].ios}</Text>
-              </View>
-            </View>
-            <View {...style.rowWrapper}>
-              <Image
-                {...style.circleImg}
-                source={require('../../assets/images/test/browser.png')}
-              />
-              <View {...style.rowTitleWrapper}>
-                <Text {...style.circleTitle}>PC</Text>
-                <Text {...style.circleSub}>Chrome I Edge I Whale</Text>
-                <Text {...style.circleSub}>Safari I Samsung Internet</Text>
-              </View>
-            </View>
-            <Text {...style.bullet}>{`\u2022 ${globalText[lang].power}`}</Text>
-            <Text {...style.bullet}>
-              {`\u2022 ${globalText[lang].network}`}
-            </Text>
-            <Text {...style.bullet}>{`\u2022 ${globalText[lang].sound}`}</Text>
-            <View {...style.rowWrapper}>
-              {!isSound ? (
-                <>
-                  <TouchableOpacity onPress={onPressSound}>
-                    <Image
-                      source={require('../../assets/images/test/mute.png')}
-                    />
-                  </TouchableOpacity>
-                  <Image
-                    {...style.wave}
-                    source={require('../../assets/images/test/unwave.png')}
-                  />
-                </>
-              ) : (
-                <>
-                  <TouchableOpacity onPress={onPressSound}>
-                    <Image
-                      source={require('../../assets/images/test/play.png')}
-                    />
-                  </TouchableOpacity>
-                  <Image
-                    {...style.wave}
-                    source={require('../../assets/images/test/actsound.gif')}
-                  />
-                </>
-              )}
-            </View>
-            <Text {...style.bullet}>
-              {`\u2022 ${globalText[lang].emptyRoom}`}
-            </Text>
-            <Text {...style.bullet}>
-              {`\u2022 ${globalText[lang].shutDownOtherApp}`}
-            </Text>
-            <Text {...style.bullet}>
-              {`\u2022 ${globalText[lang].ifDifficultySetting}`}
-            </Text>
-          </View>
-          <View {...style.whiteBox}>
-            <Text {...style.title}>{globalText[lang].precautions}</Text>
-            <Text
-              {...style.bullet}
-            >{`\u2022 ${globalText[lang].examChance}`}</Text>
-            <Text
-              {...style.bullet}
-            >{`\u2022 ${globalText[lang].saveRealTime}`}</Text>
-            <Text
-              {...style.bullet}
-            >{`\u2022 ${globalText[lang].autoSubmission}`}</Text>
-            <Text
-              {...style.bullet}
-            >{`\u2022 ${globalText[lang].errorAndMistakes}`}</Text>
-            <Text
-              {...style.bullet}
-            >{`\u2022 ${globalText[lang].reconnect}`}</Text>
-            <View {...style.grayBox}>
-              <View {...style.grayWrapper}>
-                <Image source={require('../../assets/images/test/v.png')} />
-                <Text {...style.pleaseCheck}>
-                  {globalText[lang].within30minutes}
+      {isTest && (
+        <WebView
+          ref={webRef}
+          source={{
+            uri: `${baseURL}/test/play/${testName}/${times}/${level}/q1?lang=${lang}`,
+          }}
+          onNavigationStateChange={navState => {
+            if (navState.url === `${baseURL}/test/play/done`) {
+              if (user) {
+                const body = {
+                  userId: user[0].id,
+                  level,
+                  testName,
+                  times,
+                }
+                getTestSimpleData(body)
+              }
+              setIsTest(false)
+            }
+          }}
+        />
+      )}
+      {!isTest && (
+        <>
+          <Header />
+          <ScrollView>
+            <View {...style.center}>
+              <View {...style.whiteBox}>
+                <View {...style.vWrapper}>
+                  <Image source={require('../../assets/images/test/v.png')} />
+                  <Text {...style.pleaseCheck}>
+                    {globalText[lang].pleaseCheck}
+                  </Text>
+                </View>
+                <Text {...style.testRequirements}>
+                  {globalText[lang].testRequirements}
                 </Text>
               </View>
-              <View {...style.grayWrapper}>
-                <Image source={require('../../assets/images/test/v.png')} />
-                <Text {...style.pleaseCheck}>
-                  {globalText[lang].noReconnectingAutomaticallySubmitted}
+              <View {...style.whiteBox}>
+                <Text {...style.title}>
+                  {' '}
+                  {globalText[lang].testEnvironment}
+                </Text>
+                <Text {...style.bullet}>
+                  {`\u2022 ${globalText[lang].browserRecommend}`}
+                </Text>
+                <View {...style.rowWrapper}>
+                  <Image
+                    {...style.circleImg}
+                    source={require('../../assets/images/test/pc.png')}
+                  />
+                  <View {...style.rowTitleWrapper}>
+                    <Text {...style.circleTitle}>PC</Text>
+                    <Text {...style.circleSub}>{globalText[lang].windows}</Text>
+                    <Text {...style.circleSub}>{globalText[lang].mac}</Text>
+                  </View>
+                </View>
+                <View {...style.rowWrapper}>
+                  <Image
+                    {...style.circleImg}
+                    source={require('../../assets/images/test/mobile.png')}
+                  />
+                  <View {...style.rowTitleWrapper}>
+                    <Text {...style.circleTitle}>PC</Text>
+                    <Text {...style.circleSub}>{globalText[lang].android}</Text>
+                    <Text {...style.circleSub}>{globalText[lang].ios}</Text>
+                  </View>
+                </View>
+                <View {...style.rowWrapper}>
+                  <Image
+                    {...style.circleImg}
+                    source={require('../../assets/images/test/browser.png')}
+                  />
+                  <View {...style.rowTitleWrapper}>
+                    <Text {...style.circleTitle}>PC</Text>
+                    <Text {...style.circleSub}>Chrome I Edge I Whale</Text>
+                    <Text {...style.circleSub}>Safari I Samsung Internet</Text>
+                  </View>
+                </View>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].power}`}</Text>
+                <Text {...style.bullet}>
+                  {`\u2022 ${globalText[lang].network}`}
+                </Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].sound}`}</Text>
+                <View {...style.rowWrapper}>
+                  {!isSound ? (
+                    <>
+                      <TouchableOpacity onPress={onPressSound}>
+                        <Image
+                          source={require('../../assets/images/test/mute.png')}
+                        />
+                      </TouchableOpacity>
+                      <Image
+                        {...style.wave}
+                        source={require('../../assets/images/test/unwave.png')}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity onPress={onPressSound}>
+                        <Image
+                          source={require('../../assets/images/test/play.png')}
+                        />
+                      </TouchableOpacity>
+                      <Image
+                        {...style.wave}
+                        source={require('../../assets/images/test/actsound.gif')}
+                      />
+                    </>
+                  )}
+                </View>
+                <Text {...style.bullet}>
+                  {`\u2022 ${globalText[lang].emptyRoom}`}
+                </Text>
+                <Text {...style.bullet}>
+                  {`\u2022 ${globalText[lang].shutDownOtherApp}`}
+                </Text>
+                <Text {...style.bullet}>
+                  {`\u2022 ${globalText[lang].ifDifficultySetting}`}
                 </Text>
               </View>
+              <View {...style.whiteBox}>
+                <Text {...style.title}>{globalText[lang].precautions}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].examChance}`}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].saveRealTime}`}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].autoSubmission}`}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].errorAndMistakes}`}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].reconnect}`}</Text>
+                <View {...style.grayBox}>
+                  <View {...style.grayWrapper}>
+                    <Image source={require('../../assets/images/test/v.png')} />
+                    <Text {...style.pleaseCheck}>
+                      {globalText[lang].within30minutes}
+                    </Text>
+                  </View>
+                  <View {...style.grayWrapper}>
+                    <Image source={require('../../assets/images/test/v.png')} />
+                    <Text {...style.pleaseCheck}>
+                      {globalText[lang].noReconnectingAutomaticallySubmitted}
+                    </Text>
+                  </View>
+                </View>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].tools}`}</Text>
+                <Text
+                  {...style.bullet}
+                >{`\u2022 ${globalText[lang].keys}`}</Text>
+              </View>
+              <View {...style.whiteBox}>
+                <Text {...style.testTitle}>GPST</Text>
+                <Text {...style.testTitle}>
+                  Global Problem Solving Test(GPST)
+                </Text>
+                <View {...style.buttonWrapper}>
+                  <Button
+                    color={'#fff'}
+                    backgroundColor={!isFinished ? '#4AC1E8' : '#E1E1E5'}
+                    width={'100%'}
+                    onPress={!isFinished ? onPressGoTest : () => {}}
+                  >
+                    GO TEST
+                  </Button>
+                </View>
+              </View>
             </View>
-            <Text {...style.bullet}>{`\u2022 ${globalText[lang].tools}`}</Text>
-            <Text {...style.bullet}>{`\u2022 ${globalText[lang].keys}`}</Text>
-          </View>
-          <View {...style.whiteBox}>
-            <Text {...style.testTitle}>GPST</Text>
-            <Text {...style.testTitle}>Global Problem Solving Test(GPST)</Text>
-            <View {...style.buttonWrapper}>
-              <Button color={'#fff'} backgroundColor={'#4AC1E8'} width={'100%'}>
-                Go test
-              </Button>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+          </ScrollView>
+        </>
+      )}
     </>
   )
 }

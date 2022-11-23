@@ -10,6 +10,7 @@ export type User = [
     type: string
     emailVerified: string
     countryCode: string
+    password: string
   },
 ]
 
