@@ -155,8 +155,6 @@ const Description = ({
   })
   return (
     <>
-      {/* <Header />
-      <ScrollView> */}
       <View {...style.center}>
         <ImageSmallSlider images={images} />
         <View {...style.textBox}>

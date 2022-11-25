@@ -40,7 +40,7 @@ export namespace Result {
   export type DetailDataType = ResultDetailDataType
 }
 
-type ResultDetailDataType = {
+export type ResultDetailDataType = {
   resultInfo: {
     myAnswerInfo: {
       stage: number

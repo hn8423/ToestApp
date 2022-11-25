@@ -8,7 +8,7 @@
  * @format
  */
 
-import React, {useMemo, useRef, useState} from 'react'
+import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {NavigationContainer} from '@react-navigation/native'
 import DrawerNavigator from './navigation/DrawerNavigator'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
@@ -19,12 +19,16 @@ import useGetStyle from './hooks/use-style'
 import WebView from 'react-native-webview'
 import webViewCtx from './webViewContext'
 import baseURL from './api/baseURL'
+import SplashScreen from 'react-native-splash-screen'
 
 const queryClient = new QueryClient()
 
 const WebViewPropvider = webViewCtx.Provider
 
 const App = () => {
+  useEffect(() => {
+    setTimeout(SplashScreen.hide, 1500)
+  }, [])
   const [isVisible, setVisible] = useState(false)
   const style = useGetStyle({
     avoid: {

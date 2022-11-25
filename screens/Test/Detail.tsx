@@ -356,7 +356,6 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
       )}
       {!isTest && (
         <>
-          <Header />
           <ScrollView>
             <View {...style.center}>
               <View {...style.whiteBox}>

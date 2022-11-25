@@ -54,7 +54,11 @@ const TestStackNavigator = () => {
   return (
     <StackTest.Navigator screenOptions={screenOptionStyle}>
       <StackTest.Screen name="TestStack" component={Test} />
-      <StackTest.Screen name="TestDetail" component={TestDetail} />
+      <StackTest.Screen
+        name="TestDetail"
+        component={TestDetail}
+        options={{headerShown: true, headerTitle: 'Test'}}
+      />
     </StackTest.Navigator>
   )
 }
@@ -62,7 +66,14 @@ const ResultStackNavigator = () => {
   return (
     <StackResult.Navigator screenOptions={screenOptionStyle}>
       <StackResult.Screen name="ResultStack" component={Result} />
-      <StackResult.Screen name="ResultDetail" component={ResultDetail} />
+      <StackResult.Screen
+        name="ResultDetail"
+        component={ResultDetail}
+        options={{
+          headerShown: true,
+          headerTitle: 'Result',
+        }}
+      />
     </StackResult.Navigator>
   )
 }
