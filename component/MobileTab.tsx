@@ -16,6 +16,8 @@ import MobileCompetence from './MobileCompetence'
 import MobileDomainSpecifics from './MobileDomainSpecifics'
 import MobileMyAnswer from './MobileMyAnswer'
 import MobileOverallEvaluation from './MobileOverallEvaluation'
+const chartWidth = Dimensions.get('window').width
+
 type Props = {
   testName: string
   times: number
@@ -110,7 +112,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
     tabBar: {
       height: 48,
       backgroundColor: '#fff',
-      // width: chartWidth,
+      minWidth: chartWidth,
       flexDirection: 'row',
     },
     tabButton1: {

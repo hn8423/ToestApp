@@ -341,9 +341,9 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
-                  onPress={() =>
-                    navigation.dispatch(StackActions.push('SignUp'))
-                  }
+                  onPress={() => {
+                    navigation.navigate('SignUp')
+                  }}
                 >
                   <Text {...style.signupText}>
                     {globalText.signUpButton[lang]}

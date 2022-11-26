@@ -10,7 +10,7 @@ import {
   TextInputChangeEventData,
   Platform,
 } from 'react-native'
-import {NavigationProps, ToestRef} from '../type'
+import {LoginStackParams, SC, ToestRef, LangMap2} from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
@@ -23,9 +23,9 @@ const chartWidth = Dimensions.get('window').width
 import useRegister from '../hooks/useRegister'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
-import {DrawerActions, StackActions} from '@react-navigation/native'
+import {DrawerActions} from '@react-navigation/native'
 
-const globalText: any = {
+const globalText: LangMap2 = {
   title: {
     en: 'SIGN UP',
     ko: '회원가입',
@@ -200,7 +200,7 @@ const globalText: any = {
   },
 }
 
-const SignUp = ({navigation}: NavigationProps) => {
+const SignUp: SC<LoginStackParams, 'SignUp'> = ({navigation}) => {
   const language = useRecoilValue(langState)
   // const language = 'en'
 
@@ -289,9 +289,9 @@ const SignUp = ({navigation}: NavigationProps) => {
         register(body)
         setChapter(s => s + 1)
       case 2:
-        navigation.dispatch(StackActions.popToTop())
+        navigation.popToTop()
         navigation.dispatch(DrawerActions.jumpTo('Main'))
-        break
+        return
     }
   }
 
@@ -321,10 +321,6 @@ const SignUp = ({navigation}: NavigationProps) => {
   //onPress
   //onPress
   //onPress
-
-  const isAgreed = useMemo(() => {
-    return agree === 'agree'
-  }, [agree])
 
   const onPressUpDown = () => {
     setIsDown(!isDown)
@@ -505,9 +501,9 @@ const SignUp = ({navigation}: NavigationProps) => {
         <View {...style.container}>
           <View {...style.progressBar}>
             <View {...style.progress}>
-              {chapter === 0 && <View {...style.progress1}></View>}
-              {chapter === 1 && <View {...style.progress2}></View>}
-              {chapter === 2 && <View {...style.progress3}></View>}
+              {chapter === 0 && <View {...style.progress1} />}
+              {chapter === 1 && <View {...style.progress2} />}
+              {chapter === 2 && <View {...style.progress3} />}
             </View>
             <Text>{chapter + 1}/3</Text>
           </View>
@@ -666,7 +662,6 @@ const SignUp = ({navigation}: NavigationProps) => {
               </Text>
             </View>
           )}
-          {/* {chapter !== 2 && ( */}
           <View {...style.button}>
             <Button
               backgroundColor={'#4AC1E8'}
@@ -676,7 +671,6 @@ const SignUp = ({navigation}: NavigationProps) => {
               NEXT
             </Button>
           </View>
-          {/* )} */}
           <Toast {...style.toest} ref={toastRef} />
         </View>
       </ScrollView>

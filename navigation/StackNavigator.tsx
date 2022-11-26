@@ -89,7 +89,6 @@ const LoginStackNavigator = () => {
   return (
     <StackLogin.Navigator screenOptions={screenOptionStyle}>
       <StackLogin.Screen name="LogIn" component={LogIn} />
-      <StackLogin.Screen name="SignUpComplete" component={SignUpComplete} />
       <StackLogin.Screen name="SignUp" component={SignUp} />
     </StackLogin.Navigator>
   )
