@@ -305,7 +305,7 @@ const DrawerNavigator = () => {
                             : require(`../assets/images/drawer/login.png`)
                         }
                       />
-                      <Text>
+                      <Text {...style.itemParentsText}>
                         {isLogined
                           ? globalText.logOut[lang]
                           : globalText.logIn[lang]}
