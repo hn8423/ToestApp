@@ -1,7 +1,6 @@
 import React, {useState, useMemo} from 'react'
 import {View, ScrollView, Image, Dimensions, Text} from 'react-native'
 import {NavigationProps, LangMap1} from '../type'
-import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
@@ -177,7 +176,7 @@ TOEST 내의 테스트를 통해 미래역량과 잠재력을 개발하고, 사�
       return v.li.split('\n').map((name: string, i: number) => {
         return (
           <View
-            key={`contentsBox1-${i}`}
+            key={`contentsBox1-${i}-${name}`}
             style={{flexDirection: 'row', paddingRight: 24}}
           >
             <Image source={require('../assets/images/intro/check.png')} />
@@ -309,7 +308,6 @@ TOEST 내의 테스트를 통해 미래역량과 잠재력을 개발하고, 사�
   })
   return (
     <View>
-      <Header />
       <ScrollView nestedScrollEnabled={true}>
         <View {...style.center}>
           <View>
@@ -329,7 +327,7 @@ TOEST 내의 테스트를 통해 미래역량과 잠재력을 개발하고, 사�
             </View>
             {box2to6Contents.map((v, i) => {
               return (
-                <View {...style.contentWrapper}>
+                <View key={`${v.id}+${i}`} {...style.contentWrapper}>
                   <Text {...style.contentsTitle}>{v.title}</Text>
                   <Image {...style.contentsImg} source={v.img} />
                   <View>{liMap[i]}</View>
@@ -347,7 +345,7 @@ TOEST 내의 테스트를 통해 미래역량과 잠재력을 개발하고, 사�
 
             {box7to11Contents.map((v, i) => {
               return (
-                <View {...style.contentWrapper}>
+                <View key={`${v.name} box7 ${i}`} {...style.contentWrapper}>
                   <Text {...style.contentsTitle}>{v.title}</Text>
                   <Image {...style.contentsImg} source={v.img} />
                   <Text {...style.contentsSub}>{v.des}</Text>

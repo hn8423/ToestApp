@@ -4,18 +4,16 @@ import _ from 'lodash'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import TabNavigator from './TabNavigator'
 import {LoginStackNavigator, MyPageStackNavigator} from './StackNavigator'
-import MyPage from '../screens/MyPage/AccountSetting'
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
-import {DrawerParamList} from '../type'
+import {DrawerParamList, LangMap2} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import {AuthState} from '../atoms/auth'
 import {langState} from '../atoms/lang'
 import {
   SafeAreaView,
-  StyleSheet,
   View,
   Dimensions,
   Text,
@@ -28,7 +26,7 @@ const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 const Drawer = createDrawerNavigator<DrawerParamList>()
 
-const globalText: any = {
+const globalText: LangMap2 = {
   login: {
     en: 'Log in',
     ko: '로그인 하세요',
@@ -79,7 +77,6 @@ const globalText: any = {
   },
 }
 
-type DrawerScreenProp = DrawerScreenProps<DrawerParamList, 'Main'>
 type children = {
   name: string
   link: string
@@ -100,53 +97,56 @@ const DrawerNavigator = () => {
     return !!user
   }, [user])
 
-  const [menuTree, setMenu] = useState<menu[]>([
-    {
-      name: globalText.mypage[lang],
-      icon: require(`../assets/images/drawer/mypage.png`),
-      link: '',
-      children: [
-        {
-          name: globalText.account[lang],
-          link: '/my_page?to=accountsetting',
-          component: 'MyPage',
-        },
-        {
-          name: globalText.payment[lang],
-          link: '/my_page?to=payment',
-          component: 'MyPage',
-        },
-      ],
-    },
-    {
-      name: globalText.information[lang],
-      icon: require(`../assets/images/drawer/information.png`),
-      link: '',
-      children: [
-        {
-          name: globalText.toestIntro[lang],
-          link: '/toest_intro',
-          component: 'ToestIntro',
-        },
-        {
-          name: globalText.privacyPolicy[lang],
-          link: '/Privacy_Policy',
-          component: 'PrivacyPolicy',
-        },
-        {
-          name: globalText.termsOfUse[lang],
-          link: '/Terms_of_Use',
-          component: 'TermsOfUse',
-        },
-      ],
-    },
+  const menuTree = useMemo<menu[]>(
+    () => [
+      {
+        name: globalText.mypage[lang],
+        icon: require(`../assets/images/drawer/mypage.png`),
+        link: '',
+        children: [
+          {
+            name: globalText.account[lang],
+            link: '/my_page?to=accountsetting',
+            component: 'MyPage',
+          },
+          {
+            name: globalText.payment[lang],
+            link: '/my_page?to=payment',
+            component: 'MyPage',
+          },
+        ],
+      },
+      {
+        name: globalText.information[lang],
+        icon: require(`../assets/images/drawer/information.png`),
+        link: '',
+        children: [
+          {
+            name: globalText.toestIntro[lang],
+            link: '/toest_intro',
+            component: 'ToestIntro',
+          },
+          {
+            name: globalText.privacyPolicy[lang],
+            link: '/Privacy_Policy',
+            component: 'PrivacyPolicy',
+          },
+          {
+            name: globalText.termsOfUse[lang],
+            link: '/Terms_of_Use',
+            component: 'TermsOfUse',
+          },
+        ],
+      },
 
-    {
-      name: 'Need a help?',
-      icon: require(`../assets/images/drawer/email.png`),
-      link: '',
-    },
-  ])
+      {
+        name: 'Need a help?',
+        icon: require(`../assets/images/drawer/email.png`),
+        link: '',
+      },
+    ],
+    [lang],
+  )
 
   //function
   //function
@@ -330,6 +330,13 @@ const DrawerNavigator = () => {
         name="MyPage"
         component={MyPageStackNavigator}
         options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="ToestIntro"
+        component={ToestIntro}
+        options={{
           headerLeft: () => (
             <TouchableOpacity
               {...style.headerLeft}
@@ -338,13 +345,6 @@ const DrawerNavigator = () => {
               <Image source={require('../assets/images/drawer/goBack.png')} />
             </TouchableOpacity>
           ),
-        }}
-      />
-      <Drawer.Screen
-        name="ToestIntro"
-        component={ToestIntro}
-        options={{
-          headerShown: false,
         }}
       />
       <Drawer.Screen

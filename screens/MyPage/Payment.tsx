@@ -35,7 +35,7 @@ const globalText: LangMap2 = {
   },
   menu4: {
     en: 'Payment',
-    ko: '결제 확인',
+    ko: '접수 확인',
   },
   menu6: {
     en: 'Sign out',
@@ -63,7 +63,7 @@ const globalText: LangMap2 = {
   },
   paymenthistory: {
     en: `Payment History`,
-    ko: `결제 내역`,
+    ko: `접수 내역`,
   },
   accountTitle: {
     en: `Account Settings`,
@@ -216,7 +216,7 @@ const globalText: LangMap2 = {
     en: 'Order Date',
   },
   orderNo: {
-    ko: '결제 번호',
+    ko: '접수 번호',
     en: 'Order No.',
   },
 

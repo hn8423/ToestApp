@@ -7,11 +7,14 @@ import {Alert, Platform, ToastAndroid} from 'react-native'
 import {LangMap2} from '../type'
 import {useState} from 'react'
 import {TabActions, useNavigation} from '@react-navigation/native'
+import useGetTicket from './useGetTicket'
 
 export default function useLogin() {
   const navigation = useNavigation()
   const setAuth = useSetRecoilState(AuthState)
   const lang = useRecoilValue(langState)
+  const {mutate: getTicketMutate} = useGetTicket()
+
   const [globalText] = useState<LangMap2>({
     en: {
       title: 'login err',

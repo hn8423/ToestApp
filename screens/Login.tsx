@@ -14,7 +14,6 @@ import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
-import {StackActions} from '@react-navigation/native'
 import useLogin from '../hooks/useLogin'
 import Button from '../component/Button'
 import Toast from '../component/Toest'
@@ -24,10 +23,7 @@ import {WebView} from 'react-native-webview'
 import baseURL from '../api/baseURL'
 import CookieManager from '@react-native-cookies/cookies'
 const chartHeight = Dimensions.get('window').height
-type DrawerScreenProp = DrawerScreenProps<
-  DrawerParamList,
-  'LoginStackNavigator'
->
+
 const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
   const webRef = useRef<WebView>(null)
@@ -289,7 +285,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
 
           <ScrollView>
             <View {...style.container}>
-              <View {...style.social}>
+              {/* <View {...style.social}>
                 <TouchableHighlight>
                   <Image
                     {...style.socialLogo}
@@ -308,7 +304,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                     source={require('../assets/images/login/kakao.png')}
                   />
                 </TouchableHighlight>
-              </View>
+              </View> */}
               <View {...style.input}>
                 <Text {...style.inputTitle}>Email</Text>
                 <TextInput

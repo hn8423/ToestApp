@@ -23,13 +23,13 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
           borderTopRightRadius: 16,
         },
         tabBarHideOnKeyboard: true,
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
         name="Home"
         component={MainStackNavigator}
         options={{
-          title: 'HOME',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/home_act.png`)} />
@@ -42,7 +42,6 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
         name="Apply"
         component={ApplyStackNavigator}
         options={{
-          title: 'APPLY',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/apply_act.png`)} />
@@ -55,7 +54,6 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
         name="Test"
         component={TestStackNavigator}
         options={{
-          title: 'TEST',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/test_act.png`)} />
@@ -68,7 +66,6 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
         name="Result"
         component={ResultStackNavigator}
         options={{
-          title: 'RESULT',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/result_act.png`)} />
@@ -81,7 +78,6 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
         name="MyPage"
         component={MyPageStackNavigator}
         options={{
-          title: 'MYPAGE',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/my_act.png`)} />

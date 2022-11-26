@@ -1,12 +1,13 @@
 import React, {useMemo, useState} from 'react'
 import {View, Text, ScrollView, Dimensions, Image} from 'react-native'
-import {MainStackParams, SC, LangMap1} from '../type'
+import {MainStackParams, SC} from '../type'
 import Header from '../component/Header'
 import ImageSlider from '../component/ImageSlider'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 const chartWidth = Dimensions.get('window').width
+const chartHeight = Dimensions.get('window').height
 
 const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
   const lang = useRecoilValue(langState)
@@ -70,7 +71,6 @@ const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
           subtitle: 'Customized MOS Expertise',
           title: 'e~Test\nProfessionals',
           description: textLan.etest,
-          // theme_dark: true,
         },
       },
       {
@@ -99,7 +99,7 @@ const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
     center: {
       justifyContent: 'flex-start',
       textAlign: 'center',
-      height: 1230,
+      height: chartHeight * 1.9,
     },
     boxWrapper: {
       position: 'relative',
