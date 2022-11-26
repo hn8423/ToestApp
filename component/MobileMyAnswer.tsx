@@ -1,16 +1,21 @@
-import {useMemo} from 'react'
-import {Text, View, Dimensions} from 'react-native'
+import {useMemo, useState, useEffect} from 'react'
+import {Text, View, Dimensions, Image, TouchableOpacity} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import countryData from '../utills/countryCode'
+import _ from 'lodash'
+import {LangMap2} from '../type'
+import {Result} from '../type/result'
+import Button from '../component/Button'
 dayjs.extend(utc)
 const chartWidth = Dimensions.get('window').width
 
 type Props = {
   data: {
-    resultInfo: any
+    resultInfo?: Result.DetailDataType['resultInfo']
     testName: string
     times: number
     level: string
@@ -20,11 +25,32 @@ type Props = {
 type TitleMapType = {
   [x: string]: string
 }
+type Obj = {
+  [x: number]: string | JSX.Element
+}
 const MobileMyAnswer = ({data}: Props) => {
   //DATA
   //DATA
   //DATA
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+  const [activeTrophy, setActiveTrophy] = useState(0)
+  let [select, setSelect] = useState(0)
+  const globalText: LangMap2 = useMemo(() => {
+    return {
+      en: {
+        myBlue: 'My',
+        answer: 'Answer',
+        view: 'View',
+        world: 'World',
+      },
+      ko: {
+        myBlue: '',
+        answer: '내 점수',
+        view: '문항 보기',
+        world: '전체',
+      },
+    }
+  }, [])
   //MEMO
   //MEMO
   //MEMO
@@ -52,11 +78,91 @@ const MobileMyAnswer = ({data}: Props) => {
         .format('YYYY.MM.DD H:mm')} KST`
     }
   }, [lang, data])
-  let myScore = useMemo(
+  const myScore = useMemo(
     () => (data.resultInfo ? `${data.resultInfo.scoreMap.score.score}` : '0'),
     [data],
   )
+  const scores = useMemo(() => {
+    if (!data.resultInfo) {
+      return 0
+    }
+    return data.resultInfo.scoreMap.score.score
+  }, [data])
+  const worldPercentage = useMemo(() => {
+    if (!data.resultInfo) {
+      return 0
+    }
+    return data.resultInfo.scoreMap.score.world.topPercentage
+  }, [data])
+  const country = useMemo(() => {
+    if (!data.resultInfo) {
+      return 'KO'
+    }
+    if (lang === 'ko') {
+      return `${
+        countryData.countryCodeMap[data!.resultInfo!.countryCode].code_ko
+      }`
+    } else if (lang === 'en') {
+      return `${
+        countryData.countryCodeMap[data!.resultInfo!.countryCode].code_en
+      }`
+    }
+  }, [lang, data])
 
+  const [obj] = useState<{[x: number]: string | JSX.Element}>({
+    0: '',
+    1: (
+      <Image
+        source={require('../assets/images/result/myAnswer/participation.png')}
+      />
+    ),
+    2: (
+      <Image source={require('../assets/images/result/myAnswer/bronze.png')} />
+    ),
+    3: (
+      <Image source={require('../assets/images/result/myAnswer/silver.png')} />
+    ),
+    4: <Image source={require('../assets/images/result/myAnswer/gold.png')} />,
+    5: (
+      <Image
+        source={require('../assets/images/result/myAnswer/platinum.png')}
+      />
+    ),
+    6: (
+      <Image source={require('../assets/images/result/myAnswer/perfect.png')} />
+    ),
+  })
+
+  const activeObj = useMemo(() => obj[activeTrophy], [activeTrophy, obj])
+  //onPress
+  //onPress
+  //onPress
+  function viewClick(stage: number) {
+    return () => {
+      setSelect(stage)
+    }
+  }
+  //USEEFFECT
+  //USEEFFECT
+  //USEEFFECT
+  useEffect(() => {
+    if (!scores) {
+      return
+    }
+    if (scores === 100) {
+      setActiveTrophy(6)
+    } else if (worldPercentage >= 0 && worldPercentage <= 4) {
+      setActiveTrophy(5)
+    } else if (worldPercentage > 4 && worldPercentage <= 11) {
+      setActiveTrophy(4)
+    } else if (worldPercentage > 11 && worldPercentage <= 23) {
+      setActiveTrophy(3)
+    } else if (worldPercentage > 23 && worldPercentage <= 40) {
+      setActiveTrophy(2)
+    } else if (worldPercentage > 40) {
+      setActiveTrophy(1)
+    }
+  }, [scores, worldPercentage])
   // console.log(data.testName)
   //STYLE
   //STYLE
@@ -107,7 +213,87 @@ const MobileMyAnswer = ({data}: Props) => {
     awardWrapper: {
       alignItems: 'center',
     },
+    textTitle: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginBottom: 24,
+    },
+    titleBlue: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      color: '#4AC1E8',
+    },
+    titleBlack: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      color: '#191919',
+    },
+    listWrapper: {
+      flexDirection: 'row',
+      borderBottomColor: '#F1F1F5',
+      borderBottomWidth: 2,
+      // justifyContent: 'space-around',
+    },
+    listPart: {
+      width: '20%',
+      height: 48,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    listTitle: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 12,
+      lineHeight: 16,
+      letterSpacing: 0.4,
+      color: '#191919',
+    },
+    scoreWrapper: {
+      flexDirection: 'row',
+      borderBottomColor: '#F1F1F5',
+      borderBottomWidth: 2,
+    },
   })
+
+  //render
+  //render
+  //render
+  const score = useMemo(() => {
+    return data.resultInfo?.myAnswerInfo.map((v, i) => (
+      <View {...style.scoreWrapper} key={`score-${v.stage}-${i}`}>
+        <View {...style.listPart}>
+          <Text>{`${v.stage}`}</Text>
+        </View>
+        <View {...style.listPart}>
+          <Image
+            source={
+              v.isCorrectedByMyAnswer
+                ? require('../assets/images/result/myAnswer/o.png')
+                : require('../assets/images/result/myAnswer/x.png')
+            }
+          />
+        </View>
+        <View {...style.listPart}>
+          <Button onPress={viewClick(v.stage)} height={36}>
+            {globalText[lang].view}
+          </Button>
+        </View>
+        <View {...style.listPart}>
+          <Text>{`${_(v.worldCorrectAnswerRate).floor(1)}%`}</Text>
+        </View>
+        <View {...style.listPart}>
+          <Text>{`${_(v.countryCorrectAnswerRate).floor(1)}%`}</Text>
+        </View>
+      </View>
+    ))
+  }, [data, globalText, lang, style])
 
   return (
     <View {...style.wrapper}>
@@ -127,7 +313,33 @@ const MobileMyAnswer = ({data}: Props) => {
       <View {...style.whiteBox}>
         <View {...style.awardWrapper}>
           <Text {...style.resultTitle}>Award</Text>
+          <View>{activeObj}</View>
         </View>
+      </View>
+      <View {...style.whiteBox}>
+        <View {...style.textTitle}>
+          <Text {...style.titleBlue}>{globalText[lang].myBlue} </Text>
+          <Text {...style.titleBlack}>{globalText[lang].answer}</Text>
+        </View>
+        <View {...style.line} />
+        <View {...style.listWrapper}>
+          <View {...style.listPart}>
+            <Text {...style.listTitle}>No.</Text>
+          </View>
+          <View {...style.listPart}>
+            <Text {...style.listTitle}>{globalText[lang].answer}</Text>
+          </View>
+          <View {...style.listPart}>
+            <Text {...style.listTitle}>{globalText[lang].view}</Text>
+          </View>
+          <View {...style.listPart}>
+            <Text {...style.listTitle}>{globalText[lang].world}</Text>
+          </View>
+          <View {...style.listPart}>
+            <Text {...style.listTitle}>{country}</Text>
+          </View>
+        </View>
+        <View /* {...style.scoreWrapper} */>{score}</View>
       </View>
     </View>
   )

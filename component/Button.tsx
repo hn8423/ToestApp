@@ -7,6 +7,7 @@ type Props = {
   backgroundColor?: ColorValue
   width?: string | number
   onPress?: any
+  height?: string | number
 }
 
 const Button = ({
@@ -14,11 +15,12 @@ const Button = ({
   color = '#fff',
   backgroundColor = '#4AC1E8',
   width = 'auto',
+  height = 48,
   onPress = () => {},
 }: Props) => {
   const style = useGetStyle({
     wrapper: {
-      height: 48,
+      height,
       width,
       justifyContent: 'center',
       textAlign: 'center',

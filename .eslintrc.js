@@ -4,5 +4,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': 0,
     'prettier/prettier': [0],
+    'react/react-in-jsx-scope': [0, 'alawy'],
   },
 }

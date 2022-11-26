@@ -53,18 +53,6 @@ const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
     return resultDetailData?.resultInfo.scoreMap.score.score
   }, [resultDetailData?.resultInfo.scoreMap.score.score])
 
-  // const [bigObj] = useState({
-  //   0: '',
-  //   1: <img className={classname('big-obj')} src="/images/result/riboncertificate.png" alt="certificate.png" />,
-  //   2: <img className={classname('big-obj')} src="/images/result/ribonbronze.png" alt="bronze.png" />,
-  //   3: <img className={classname('big-obj')} src="/images/result/ribonsilver.png" alt="silver.png" />,
-  //   4: <img className={classname('big-obj')} src="/images/result/ribongold.png" alt="gold.png" />,
-  //   5: <img className={classname('big-obj')} src="/images/result/ribonplatinum.png" alt="platinum.png" />,
-  //   6: <img className={classname('big-obj')} src="/images/result/ribonperfect.png" alt="perfect.png" />,
-  // })
-
-  // const activeBigObj = useMemo(() => bigObj[activeTrophy], [activeTrophy, bigObj])
-
   const worldPercentage = useMemo(
     () => resultDetailData?.resultInfo.scoreMap.score.world.topPercentage,
     [resultDetailData?.resultInfo.scoreMap.score.world.topPercentage],

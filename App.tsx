@@ -20,6 +20,7 @@ import WebView from 'react-native-webview'
 import webViewCtx from './webViewContext'
 import baseURL from './api/baseURL'
 import SplashScreen from 'react-native-splash-screen'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const queryClient = new QueryClient()
 
@@ -27,7 +28,12 @@ const WebViewPropvider = webViewCtx.Provider
 
 const App = () => {
   useEffect(() => {
-    setTimeout(SplashScreen.hide, 1500)
+    //   AsyncStorage.getItem('auth', function (err, result:string) {
+    //       const userInfo = JSON.parse(result)
+    //       if (userInfo)
+
+    //     });
+    setTimeout(SplashScreen.hide, 1000)
   }, [])
   const [isVisible, setVisible] = useState(false)
   const style = useGetStyle({

@@ -11,7 +11,6 @@ import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 import useGetStyle from '../hooks/use-style'
-import {ResultDetailDataType} from '../type/result'
 import MobileAi from './MobileAi'
 import MobileCompetence from './MobileCompetence'
 import MobileDomainSpecifics from './MobileDomainSpecifics'
@@ -24,14 +23,10 @@ type Props = {
   name: string
   activeTrophy: number
 }
-
-type ObjType = {
-  1: JSX.Element
-  2: JSX.Element
-  3: JSX.Element
-  4: JSX.Element
-  5: JSX.Element
+type Obj = {
+  [x: number]: string | JSX.Element
 }
+
 const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
   const resultDetailData = useRecoilValue(ResultDetailInfoState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
@@ -60,7 +55,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
   //MEMO
   //MEMO
   //MEMO
-  const obj: any = useMemo(
+  const obj: Obj = useMemo(
     () => ({
       1: (
         <MobileMyAnswer
