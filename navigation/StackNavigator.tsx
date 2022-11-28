@@ -13,6 +13,7 @@ import Payment from '../screens/MyPage/Payment'
 import LogIn from '../screens/Login'
 import SignUpComplete from '../screens/SignUpComplete'
 import SignUp from '../screens/SignUp'
+import TopTabNavigator from './TopTabNavigator'
 import {MainStackParams} from '../type'
 
 const StackMain = createStackNavigator<MainStackParams>()
@@ -83,7 +84,7 @@ const MyPageStackNavigator = () => {
   return (
     <StackMyPage.Navigator screenOptions={screenOptionStyle}>
       <StackMyPage.Screen name="AccountSetting" component={AccountSetting} />
-      <StackPayment.Screen name="Payment" component={Payment} />
+      {/* <StackPayment.Screen name="Payment" component={Payment} /> */}
     </StackMyPage.Navigator>
   )
 }
@@ -91,6 +92,20 @@ const PaymentStackNavigator = () => {
   return (
     <StackPayment.Navigator screenOptions={screenOptionStyle}>
       <StackPayment.Screen name="Payment" component={Payment} />
+    </StackPayment.Navigator>
+  )
+}
+const TopTabNavigatorStackNavigator = () => {
+  return (
+    <StackPayment.Navigator screenOptions={screenOptionStyle}>
+      <StackPayment.Screen
+        name="TopTabNavigator"
+        component={TopTabNavigator}
+        options={{
+          headerShown: true,
+          headerTitle: 'My Page',
+        }}
+      />
     </StackPayment.Navigator>
   )
 }
@@ -117,4 +132,5 @@ export {
   PaymentStackNavigator,
   LoginStackNavigator,
   SignUpStackNavigator,
+  TopTabNavigatorStackNavigator,
 }

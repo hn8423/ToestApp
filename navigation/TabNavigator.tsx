@@ -7,7 +7,9 @@ import {
   TestStackNavigator,
   ResultStackNavigator,
   MyPageStackNavigator,
+  TopTabNavigatorStackNavigator,
 } from './StackNavigator'
+import TopTabNavigator from './TopTabNavigator'
 import {Image} from 'react-native'
 import {DrawerParamList} from '../type'
 const Tab = createBottomTabNavigator()
@@ -76,8 +78,10 @@ const BottomTabNavigator = ({navigation}: DrawerScreenProp) => {
       />
       <Tab.Screen
         name="MyPage"
-        component={MyPageStackNavigator}
+        component={TopTabNavigator}
         options={{
+          headerShown: true,
+          headerTitle: 'My Page',
           tabBarIcon: ({color, size, focused}) =>
             focused ? (
               <Image source={require(`../assets/images/my_act.png`)} />

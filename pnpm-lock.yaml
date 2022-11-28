@@ -11,6 +11,7 @@ specifiers:
   '@react-native-cookies/cookies': ^6.2.1
   '@react-navigation/bottom-tabs': ^6.4.0
   '@react-navigation/drawer': ^6.5.0
+  '@react-navigation/material-top-tabs': ^6.3.1
   '@react-navigation/native': ^6.0.13
   '@react-navigation/stack': ^6.3.2
   '@tanstack/react-query': ^4.14.1
@@ -33,6 +34,7 @@ specifiers:
   react-native: 0.70.3
   react-native-gesture-handler: ^2.7.1
   react-native-gradle-plugin: ^0.71.4
+  react-native-pager-view: ^6.1.1
   react-native-reanimated: ^2.11.0
   react-native-reanimated-carousel: ^3.1.1
   react-native-safe-area-context: ^4.4.1
@@ -41,6 +43,7 @@ specifiers:
   react-native-sound: ^0.11.2
   react-native-splash-screen: ^3.3.0
   react-native-svg: ^13.4.0
+  react-native-tab-view: ^3.3.0
   react-native-webview: ^11.23.1
   react-test-renderer: 18.1.0
   recoil: ^0.7.6
@@ -54,6 +57,7 @@ dependencies:
   '@react-native-cookies/cookies': 6.2.1_react-native@0.70.3
   '@react-navigation/bottom-tabs': 6.4.0_ofi2yx5q2el3eoybkqvkw2735e
   '@react-navigation/drawer': 6.5.0_g5hkocqeyhgqrfogit5p46hoqq
+  '@react-navigation/material-top-tabs': 6.3.1_eqe4flozqte4x33n2jvnumlt5e
   '@react-navigation/native': 6.0.13_li67rxuecrv4t7nknbczgycq3a
   '@react-navigation/stack': 6.3.2_z2hjc6p55e6rny5qgtajmg2dpm
   '@tanstack/react-query': 4.14.1_li67rxuecrv4t7nknbczgycq3a
@@ -64,6 +68,7 @@ dependencies:
   react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
   react-native-gesture-handler: 2.7.1_li67rxuecrv4t7nknbczgycq3a
   react-native-gradle-plugin: 0.71.4
+  react-native-pager-view: 6.1.1_li67rxuecrv4t7nknbczgycq3a
   react-native-reanimated: 2.11.0_3czbkggvrmibboi24l5aa7shum
   react-native-reanimated-carousel: 3.1.1_tmqql6w3dc5gouloaanfqrbuwu
   react-native-safe-area-context: 4.4.1_li67rxuecrv4t7nknbczgycq3a
@@ -72,6 +77,7 @@ dependencies:
   react-native-sound: 0.11.2_react-native@0.70.3
   react-native-splash-screen: 3.3.0_react-native@0.70.3
   react-native-svg: 13.4.0_li67rxuecrv4t7nknbczgycq3a
+  react-native-tab-view: 3.3.0_yeulaozffpfma4zat7or4lncmy
   react-native-webview: 11.23.1_li67rxuecrv4t7nknbczgycq3a
   recoil: 0.7.6_li67rxuecrv4t7nknbczgycq3a
 
@@ -2052,6 +2058,24 @@ packages:
       react: 18.1.0
       react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
       react-native-safe-area-context: 4.4.1_li67rxuecrv4t7nknbczgycq3a
+    dev: false
+
+  /@react-navigation/material-top-tabs/6.3.1_eqe4flozqte4x33n2jvnumlt5e:
+    resolution: {integrity: sha512-OJpKp3kxvz1GJ/DFHVufqhpSKnKS1alCyYq5Gpqomw+12HMJ49s01GGKkVNBkVeXjxoDOrrqrQkE31gfS/8YeQ==}
+    peerDependencies:
+      '@react-navigation/native': ^6.0.0
+      react: '*'
+      react-native: '*'
+      react-native-pager-view: '>= 4.0.0'
+      react-native-tab-view: '>= 3.0.0'
+    dependencies:
+      '@react-navigation/native': 6.0.13_li67rxuecrv4t7nknbczgycq3a
+      color: 4.2.3
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+      react-native-pager-view: 6.1.1_li67rxuecrv4t7nknbczgycq3a
+      react-native-tab-view: 3.3.0_yeulaozffpfma4zat7or4lncmy
+      warn-once: 0.1.1
     dev: false
 
   /@react-navigation/native/6.0.13_li67rxuecrv4t7nknbczgycq3a:
@@ -6640,6 +6664,16 @@ packages:
     resolution: {integrity: sha512-5izzWXIlr5DL5+cx3a6oSA4cgSCw9Kv7WQjHqLxV2I1fSfzjzEdYTaDfrNjdcy71BHeeUB6BEyl70yXpjkCkdA==}
     dev: false
 
+  /react-native-pager-view/6.1.1_li67rxuecrv4t7nknbczgycq3a:
+    resolution: {integrity: sha512-4WqR0YWBjaUtc3iPVk8w6wsTsMq+r0plNiXdqPXOiUdQIhxKfsP1iqb6hRzdeJKOo8UH7RCP6zI7dxdFEAXzrw==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+    dev: false
+
   /react-native-reanimated-carousel/3.1.1_tmqql6w3dc5gouloaanfqrbuwu:
     resolution: {integrity: sha512-MmtomuAmHfAII4ovP7dB81mAuwMsLMJ6boioOh3wows0LQCnd0OoaYJF5gmNhAmXVU1WeFw5UVaklOH2e1oGpw==}
     peerDependencies:
@@ -6734,6 +6768,19 @@ packages:
       css-tree: 1.1.3
       react: 18.1.0
       react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+    dev: false
+
+  /react-native-tab-view/3.3.0_yeulaozffpfma4zat7or4lncmy:
+    resolution: {integrity: sha512-xjAQe657Gp/de2QHb7ptksTg8Jcb+j3fLAdcYryzfavt/pe+HtKLpkCtQsxyIJpRrAO7YPxFsymi2N4MnNfePA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+      react-native-pager-view: '*'
+    dependencies:
+      react: 18.1.0
+      react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
+      react-native-pager-view: 6.1.1_li67rxuecrv4t7nknbczgycq3a
+      use-latest-callback: 0.1.5
     dev: false
 
   /react-native-webview/11.23.1_li67rxuecrv4t7nknbczgycq3a:

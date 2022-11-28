@@ -418,20 +418,7 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
 
   return (
     <>
-      <Header />
       <ScrollView>
-        <View {...style.topTab}>
-          <TouchableOpacity
-            onPress={() => navigation.dispatch(DrawerActions.jumpTo('MyPage'))}
-          >
-            <View {...style.tabBox2}>
-              <Text {...style.BoxText2}>{globalText.menu3[language]}</Text>
-            </View>
-          </TouchableOpacity>
-          <View {...style.tabBox1}>
-            <Text {...style.BoxText1}>{globalText.menu4[language]}</Text>
-          </View>
-        </View>
         <View {...style.wrapper}>{cardList}</View>
         <Toast />
       </ScrollView>

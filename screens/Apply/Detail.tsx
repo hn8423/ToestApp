@@ -296,10 +296,8 @@ Go to the login page.`,
   }
 
   function onPressGoMyTicket() {
-    navigation.dispatch(TabActions.jumpTo('MyPage', {defaultScreen: 'payment'}))
-
-    // navigation.push(''))
     // navigation.goBack()
+    navigation.dispatch(TabActions.jumpTo('MyPage', {isPayment: true}))
   }
 
   function onPressPayment() {

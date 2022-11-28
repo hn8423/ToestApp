@@ -504,21 +504,6 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   })
   return (
     <>
-      <Header />
-      <View {...style.topTab}>
-        <View {...style.tabBox1}>
-          <Text {...style.BoxText1}>{globalText.menu3[language]}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.dispatch(DrawerActions.jumpTo('PaymentDrawer'))
-          }
-        >
-          <View {...style.tabBox2}>
-            <Text {...style.BoxText2}>{globalText.menu4[language]}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
       <ScrollView>
         <View {...style.wrapper}>
           <View {...style.whiteBox}>
