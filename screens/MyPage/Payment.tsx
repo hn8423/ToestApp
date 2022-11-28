@@ -292,10 +292,10 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
   useEffect(() => {
     if (user) {
     } else {
-      toastRef.current?.show(globalText.requireLogin[language])
-      setTimeout(() => {
-        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      }, 3000)
+      // toastRef.current?.show(globalText.requireLogin[language])
+      // setTimeout(() => {
+      navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      // }, 3000)
     }
   }, [language, navigation, user])
   useEffect(() => {

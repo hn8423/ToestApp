@@ -321,10 +321,10 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       setEmail(user[0].email)
       setCode(user[0].countryCode)
     } else {
-      toastRef.current?.show(globalText.requireLogin[language])
-      setTimeout(() => {
-        navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      }, 3000)
+      // toastRef.current?.show(globalText.requireLogin[language])
+      // setTimeout(() => {
+      navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
+      // }, 3000)
     }
   }, [language, navigation, user])
 
