@@ -9,8 +9,10 @@ import {
   NativeSyntheticEvent,
   TextInputChangeEventData,
   Platform,
+  Alert,
+  ToastAndroid,
 } from 'react-native'
-import {LoginStackParams, SC, ToestRef, LangMap2} from '../type'
+import {SignUpStackParams, SC, ToestRef, LangMap2} from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
@@ -200,11 +202,9 @@ const globalText: LangMap2 = {
   },
 }
 
-const SignUp: SC<LoginStackParams, 'SignUp'> = ({navigation}) => {
+const SignUp: SC<SignUpStackParams, 'SignUp'> = ({navigation}) => {
   const language = useRecoilValue(langState)
   // const language = 'en'
-
-  const toastRef = useRef<ToestRef>()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -264,23 +264,52 @@ const SignUp: SC<LoginStackParams, 'SignUp'> = ({navigation}) => {
         break
       case 1:
         if (!isFull) {
-          toastRef.current?.show(globalText.isFull[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.isFull[language])
+          } else {
+            ToastAndroid.show(globalText.isFull[language], ToastAndroid.SHORT)
+          }
           return
         }
         if (!isValid) {
-          toastRef.current?.show(globalText.isValid[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.isValid[language])
+          } else {
+            ToastAndroid.show(globalText.isValid[language], ToastAndroid.SHORT)
+          }
           return
         }
         if (!isStandard) {
-          toastRef.current?.show(globalText.isStandard[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.isStandard[language])
+          } else {
+            ToastAndroid.show(
+              globalText.isStandard[language],
+              ToastAndroid.SHORT,
+            )
+          }
           return
         }
         if (!isEmailValid) {
-          toastRef.current?.show(globalText.isEmailValid[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.isEmailValid[language])
+          } else {
+            ToastAndroid.show(
+              globalText.isEmailValid[language],
+              ToastAndroid.SHORT,
+            )
+          }
           return
         }
         if (!isNameValid) {
-          toastRef.current?.show(globalText.isNameValid[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.isNameValid[language])
+          } else {
+            ToastAndroid.show(
+              globalText.isNameValid[language],
+              ToastAndroid.SHORT,
+            )
+          }
           return
         }
         if (isLoading) {
@@ -291,7 +320,7 @@ const SignUp: SC<LoginStackParams, 'SignUp'> = ({navigation}) => {
         setChapter(s => s + 1)
         break
       case 2:
-        navigation.popToTop()
+        // navigation.replace('LogIn')
         navigation.dispatch(DrawerActions.jumpTo('Main'))
         return
     }
@@ -677,7 +706,6 @@ const SignUp: SC<LoginStackParams, 'SignUp'> = ({navigation}) => {
               NEXT
             </Button>
           </View>
-          <Toast {...style.toest} ref={toastRef} />
         </View>
       </ScrollView>
     </>

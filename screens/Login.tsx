@@ -9,9 +9,11 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
 } from 'react-native'
 import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
-import {DrawerScreenProps} from '@react-navigation/drawer'
 import Header from '../component/Header'
 import useGetStyle from '../hooks/use-style'
 import useLogin from '../hooks/useLogin'
@@ -22,16 +24,18 @@ import {AuthState} from '../atoms/auth'
 import {WebView} from 'react-native-webview'
 import baseURL from '../api/baseURL'
 import CookieManager from '@react-native-cookies/cookies'
+import {DrawerActions, StackActions} from '@react-navigation/native'
+import {SignUpStackNavigator} from '../navigation/StackNavigator'
 const chartHeight = Dimensions.get('window').height
 
 const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
   const webRef = useRef<WebView>(null)
-  const toastRef = useRef<ToestRef>()
   const lang = 'en'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [cookies, setCookies] = useState({})
+  const [isOpenSignUp, setIsOpenSignUp] = useState(false)
   const [passwordType, setPasswordType] = useState({
     type: 'password',
     visible: false,
@@ -151,22 +155,42 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
   //method
   //method
 
+  const onClickSignUp = () => {
+    navigation.dispatch(DrawerActions.jumpTo('SignUpStackNavigator'))
+  }
+
   const onClickSignin = () => {
     if (!isFull) {
-      toastRef.current?.show(globalText.isFull[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.isFull[lang])
+      } else {
+        ToastAndroid.show(globalText.isFull[lang], ToastAndroid.SHORT)
+      }
       return
     }
 
     if (!isStandard) {
-      toastRef.current?.show(globalText.isStandard[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.isStandard[lang])
+      } else {
+        ToastAndroid.show(globalText.isStandard[lang], ToastAndroid.SHORT)
+      }
       return
     }
     if (!isEmailValid) {
-      toastRef.current?.show(globalText.isEmailValid[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.isEmailValid[lang])
+      } else {
+        ToastAndroid.show(globalText.isEmailValid[lang], ToastAndroid.SHORT)
+      }
       return
     }
     if (loginLoading) {
-      toastRef.current?.show(globalText.loginLoading[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.loginLoading[lang])
+      } else {
+        ToastAndroid.show(globalText.loginLoading[lang], ToastAndroid.SHORT)
+      }
       return
     }
 
@@ -251,12 +275,18 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
       letterSpacing: 1.25,
       textTransform: 'uppercase',
       color: '#4AC1E8',
-      marginTop: 16,
+    },
+    signupWrapper: {
+      // backgroundColor: 'red',
+      marginTop: 20,
+      width: 80,
+      paddingBottom: 10,
     },
     textInput: {
       borderBottomColor: '#999999',
       borderBottomWidth: 1,
       marginTop: 18,
+      // paddingBottom: 5,
       // paddingVertical:8
     },
     passwordIcon: {
@@ -336,14 +366,12 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                     )}
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.replace('SignUp')
-                  }}
-                >
-                  <Text {...style.signupText}>
-                    {globalText.signUpButton[lang]}
-                  </Text>
+                <TouchableOpacity onPress={onClickSignUp}>
+                  <View {...style.signupWrapper}>
+                    <Text {...style.signupText}>
+                      {globalText.signUpButton[lang]}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
                 <View {...style.button}>
                   <Button
@@ -355,7 +383,6 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                   </Button>
                 </View>
               </View>
-              <Toast ref={toastRef} />
             </View>
           </ScrollView>
         </>

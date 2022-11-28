@@ -20,7 +20,9 @@ const StackApply = createStackNavigator()
 const StackTest = createStackNavigator()
 const StackResult = createStackNavigator()
 const StackMyPage = createStackNavigator()
+const StackPayment = createStackNavigator()
 const StackLogin = createStackNavigator()
+const StackSignup = createStackNavigator()
 
 const screenOptionStyle = {
   headerStyle: {
@@ -81,16 +83,29 @@ const MyPageStackNavigator = () => {
   return (
     <StackMyPage.Navigator screenOptions={screenOptionStyle}>
       <StackMyPage.Screen name="AccountSetting" component={AccountSetting} />
-      <StackMyPage.Screen name="Payment" component={Payment} />
+      <StackPayment.Screen name="Payment" component={Payment} />
     </StackMyPage.Navigator>
+  )
+}
+const PaymentStackNavigator = () => {
+  return (
+    <StackPayment.Navigator screenOptions={screenOptionStyle}>
+      <StackPayment.Screen name="Payment" component={Payment} />
+    </StackPayment.Navigator>
   )
 }
 const LoginStackNavigator = () => {
   return (
     <StackLogin.Navigator screenOptions={screenOptionStyle}>
       <StackLogin.Screen name="LogIn" component={LogIn} />
-      <StackLogin.Screen name="SignUp" component={SignUp} />
     </StackLogin.Navigator>
+  )
+}
+const SignUpStackNavigator = () => {
+  return (
+    <StackSignup.Navigator screenOptions={screenOptionStyle}>
+      <StackSignup.Screen name="SignUp" component={SignUp} />
+    </StackSignup.Navigator>
   )
 }
 export {
@@ -99,5 +114,7 @@ export {
   TestStackNavigator,
   ResultStackNavigator,
   MyPageStackNavigator,
+  PaymentStackNavigator,
   LoginStackNavigator,
+  SignUpStackNavigator,
 }

@@ -3,10 +3,17 @@ import {createDrawerNavigator} from '@react-navigation/drawer'
 import _ from 'lodash'
 import {DrawerScreenProps} from '@react-navigation/drawer'
 import TabNavigator from './TabNavigator'
-import {LoginStackNavigator, MyPageStackNavigator} from './StackNavigator'
+import {
+  LoginStackNavigator,
+  MyPageStackNavigator,
+  SignUpStackNavigator,
+  PaymentStackNavigator,
+} from './StackNavigator'
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
+import SignUpStackParams from '../screens/SignUp'
+import LogIn from '../screens/Login'
 import {DrawerParamList, LangMap2} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
 import {useRecoilState, useRecoilValue} from 'recoil'
@@ -334,6 +341,13 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
+        name="PaymentDrawer"
+        component={PaymentStackNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
         name="ToestIntro"
         component={ToestIntro}
         options={{
@@ -378,6 +392,13 @@ const DrawerNavigator = () => {
       <Drawer.Screen
         name="LoginStackNavigator"
         component={LoginStackNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="SignUpStackNavigator"
+        component={SignUpStackNavigator}
         options={{
           headerShown: false,
         }}

@@ -8,6 +8,9 @@ import {
   NativeSyntheticEvent,
   TextInputChangeEventData,
   ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
 } from 'react-native'
 import {MyPageStackParams, SC, LangMap2, ToestRef} from '../../type'
 import Header from '../../component/Header'
@@ -305,7 +308,9 @@ const globalText: LangMap2 = {
 
 const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   navigation,
+  route,
 }) => {
+  const params = route.params
   const user = useRecoilValue(AuthState)
   const language = useRecoilValue(langState)
   const [name, setName] = useState('')
@@ -313,7 +318,6 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
   const [code, setCode] = useState('')
-  const toastRef = useRef<ToestRef>()
 
   useEffect(() => {
     if (user) {
@@ -321,12 +325,13 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       setEmail(user[0].email)
       setCode(user[0].countryCode)
     } else {
-      // toastRef.current?.show(globalText.requireLogin[language])
-      // setTimeout(() => {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      // }, 3000)
     }
   }, [language, navigation, user])
+
+  useEffect(() => {
+    console.log('params : ', params)
+  }, [params])
 
   function setTargetValue(
     setState: React.Dispatch<React.SetStateAction<string>>,
@@ -359,7 +364,11 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       copy[0].countryCode = data.countryCode
       copy[0].password = data.password
       setAuth(copy)
-      toastRef.current?.show(globalText.checkChange[language])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.checkChange[language])
+      } else {
+        ToastAndroid.show(globalText.checkChange[language], ToastAndroid.SHORT)
+      }
       setTimeout(() => {
         navigation.replace('AccountSetting')
       }, 3000)
@@ -373,7 +382,14 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     async function clickChange() {
       try {
         if (!user) {
-          toastRef.current?.show(globalText.requireLogin[language])
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.requireLogin[language])
+          } else {
+            ToastAndroid.show(
+              globalText.requireLogin[language],
+              ToastAndroid.SHORT,
+            )
+          }
           setTimeout(() => {
             navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
           }, 3000)
@@ -493,7 +509,11 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
         <View {...style.tabBox1}>
           <Text {...style.BoxText1}>{globalText.menu3[language]}</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.push('Payment')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.dispatch(DrawerActions.jumpTo('PaymentDrawer'))
+          }
+        >
           <View {...style.tabBox2}>
             <Text {...style.BoxText2}>{globalText.menu4[language]}</Text>
           </View>
@@ -501,7 +521,6 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       </View>
       <ScrollView>
         <View {...style.wrapper}>
-          <Toast {...style.toest} ref={toastRef} />
           <View {...style.whiteBox}>
             <Text {...style.title}>{globalText.accountTitle[language]}</Text>
             <Text {...style.inputTitle}>

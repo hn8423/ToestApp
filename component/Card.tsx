@@ -19,11 +19,12 @@ const Card = ({
 }: Props) => {
   const style = useGetStyle({
     wrapper: {
-      width: 155,
+      width: 135,
       backgroundColor: '#fff',
       margin: 8,
       borderRadius: 16,
       overflow: 'hidden',
+      alignItems: 'center',
     },
     textWrapper: {
       paddingHorizontal: 16,
@@ -45,6 +46,9 @@ const Card = ({
       letterSpacing: 0.4,
       color: '#767676',
     },
+    img: {
+      resizeMode: 'contain',
+    },
   })
   const img = useMemo(() => {
     switch (title) {
@@ -65,7 +69,7 @@ const Card = ({
       }
     >
       <View {...style.wrapper}>
-        <Image source={img} />
+        <Image {...style.img} source={img} />
         <View {...style.textWrapper}>
           <Text {...style.title}>{title}</Text>
           <Text {...style.sub}>{description}</Text>

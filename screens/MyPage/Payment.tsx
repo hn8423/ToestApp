@@ -282,7 +282,6 @@ const globalText: LangMap2 = {
 const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
   const user = useRecoilValue(AuthState)
   const language = useRecoilValue(langState)
-  const toastRef = useRef<ToestRef>()
   //server connect
   //server connect
   //server connect
@@ -292,10 +291,7 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
   useEffect(() => {
     if (user) {
     } else {
-      // toastRef.current?.show(globalText.requireLogin[language])
-      // setTimeout(() => {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      // }, 3000)
     }
   }, [language, navigation, user])
   useEffect(() => {
@@ -425,7 +421,9 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
       <Header />
       <ScrollView>
         <View {...style.topTab}>
-          <TouchableOpacity onPress={() => navigation.push('AccountSetting')}>
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(DrawerActions.jumpTo('MyPage'))}
+          >
             <View {...style.tabBox2}>
               <Text {...style.BoxText2}>{globalText.menu3[language]}</Text>
             </View>

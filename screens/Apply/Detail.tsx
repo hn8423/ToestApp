@@ -6,6 +6,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
 } from 'react-native'
 import Toast from '../../component/Toest'
 import {ToestRef, SC, ApplyStackParams} from '../../type'
@@ -18,7 +21,7 @@ import {langState} from '../../atoms/lang'
 import _ from 'lodash'
 import Button from '../../component/Button'
 import {AuthState} from '../../atoms/auth'
-import {DrawerActions} from '@react-navigation/native'
+import {DrawerActions, StackActions, TabActions} from '@react-navigation/native'
 import {pay} from '../../api/apply'
 import useGetTicket from '../../hooks/useGetTicket'
 import Description from '../../component/Description'
@@ -173,7 +176,6 @@ Go to the login page.`,
   const [times, setTimes] = useState(params?.times || 0)
   const [selectedLevel, selectLevel] = useState('')
   const [checked, setCheck] = useState(false)
-  const toastRef = useRef<ToestRef>()
   const [completed, setcompleted] = useState(false)
   const {mutate: getTicketMutate} = useGetTicket()
   const {mutate: registedTestListMutate} = useRegisterTestList()
@@ -182,7 +184,11 @@ Go to the login page.`,
   const mutationPay = useMutation(pay, {
     onSuccess: data => {
       if (data.message === 'invalid call') {
-        toastRef.current?.show(globalText.overlap[lang])
+        if (Platform.OS === 'ios') {
+          Alert.alert('message', globalText.overlap[lang])
+        } else {
+          ToastAndroid.show(globalText.overlap[lang], ToastAndroid.SHORT)
+        }
         return
       }
       if (user) {
@@ -290,25 +296,34 @@ Go to the login page.`,
   }
 
   function onPressGoMyTicket() {
-    navigation.dispatch(DrawerActions.jumpTo('MyPage'))
-    navigation.goBack()
+    navigation.dispatch(TabActions.jumpTo('MyPage', {defaultScreen: 'payment'}))
+
+    // navigation.push(''))
+    // navigation.goBack()
   }
 
   function onPressPayment() {
     if (!user) {
-      toastRef.current?.show(globalText.notLogined[lang])
+      navigation.push('ApplyStack')
       setTimeout(() => {
-        navigation.goBack()
         navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
-      }, 3000)
+      }, 300)
       return
     }
     if (selectedLevel === '') {
-      toastRef.current?.show(globalText.level[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.level[lang])
+      } else {
+        ToastAndroid.show(globalText.level[lang], ToastAndroid.SHORT)
+      }
       return
     }
     if (!checked) {
-      toastRef.current?.show(globalText.check[lang])
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.check[lang])
+      } else {
+        ToastAndroid.show(globalText.check[lang], ToastAndroid.SHORT)
+      }
       return
     }
 
@@ -545,7 +560,6 @@ Go to the login page.`,
           >
             {completed ? 'GO MYTICKET' : 'NEXT'}
           </Button>
-          <Toast {...style.toest} ref={toastRef} />
         </View>
       )}
     </ScrollView>

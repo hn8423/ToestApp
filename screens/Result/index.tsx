@@ -35,7 +35,6 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
     },
   })
 
-  const toastRef = useRef<ToestRef>()
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
 

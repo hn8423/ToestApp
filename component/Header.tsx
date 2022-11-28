@@ -9,16 +9,22 @@ import {
   Platform,
 } from 'react-native'
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context'
+
 import useGetStyle from '../hooks/use-style'
 import {
   useNavigation,
   DrawerActions,
   StackActions,
   TabActions,
+  CommonActions,
+  NavigationAction,
 } from '@react-navigation/native'
 import {useRecoilState} from 'recoil'
 import {langState} from '../atoms/lang'
 
+type Props = {
+  navigation?: any
+}
 const Header = () => {
   const {top} = useSafeAreaInsets()
   const navigation = useNavigation()
@@ -87,7 +93,8 @@ const Header = () => {
   })
 
   const OnPressLogo = () => {
-    navigation.dispatch(StackActions.popToTop())
+    // navigation.dispatch(CommonActions.goBack())
+    navigation.dispatch(StackActions.pop())
     navigation.dispatch(DrawerActions.jumpTo('Main'))
     navigation.dispatch(TabActions.jumpTo('Home'))
   }

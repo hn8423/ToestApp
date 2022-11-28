@@ -24,12 +24,14 @@ export type DrawerParamList = {
   MyPage: {
     defaultScreen: string
   }
+  PaymentDrawer: undefined
   ToestIntro: undefined
   PrivacyPolicy: undefined
   TermsOfUse: undefined
   LoginStackNavigator?: undefined
   LogOut?: undefined
   Header: undefined
+  SignUpStackNavigator?: undefined
 }
 
 export type ToestRef = {
@@ -57,6 +59,8 @@ export type MyPageStackParams = {
 }
 export type LoginStackParams = {
   LogIn?: {}
+}
+export type SignUpStackParams = {
   SignUp?: {}
 }
 
