@@ -25,7 +25,7 @@ const ImageSlider = ({images = []}: Props) => {
 
   const style = useGetStyle({
     container: {
-      flex: 1,
+      // flex: 1,
       paddingLeft: 17,
       paddingTop: 96,
     },
@@ -105,7 +105,7 @@ const ImageSlider = ({images = []}: Props) => {
     <View>
       <Carousel
         width={chartWidth}
-        height={560}
+        height={460}
         loop
         autoPlay
         autoPlayInterval={5000}

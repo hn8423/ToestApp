@@ -115,7 +115,7 @@ const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
     },
     box2: {
       position: 'absolute',
-      top: 310,
+      top: 210,
       left: 16,
       width: chartWidth - 32,
       backgroundColor: '#fff',

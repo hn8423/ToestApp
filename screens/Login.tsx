@@ -1,4 +1,4 @@
-import React, {useState, useRef, useMemo, useEffect, useContext} from 'react'
+import React, {useState, useRef, useMemo} from 'react'
 import {
   View,
   Text,
@@ -338,7 +338,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('SignUp')
+                    navigation.replace('SignUp')
                   }}
                 >
                   <Text {...style.signupText}>

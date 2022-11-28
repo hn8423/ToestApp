@@ -33,8 +33,8 @@ const App = () => {
     //       if (userInfo)
 
     //     });
-    // SplashScreen.hide
-    setTimeout(SplashScreen.hide, 10)
+
+    SplashScreen.hide()
   }, [])
   const [isVisible, setVisible] = useState(false)
   const style = useGetStyle({
