@@ -1,12 +1,12 @@
 import React, {useEffect, useRef, useMemo, useState} from 'react'
 import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
 import {LangMap1, ToestRef, SC, ResultStackParams} from '../../type'
-import {useRecoilValue} from 'recoil'
+import {useRecoilState, useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
 import Header from '../../component/Header'
 import Card from '../../component/Card'
-import {DrawerActions} from '@react-navigation/native'
+import {DrawerActions, useIsFocused} from '@react-navigation/native'
 import {AuthState} from '../../atoms/auth'
 import Toast from '../../component/Toest'
 import useResultInfo from '../../hooks/useResultInfo'
@@ -37,20 +37,18 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
 
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+  const isFocused = useIsFocused()
 
-  const testData = useRecoilValue(ResultInfoState)
+  const [testData] = useRecoilState(ResultInfoState)
   const {mutate: resultInfoListMutate, isLoading} = useResultInfo()
   useEffect(() => {
     if (user) {
+      resultInfoListMutate({userId: user[0].id})
     } else {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [lang, navigation, user])
-  useEffect(() => {
-    if (user) {
-      resultInfoListMutate({userId: user[0].id})
-    }
-  }, [resultInfoListMutate, user])
+  }, [lang, navigation, resultInfoListMutate, user])
+
   const isEng = useMemo(() => lang === 'en', [lang])
   const testDataLang = useMemo(() => {
     if (!testData) {

@@ -6,6 +6,7 @@ import {useRecoilValue} from 'recoil'
 import {ResultDetailInfoState} from '../../atoms/resultDetailInfo'
 import useResultDetailInfo from '../../hooks/useResultDetailInfo'
 import MobileTab from '../../component/MobileTab'
+import {useIsFocused} from '@react-navigation/native'
 
 type paramsType = {
   testName: string
@@ -23,6 +24,8 @@ const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
   //DATA
   //DATA
   //DATA
+  const isFocused = useIsFocused()
+
   const params = route.params as paramsType
   const resultDetailData = useRecoilValue(ResultDetailInfoState)
   const {mutate: resultDetailInfoListMutate} = useResultDetailInfo()
@@ -76,6 +79,11 @@ const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
       setActiveTrophy(1)
     }
   }, [activeTrophy, score, worldPercentage])
+  useEffect(() => {
+    if (!isFocused) {
+      navigation.goBack()
+    }
+  }, [isFocused, navigation])
   return (
     <View>
       <MobileTab

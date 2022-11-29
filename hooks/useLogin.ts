@@ -8,7 +8,7 @@ import {LangMap2} from '../type'
 import {useState} from 'react'
 import {TabActions, useNavigation} from '@react-navigation/native'
 import useGetTicket from './useGetTicket'
-
+import authStorage from '../storages/authStorage'
 export default function useLogin() {
   const navigation = useNavigation()
   const setAuth = useSetRecoilState(AuthState)
@@ -30,6 +30,7 @@ export default function useLogin() {
       if (data.length === 0 || data.err) {
       } else {
         setAuth(data)
+        authStorage.set(data)
         navigation.dispatch(TabActions.jumpTo('Main'))
       }
     },

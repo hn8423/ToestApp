@@ -16,7 +16,7 @@ import SignUpStackParams from '../screens/SignUp'
 import LogIn from '../screens/Login'
 import {DrawerParamList, LangMap2} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
-import {useRecoilState, useRecoilValue} from 'recoil'
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
 import {AuthState} from '../atoms/auth'
 import {langState} from '../atoms/lang'
 import {
@@ -29,6 +29,10 @@ import {
   ScrollView,
 } from 'react-native'
 import useGetStyle from '../hooks/use-style'
+import useAuthLoadEffect from '../hooks/useAuthLoadEffect'
+import authStorage from '../storages/authStorage'
+import {RegisterTestInfoState} from '../atoms/registertesInfo'
+import {ResultInfoState} from '../atoms/resultInfo'
 const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 const Drawer = createDrawerNavigator<DrawerParamList>()
@@ -97,9 +101,13 @@ type menu = {
 }
 
 const DrawerNavigator = () => {
+  useAuthLoadEffect()
   const navigation = useNavigation()
   const lang = useRecoilValue(langState)
   const [user, setUser] = useRecoilState(AuthState)
+  const [, setTestData] = useRecoilState(ResultInfoState)
+  const setRegisterTestInfo = useSetRecoilState(RegisterTestInfoState)
+
   const isLogined = useMemo(() => {
     return !!user
   }, [user])
@@ -160,6 +168,9 @@ const DrawerNavigator = () => {
   //function
   const onPressLogOut = () => {
     setUser(null)
+    setRegisterTestInfo(null)
+    setTestData(null)
+    authStorage.clear()
     navigation.dispatch(TabActions.jumpTo('Main'))
   }
 

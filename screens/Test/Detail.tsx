@@ -22,6 +22,7 @@ import {WebView} from 'react-native-webview'
 import {AuthState} from '../../atoms/auth'
 import useTestSimpleData from '../../hooks/useTestSimpleData'
 import {TestSimpleDataState} from '../../atoms/testSimpleData'
+import {useIsFocused} from '@react-navigation/native'
 type paramsType = {
   testName: string
   times: number
@@ -150,6 +151,7 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
   const [isTest, setIsTest] = useState(false)
   const [userId, setUserId] = useState('')
   const [userCountryCode, setUserCountryCode] = useState('')
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     if (params !== undefined) {
@@ -174,6 +176,11 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
       setUserCountryCode(user[0].countryCode)
     }
   }, [user])
+  useEffect(() => {
+    if (!isFocused) {
+      navigation.goBack()
+    }
+  }, [isFocused, navigation])
   const {mutate: getTestSimpleData, isLoading: TestSimpleDataLoading} =
     useTestSimpleData()
   const simpleData = useRecoilValue(TestSimpleDataState)

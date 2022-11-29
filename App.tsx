@@ -31,10 +31,10 @@ const App = () => {
     //   AsyncStorage.getItem('auth', function (err, result:string) {
     //       const userInfo = JSON.parse(result)
     //       if (userInfo)
-
     //     });
-
-    SplashScreen.hide()
+    setTimeout(() => {
+      SplashScreen.hide()
+    }, 1000)
   }, [])
   const [isVisible, setVisible] = useState(false)
   const style = useGetStyle({

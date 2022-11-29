@@ -6,7 +6,7 @@ import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
 import Header from '../../component/Header'
 import Card from '../../component/Card'
-import {DrawerActions} from '@react-navigation/native'
+import {DrawerActions, useIsFocused} from '@react-navigation/native'
 import {RegisterTestInfoState} from '../../atoms/registertesInfo'
 import {AuthState} from '../../atoms/auth'
 import useRegisterTestList from '../../hooks/useRegistertestList'
@@ -57,20 +57,16 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
 
   const user = useRecoilValue(AuthState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
-
+  const isFocused = useIsFocused()
   const RegistedTestList = useRecoilValue(RegisterTestInfoState)
   const {mutate: registedTestListMutate, isLoading} = useRegisterTestList()
   useEffect(() => {
     if (user) {
+      registedTestListMutate({userId: user[0].id})
     } else {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [lang, navigation, user])
-  useEffect(() => {
-    if (user) {
-      registedTestListMutate({userId: user[0].id})
-    }
-  }, [registedTestListMutate, user])
+  }, [lang, navigation, registedTestListMutate, user])
 
   const testListLang = useMemo(() => {
     if (!RegistedTestList) {

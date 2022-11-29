@@ -26,6 +26,7 @@ import {updateAccount} from '../../api/mypage'
 const chartWidth = Dimensions.get('window').width
 
 import SearchInput from '../../component/SearchInput'
+import authStorage from '../../storages/authStorage'
 
 const globalText: LangMap2 = {
   menu1: {
@@ -364,6 +365,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       copy[0].countryCode = data.countryCode
       copy[0].password = data.password
       setAuth(copy)
+      authStorage.set(copy)
       if (Platform.OS === 'ios') {
         Alert.alert('message', globalText.checkChange[language])
       } else {
@@ -371,7 +373,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
       }
       setTimeout(() => {
         navigation.replace('AccountSetting')
-      }, 3000)
+      }, 2000)
     },
     onError: error => {
       console.log('err :', error)

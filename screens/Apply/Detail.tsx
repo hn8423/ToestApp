@@ -21,7 +21,12 @@ import {langState} from '../../atoms/lang'
 import _ from 'lodash'
 import Button from '../../component/Button'
 import {AuthState} from '../../atoms/auth'
-import {DrawerActions, StackActions, TabActions} from '@react-navigation/native'
+import {
+  DrawerActions,
+  StackActions,
+  TabActions,
+  useIsFocused,
+} from '@react-navigation/native'
 import {pay} from '../../api/apply'
 import useGetTicket from '../../hooks/useGetTicket'
 import Description from '../../component/Description'
@@ -180,7 +185,7 @@ Go to the login page.`,
   const {mutate: getTicketMutate} = useGetTicket()
   const {mutate: registedTestListMutate} = useRegisterTestList()
   const [isApply, setIsApply] = useState(false)
-
+  const isFocused = useIsFocused()
   const mutationPay = useMutation(pay, {
     onSuccess: data => {
       if (data.message === 'invalid call') {
@@ -213,6 +218,11 @@ Go to the login page.`,
     }
     mutate({testName, times})
   }, [mutate, testName, times])
+  useEffect(() => {
+    if (!isFocused) {
+      navigation.goBack()
+    }
+  }, [isFocused, navigation])
   //useMemo
   //useMemo
   //useMemo
