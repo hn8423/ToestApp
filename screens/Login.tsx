@@ -25,7 +25,6 @@ import {WebView} from 'react-native-webview'
 import baseURL from '../api/baseURL'
 import CookieManager from '@react-native-cookies/cookies'
 import {DrawerActions, StackActions} from '@react-navigation/native'
-import {SignUpStackNavigator} from '../navigation/StackNavigator'
 const chartHeight = Dimensions.get('window').height
 
 const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {

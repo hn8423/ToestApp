@@ -93,8 +93,6 @@ const Header = () => {
   })
 
   const OnPressLogo = () => {
-    // navigation.dispatch(CommonActions.goBack())
-    navigation.dispatch(StackActions.pop())
     navigation.dispatch(DrawerActions.jumpTo('Main'))
     navigation.dispatch(TabActions.jumpTo('Home'))
   }

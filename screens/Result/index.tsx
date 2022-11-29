@@ -47,7 +47,7 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
     } else {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [lang, navigation, resultInfoListMutate, user])
+  }, [lang, navigation, resultInfoListMutate, user, isFocused])
 
   const isEng = useMemo(() => lang === 'en', [lang])
   const testDataLang = useMemo(() => {

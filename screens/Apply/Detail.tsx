@@ -220,7 +220,7 @@ Go to the login page.`,
   }, [mutate, testName, times])
   useEffect(() => {
     if (!isFocused) {
-      navigation.goBack()
+      navigation.pop()
     }
   }, [isFocused, navigation])
   //useMemo

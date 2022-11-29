@@ -66,7 +66,7 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
     } else {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [lang, navigation, registedTestListMutate, user])
+  }, [lang, navigation, registedTestListMutate, user, isFocused])
 
   const testListLang = useMemo(() => {
     if (!RegistedTestList) {

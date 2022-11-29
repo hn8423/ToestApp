@@ -21,7 +21,7 @@ import {AuthState} from '../../atoms/auth'
 import {langState} from '../../atoms/lang'
 import Button from '../../component/Button'
 import Toast from '../../component/Toest'
-import {DrawerActions} from '@react-navigation/native'
+import {DrawerActions, useIsFocused} from '@react-navigation/native'
 import {updateAccount} from '../../api/mypage'
 const chartWidth = Dimensions.get('window').width
 
@@ -319,6 +319,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
   const [code, setCode] = useState('')
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     if (user) {
@@ -328,11 +329,7 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     } else {
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [language, navigation, user])
-
-  useEffect(() => {
-    console.log('params : ', params)
-  }, [params])
+  }, [language, navigation, user, isFocused])
 
   function setTargetValue(
     setState: React.Dispatch<React.SetStateAction<string>>,

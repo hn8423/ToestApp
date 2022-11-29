@@ -33,7 +33,7 @@ const screenOptionStyle = {
   headerBackTitle: '',
   headerShown: false,
 }
-const MainStackNavigator = () => {
+export const MainStackNavigator = () => {
   return (
     <StackMain.Navigator screenOptions={screenOptionStyle}>
       <StackMain.Screen name="HomeStack" component={Home} />
@@ -41,7 +41,7 @@ const MainStackNavigator = () => {
   )
 }
 
-const ApplyStackNavigator = () => {
+export const ApplyStackNavigator = () => {
   return (
     <StackApply.Navigator screenOptions={screenOptionStyle}>
       <StackApply.Screen name="ApplyStack" component={Apply} />
@@ -53,7 +53,7 @@ const ApplyStackNavigator = () => {
     </StackApply.Navigator>
   )
 }
-const TestStackNavigator = () => {
+export const TestStackNavigator = () => {
   return (
     <StackTest.Navigator screenOptions={screenOptionStyle}>
       <StackTest.Screen name="TestStack" component={Test} />
@@ -65,7 +65,7 @@ const TestStackNavigator = () => {
     </StackTest.Navigator>
   )
 }
-const ResultStackNavigator = () => {
+export const ResultStackNavigator = () => {
   return (
     <StackResult.Navigator screenOptions={screenOptionStyle}>
       <StackResult.Screen name="ResultStack" component={Result} />
@@ -80,7 +80,7 @@ const ResultStackNavigator = () => {
     </StackResult.Navigator>
   )
 }
-const MyPageStackNavigator = () => {
+export const MyPageStackNavigator = () => {
   return (
     <StackMyPage.Navigator screenOptions={screenOptionStyle}>
       <StackMyPage.Screen name="AccountSetting" component={AccountSetting} />
@@ -88,14 +88,14 @@ const MyPageStackNavigator = () => {
     </StackMyPage.Navigator>
   )
 }
-const PaymentStackNavigator = () => {
+export const PaymentStackNavigator = () => {
   return (
     <StackPayment.Navigator screenOptions={screenOptionStyle}>
       <StackPayment.Screen name="Payment" component={Payment} />
     </StackPayment.Navigator>
   )
 }
-const TopTabNavigatorStackNavigator = () => {
+export const TopTabNavigatorStackNavigator = () => {
   return (
     <StackPayment.Navigator screenOptions={screenOptionStyle}>
       <StackPayment.Screen
@@ -109,28 +109,17 @@ const TopTabNavigatorStackNavigator = () => {
     </StackPayment.Navigator>
   )
 }
-const LoginStackNavigator = () => {
+export const LoginStackNavigator = () => {
   return (
     <StackLogin.Navigator screenOptions={screenOptionStyle}>
       <StackLogin.Screen name="LogIn" component={LogIn} />
     </StackLogin.Navigator>
   )
 }
-const SignUpStackNavigator = () => {
+export const SignUpStackNavigator = () => {
   return (
     <StackSignup.Navigator screenOptions={screenOptionStyle}>
       <StackSignup.Screen name="SignUp" component={SignUp} />
     </StackSignup.Navigator>
   )
-}
-export {
-  MainStackNavigator,
-  ApplyStackNavigator,
-  TestStackNavigator,
-  ResultStackNavigator,
-  MyPageStackNavigator,
-  PaymentStackNavigator,
-  LoginStackNavigator,
-  SignUpStackNavigator,
-  TopTabNavigatorStackNavigator,
 }

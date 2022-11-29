@@ -6,8 +6,8 @@ import TabNavigator from './TabNavigator'
 import {
   LoginStackNavigator,
   MyPageStackNavigator,
-  SignUpStackNavigator,
   PaymentStackNavigator,
+  SignUpStackNavigator,
 } from './StackNavigator'
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
@@ -348,14 +348,30 @@ const DrawerNavigator = () => {
         name="MyPage"
         component={MyPageStackNavigator}
         options={{
-          headerShown: false,
+          headerTitle: 'Account Settings',
+          headerLeft: () => (
+            <TouchableOpacity
+              {...style.headerLeft}
+              onPress={() => navigation.goBack()}
+            >
+              <Image source={require('../assets/images/drawer/goBack.png')} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Drawer.Screen
         name="PaymentDrawer"
         component={PaymentStackNavigator}
         options={{
-          headerShown: false,
+          headerTitle: 'Payment History',
+          headerLeft: () => (
+            <TouchableOpacity
+              {...style.headerLeft}
+              onPress={() => navigation.goBack()}
+            >
+              <Image source={require('../assets/images/drawer/goBack.png')} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Drawer.Screen

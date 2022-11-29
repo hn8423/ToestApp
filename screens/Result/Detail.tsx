@@ -81,7 +81,7 @@ const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
   }, [activeTrophy, score, worldPercentage])
   useEffect(() => {
     if (!isFocused) {
-      navigation.goBack()
+      navigation.pop()
     }
   }, [isFocused, navigation])
   return (

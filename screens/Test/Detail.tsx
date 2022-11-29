@@ -178,7 +178,7 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
   }, [user])
   useEffect(() => {
     if (!isFocused) {
-      navigation.goBack()
+      navigation.pop()
     }
   }, [isFocused, navigation])
   const {mutate: getTestSimpleData, isLoading: TestSimpleDataLoading} =
