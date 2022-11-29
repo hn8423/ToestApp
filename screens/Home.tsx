@@ -99,24 +99,24 @@ const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
     center: {
       justifyContent: 'flex-start',
       textAlign: 'center',
-      height: chartHeight * 1.9,
+      height: chartHeight * 1.7,
     },
     boxWrapper: {
       position: 'relative',
       width: chartWidth,
     },
-    box1: {
+    boxAbsolute: {
       position: 'absolute',
       top: -50,
       left: 16,
+    },
+    box1: {
       width: chartWidth - 32,
       backgroundColor: '#fff',
       borderRadius: 16,
     },
     box2: {
-      position: 'absolute',
-      top: 210,
-      left: 16,
+      marginTop: 10,
       width: chartWidth - 32,
       backgroundColor: '#fff',
       borderRadius: 16,
@@ -155,28 +155,30 @@ const Home: SC<MainStackParams, 'HomeStack'> = ({navigation}) => {
         <View {...style.center}>
           <ImageSlider images={imageList} />
           <View {...style.boxWrapper}>
-            <View {...style.box1}>
-              <View {...style.boxTitleWrapper}>
-                <Text {...style.boxTitle}>TEST AS A SERVICE</Text>
+            <View {...style.boxAbsolute}>
+              <View {...style.box1}>
+                <View {...style.boxTitleWrapper}>
+                  <Text {...style.boxTitle}>TEST AS A SERVICE</Text>
+                </View>
+                <Image
+                  {...style.boxImage}
+                  source={require('../assets/images/home/box1.png')}
+                />
+                <View {...style.boxTitleWrapper}>
+                  <Text {...style.boxTitle}>{textLan.testAsDes}</Text>
+                </View>
               </View>
-              <Image
-                {...style.boxImage}
-                source={require('../assets/images/home/box1.png')}
-              />
-              <View {...style.boxTitleWrapper}>
-                <Text {...style.boxTitle}>{textLan.testAsDes}</Text>
-              </View>
-            </View>
-            <View {...style.box2}>
-              <View {...style.boxTitleWrapper}>
-                <Text {...style.boxTitle}>{textLan.bigData}</Text>
-              </View>
-              <Image
-                {...style.boxImage}
-                source={require('../assets/images/home/box1.png')}
-              />
-              <View {...style.boxTitleWrapper}>
-                <Text {...style.boxTitle}>{textLan.userFriendly}</Text>
+              <View {...style.box2}>
+                <View {...style.boxTitleWrapper}>
+                  <Text {...style.boxTitle}>{textLan.bigData}</Text>
+                </View>
+                <Image
+                  {...style.boxImage}
+                  source={require('../assets/images/home/box1.png')}
+                />
+                <View {...style.boxTitleWrapper}>
+                  <Text {...style.boxTitle}>{textLan.userFriendly}</Text>
+                </View>
               </View>
             </View>
           </View>

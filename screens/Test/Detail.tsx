@@ -346,6 +346,17 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
             uri: `${baseURL}/test/play/${testName}/${times}/${level}/q1?lang=${lang}`,
           }}
           onNavigationStateChange={navState => {
+            // 홈으로 갔을때 내리기
+            if (navState.url.split('/')[8] === undefined) {
+              setIsTest(false)
+            }
+            if (
+              navState.url === `${baseURL}/mobile` ||
+              navState.url === `${baseURL}/mobile/` ||
+              navState.url === `http://localhost:3000'/mobile/`
+            ) {
+              setIsTest(false)
+            }
             if (navState.url === `${baseURL}/test/play/done`) {
               if (user) {
                 const body = {

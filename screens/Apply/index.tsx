@@ -66,7 +66,9 @@ const Apply: SC<ApplyStackParams, 'ApplyStack'> = ({navigation}) => {
     }
 
     return data.map((v, i) => {
-      // console.log(v)
+      if (v.name === 'payTest') {
+        return
+      }
       return (
         <Card
           key={i}

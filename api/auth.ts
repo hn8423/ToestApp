@@ -1,7 +1,7 @@
 import baseURL from '../api/baseURL'
 
 export async function register(params: RegisterParams) {
-  const response = await fetch(`${baseURL}/api/signup`, {
+  const response = await fetch(`${baseURL}/api/application/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -19,7 +19,6 @@ export async function login(params: LoginParams) {
     },
     body: JSON.stringify(params),
   })
-  // console.log('response :', response.json())
   return response.json()
 }
 
