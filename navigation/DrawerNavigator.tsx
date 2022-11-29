@@ -14,6 +14,7 @@ import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
 import SignUpStackParams from '../screens/SignUp'
 import LogIn from '../screens/Login'
+import Mailer from 'react-native-mail'
 import {DrawerParamList, LangMap2} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
@@ -27,6 +28,9 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
 } from 'react-native'
 import useGetStyle from '../hooks/use-style'
 import useAuthLoadEffect from '../hooks/useAuthLoadEffect'
@@ -85,6 +89,10 @@ const globalText: LangMap2 = {
   toest: {
     en: 'What is TOEST?',
     ko: 'TOEST 란?',
+  },
+  emailError: {
+    en: 'email send err',
+    ko: '이메일을 보낼 수 없습니다.',
   },
 }
 
@@ -172,6 +180,30 @@ const DrawerNavigator = () => {
     setTestData(null)
     authStorage.clear()
     navigation.dispatch(TabActions.jumpTo('Main'))
+  }
+
+  const handleEmail = () => {
+    Mailer.mail(
+      {
+        subject: '', // 메일 제목
+        recipients: ['support@metavity.world'], // 받는 사람 이메일
+        body: '', // 기본 바디 내용
+        isHTML: true, // 바디가 html 형식인지 여부로, false이면 생략해도 된다.
+      },
+      (error, event) => {
+        // 보낸 후 동작
+        if (error) {
+          // 에러 처리
+          if (Platform.OS === 'ios') {
+            Alert.alert('message', globalText.emailError[lang])
+          } else {
+            ToastAndroid.show(globalText.emailError[lang], ToastAndroid.SHORT)
+          }
+        } else {
+          // 이벤트 처리
+        }
+      },
+    )
   }
 
   //style
@@ -282,14 +314,7 @@ const DrawerNavigator = () => {
                           <TouchableOpacity
                             {...style.itemChildren}
                             key={j.name + i}
-                            onPress={
-                              j.component === 'MyPage'
-                                ? () =>
-                                    navigation.navigate(j.component, {
-                                      defaultScreen: 'account',
-                                    })
-                                : () => navigation.navigate(j.component)
-                            }
+                            onPress={() => navigation.navigate(j.component)}
                           >
                             <Text {...style.itemChildrenText}>{j.name}</Text>
                           </TouchableOpacity>
@@ -297,11 +322,28 @@ const DrawerNavigator = () => {
                         .value()
                     return (
                       <View key={v.name + i} {...style.itemWrapper}>
-                        <View {...style.itemParents}>
-                          <Image {...style.itemParentsImage} source={v.icon} />
-                          <Text {...style.itemParentsText}>{v.name}</Text>
-                        </View>
-                        <View>{child}</View>
+                        {v.name === 'Need a help?' ? (
+                          <TouchableOpacity onPress={handleEmail}>
+                            <View {...style.itemParents}>
+                              <Image
+                                {...style.itemParentsImage}
+                                source={v.icon}
+                              />
+                              <Text {...style.itemParentsText}>{v.name}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        ) : (
+                          <>
+                            <View {...style.itemParents}>
+                              <Image
+                                {...style.itemParentsImage}
+                                source={v.icon}
+                              />
+                              <Text {...style.itemParentsText}>{v.name}</Text>
+                            </View>
+                            <View>{child}</View>
+                          </>
+                        )}
                       </View>
                     )
                   })

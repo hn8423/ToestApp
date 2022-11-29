@@ -34,6 +34,7 @@ specifiers:
   react-native: 0.70.3
   react-native-gesture-handler: ^2.7.1
   react-native-gradle-plugin: ^0.71.4
+  react-native-mail: ^6.1.1
   react-native-pager-view: ^6.1.1
   react-native-reanimated: ^2.11.0
   react-native-reanimated-carousel: ^3.1.1
@@ -68,6 +69,7 @@ dependencies:
   react-native: 0.70.3_5m5cnkzycncoaebvnxypxhevq4
   react-native-gesture-handler: 2.7.1_li67rxuecrv4t7nknbczgycq3a
   react-native-gradle-plugin: 0.71.4
+  react-native-mail: 6.1.1
   react-native-pager-view: 6.1.1_li67rxuecrv4t7nknbczgycq3a
   react-native-reanimated: 2.11.0_3czbkggvrmibboi24l5aa7shum
   react-native-reanimated-carousel: 3.1.1_tmqql6w3dc5gouloaanfqrbuwu
@@ -6662,6 +6664,10 @@ packages:
 
   /react-native-gradle-plugin/0.71.4:
     resolution: {integrity: sha512-5izzWXIlr5DL5+cx3a6oSA4cgSCw9Kv7WQjHqLxV2I1fSfzjzEdYTaDfrNjdcy71BHeeUB6BEyl70yXpjkCkdA==}
+    dev: false
+
+  /react-native-mail/6.1.1:
+    resolution: {integrity: sha512-pTs180wwyh7hN/iyTC9SfOX579U4YhDlHOLxi47IGvhPJENqO/QFdBq+wWKxyhNqdQuVSy+LoeIxLreWnIeYmg==}
     dev: false
 
   /react-native-pager-view/6.1.1_li67rxuecrv4t7nknbczgycq3a:
