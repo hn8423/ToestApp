@@ -1,32 +1,79 @@
-import { NavigationProp } from "@react-navigation/native";
-import { RouteProp } from '@react-navigation/native';
-import { CompositeNavigationProp,NavigatorScreenParams  } from "@react-navigation/core";
+import {NavigationProp} from '@react-navigation/native'
+import {NavigatorScreenParams, ParamListBase} from '@react-navigation/core'
+import {FC} from 'react'
+import {StackScreenProps} from '@react-navigation/stack'
 
-export type NavigationProps= {
-  navigation: NavigationProp<any,any>;
+export type NavigationProps = {
+  navigation: NavigationProp<any, any>
 }
 
 /*Tab*/
-export type MainParamList ={
-  Home: undefined;
-  Apply: undefined;
-  Test: undefined;
-  Result: undefined;
-  MyPage: undefined;
-
-};
+export type MainParamList = {
+  Home: undefined
+  Apply: undefined
+  Test: undefined
+  Result: undefined
+  MyPage: undefined
+}
 
 export type MainNavigationScreenParams = NavigatorScreenParams<MainParamList>
 
 /*Drawer*/
 export type DrawerParamList = {
-  Main: undefined;
+  Main: undefined
   MyPage: {
-    defaultScreen: string;
-  };
-  ToestIntro: undefined;
-  PrivacyPolicy: undefined;
-  TermsOfUse: undefined;
-  LogIn?: undefined;
-  LogOut?: undefined;
+    defaultScreen: string
+  }
+  PaymentDrawer: undefined
+  ToestIntro: undefined
+  PrivacyPolicy: undefined
+  TermsOfUse: undefined
+  LoginStackNavigator?: undefined
+  LogOut?: undefined
+  Header: undefined
+  SignUpStackNavigator?: undefined
+}
+
+export type ToestRef = {
+  show: (message: string) => void
+}
+
+export type MainStackParams = {
+  HomeStack?: {}
+}
+export type ApplyStackParams = {
+  ApplyStack?: {}
+  ApplyDetail?: {}
+}
+export type TestStackParams = {
+  TestStack?: {}
+  TestDetail?: {}
+}
+export type ResultStackParams = {
+  ResultStack?: {}
+  ResultDetail?: {}
+}
+export type MyPageStackParams = {
+  AccountSetting?: {}
+  Payment?: {}
+}
+export type LoginStackParams = {
+  LogIn?: {}
+}
+export type SignUpStackParams = {
+  SignUp?: {}
+}
+
+export type SC<T extends ParamListBase, K extends keyof T> = FC<
+  StackScreenProps<T, K>
+>
+
+type value = {
+  [x: string]: string
+}
+export type LangMap1 = {
+  [x in 'en' | 'ko']: value
+}
+export type LangMap2 = {
+  [x: string]: value
 }
