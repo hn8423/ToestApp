@@ -305,6 +305,12 @@ const globalText: LangMap2 = {
     en: 'please login',
     ko: '로그인이 필요합니다.',
   },
+  notLogined: {
+    ko: `로그인이 필요한 서비스 입니다.
+로그인 페이지로 이동합니다.`,
+    en: `It's a service that requires signin.
+Go to the login page.`,
+  },
 }
 
 const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
@@ -322,11 +328,19 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   const isFocused = useIsFocused()
 
   useEffect(() => {
+    if (!isFocused) {
+      return
+    }
     if (user) {
       setName(user[0].name)
       setEmail(user[0].email)
       setCode(user[0].countryCode)
     } else {
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.notLogined[language])
+      } else {
+        ToastAndroid.show(globalText.notLogined[language], ToastAndroid.SHORT)
+      }
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
   }, [language, navigation, user, isFocused])

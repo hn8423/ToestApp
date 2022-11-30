@@ -313,6 +313,11 @@ Go to the login page.`,
   function onPressPayment() {
     if (!user) {
       navigation.push('ApplyStack')
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.notLogined[lang])
+      } else {
+        ToastAndroid.show(globalText.notLogined[lang], ToastAndroid.SHORT)
+      }
       setTimeout(() => {
         navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
       }, 300)
