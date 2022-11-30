@@ -24,6 +24,7 @@ export type DrawerParamList = {
   MyPage: {
     defaultScreen: string
   }
+
   PaymentDrawer: undefined
   ToestIntro: undefined
   PrivacyPolicy: undefined

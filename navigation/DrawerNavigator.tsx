@@ -1,7 +1,6 @@
-import React, {useState, useMemo} from 'react'
+import React, {useMemo} from 'react'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import _ from 'lodash'
-import {DrawerScreenProps} from '@react-navigation/drawer'
 import TabNavigator from './TabNavigator'
 import {
   LoginStackNavigator,
@@ -12,8 +11,6 @@ import {
 import ToestIntro from '../screens/ToestIntro'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfUse from '../screens/TermsOfUse'
-import SignUpStackParams from '../screens/SignUp'
-import LogIn from '../screens/Login'
 import Mailer from 'react-native-mail'
 import {DrawerParamList, LangMap2} from '../type'
 import {useNavigation, TabActions} from '@react-navigation/native'
@@ -37,7 +34,6 @@ import useAuthLoadEffect from '../hooks/useAuthLoadEffect'
 import authStorage from '../storages/authStorage'
 import {RegisterTestInfoState} from '../atoms/registertesInfo'
 import {ResultInfoState} from '../atoms/resultInfo'
-const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 const Drawer = createDrawerNavigator<DrawerParamList>()
 
@@ -135,7 +131,7 @@ const DrawerNavigator = () => {
           {
             name: globalText.payment[lang],
             link: '/my_page?to=payment',
-            component: 'MyPage',
+            component: 'PaymentDrawer',
           },
         ],
       },
