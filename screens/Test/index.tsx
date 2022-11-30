@@ -121,7 +121,7 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
       return (
         <Card
           key={i}
-          title={v.title.split(' ')[0]}
+          title={v.title}
           description={v.description}
           navigation={navigation}
           times={v.times}
