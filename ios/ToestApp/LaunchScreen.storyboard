@@ -19,15 +19,11 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashIcon" translatesAutoresizingMaskIntoConstraints="NO" id="rkV-vJ-VV7">
                                 <rect key="frame" x="94.5" y="300" width="186" height="67.5"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="SplashBottom" translatesAutoresizingMaskIntoConstraints="NO" id="Wn7-Ie-bq8">
-                                <rect key="frame" x="125" y="548" width="125" height="45"/>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="rkV-vJ-VV7" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="AUX-yg-2ET"/>
-                            <constraint firstItem="Wn7-Ie-bq8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="W5a-xb-Xec"/>
                             <constraint firstItem="rkV-vJ-VV7" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="te2-uc-Q0D"/>
                         </constraints>
                     </view>
@@ -38,7 +34,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="SplashBottom" width="125" height="29"/>
         <image name="SplashIcon" width="186" height="67.5"/>
     </resources>
 </document>
