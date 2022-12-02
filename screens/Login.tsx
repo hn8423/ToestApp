@@ -1,4 +1,4 @@
-import React, {useState, useRef, useMemo} from 'react'
+import React, {useState, useRef, useMemo, useEffect} from 'react'
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Platform,
   Alert,
   ToastAndroid,
+  BackHandler,
 } from 'react-native'
 import {DrawerParamList, LoginStackParams, SC, ToestRef} from '../type'
 import Header from '../component/Header'
@@ -24,7 +25,12 @@ import {AuthState} from '../atoms/auth'
 import {WebView} from 'react-native-webview'
 import baseURL from '../api/baseURL'
 import CookieManager from '@react-native-cookies/cookies'
-import {DrawerActions, StackActions} from '@react-navigation/native'
+import {
+  DrawerActions,
+  StackActions,
+  TabActions,
+  useFocusEffect,
+} from '@react-navigation/native'
 const chartHeight = Dimensions.get('window').height
 
 const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
@@ -294,6 +300,20 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
       bottom: 10,
     },
   })
+
+  useFocusEffect(() => {
+    const fn = () => {
+      navigation.dispatch(DrawerActions.jumpTo('Main'))
+      navigation.dispatch(TabActions.jumpTo('Home'))
+      return true
+    }
+    BackHandler.addEventListener('hardwareBackPress', fn)
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', fn)
+    }
+  })
+
   return (
     <>
       {loginLoading ? (
@@ -305,13 +325,16 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
             source={{
               uri: `${baseURL}/mobile/signin`,
             }}
-            style={{
-              display: 'none',
+            style={
+              {
+                // display: 'none',
+              }
+            }
+            onNavigationStateChange={navState => {
+              console.log(navState.url)
             }}
           />
-
           <Header />
-
           <ScrollView>
             <View {...style.container}>
               {/* <View {...style.social}>

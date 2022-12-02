@@ -11,6 +11,7 @@ import {
   Platform,
   Alert,
   ToastAndroid,
+  BackHandler,
 } from 'react-native'
 import {MyPageStackParams, SC, LangMap2, ToestRef} from '../../type'
 import Header from '../../component/Header'
@@ -21,7 +22,12 @@ import {AuthState} from '../../atoms/auth'
 import {langState} from '../../atoms/lang'
 import Button from '../../component/Button'
 import Toast from '../../component/Toest'
-import {DrawerActions, useIsFocused} from '@react-navigation/native'
+import {
+  DrawerActions,
+  TabActions,
+  useFocusEffect,
+  useIsFocused,
+} from '@react-navigation/native'
 import {updateAccount} from '../../api/mypage'
 const chartWidth = Dimensions.get('window').width
 
@@ -514,6 +520,18 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     toest: {
       marginHorizontal: 'auto',
     },
+  })
+  useFocusEffect(() => {
+    const fn = () => {
+      navigation.dispatch(DrawerActions.jumpTo('Main'))
+      navigation.dispatch(TabActions.jumpTo('Home'))
+      return true
+    }
+    BackHandler.addEventListener('hardwareBackPress', fn)
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', fn)
+    }
   })
   return (
     <>

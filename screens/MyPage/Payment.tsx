@@ -9,13 +9,19 @@ import {
   Platform,
   Alert,
   ToastAndroid,
+  BackHandler,
 } from 'react-native'
 import {MyPageStackParams, SC, LangMap2} from '../../type'
 import {useRecoilValue} from 'recoil'
 import {AuthState} from '../../atoms/auth'
 import useGetStyle from '../../hooks/use-style'
 import {langState} from '../../atoms/lang'
-import {DrawerActions, useIsFocused} from '@react-navigation/native'
+import {
+  DrawerActions,
+  TabActions,
+  useFocusEffect,
+  useIsFocused,
+} from '@react-navigation/native'
 import Toast from '../../component/Toest'
 import useGetTicket from '../../hooks/useGetTicket'
 import {PayInfoState} from '../../atoms/payInfo'
@@ -430,11 +436,23 @@ const Payment: SC<MyPageStackParams, 'Payment'> = ({navigation}) => {
     return result
   }, [language, payInfo, style])
 
+  useFocusEffect(() => {
+    const fn = () => {
+      navigation.dispatch(DrawerActions.jumpTo('Main'))
+      navigation.dispatch(TabActions.jumpTo('Home'))
+      return true
+    }
+    BackHandler.addEventListener('hardwareBackPress', fn)
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', fn)
+    }
+  })
+
   return (
     <>
       <ScrollView>
         <View {...style.wrapper}>{cardList}</View>
-        <Toast />
       </ScrollView>
     </>
   )
