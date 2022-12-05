@@ -11,6 +11,7 @@ import {
   Platform,
   Alert,
   ToastAndroid,
+  BackHandler,
 } from 'react-native'
 import {MyPageStackParams, SC, LangMap2, ToestRef} from '../../type'
 import Header from '../../component/Header'
@@ -21,7 +22,12 @@ import {AuthState} from '../../atoms/auth'
 import {langState} from '../../atoms/lang'
 import Button from '../../component/Button'
 import Toast from '../../component/Toest'
-import {DrawerActions, useIsFocused} from '@react-navigation/native'
+import {
+  DrawerActions,
+  TabActions,
+  useFocusEffect,
+  useIsFocused,
+} from '@react-navigation/native'
 import {updateAccount} from '../../api/mypage'
 const chartWidth = Dimensions.get('window').width
 
@@ -305,6 +311,12 @@ const globalText: LangMap2 = {
     en: 'please login',
     ko: '로그인이 필요합니다.',
   },
+  notLogined: {
+    ko: `로그인이 필요한 서비스 입니다.
+로그인 페이지로 이동합니다.`,
+    en: `It's a service that requires signin.
+Go to the login page.`,
+  },
 }
 
 const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
@@ -322,11 +334,19 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
   const isFocused = useIsFocused()
 
   useEffect(() => {
+    if (!isFocused) {
+      return
+    }
     if (user) {
       setName(user[0].name)
       setEmail(user[0].email)
       setCode(user[0].countryCode)
     } else {
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.notLogined[language])
+      } else {
+        ToastAndroid.show(globalText.notLogined[language], ToastAndroid.SHORT)
+      }
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
   }, [language, navigation, user, isFocused])
@@ -500,6 +520,18 @@ const AccountSetting: SC<MyPageStackParams, 'AccountSetting'> = ({
     toest: {
       marginHorizontal: 'auto',
     },
+  })
+  useFocusEffect(() => {
+    const fn = () => {
+      navigation.dispatch(DrawerActions.jumpTo('Main'))
+      navigation.dispatch(TabActions.jumpTo('Home'))
+      return true
+    }
+    BackHandler.addEventListener('hardwareBackPress', fn)
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', fn)
+    }
   })
   return (
     <>

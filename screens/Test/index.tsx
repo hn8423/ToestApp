@@ -1,6 +1,15 @@
-import React, {useEffect, useRef, useMemo} from 'react'
-import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
-import {LangMap2, ToestRef, SC, TestStackParams} from '../../type'
+import React, {useEffect, useMemo} from 'react'
+import {
+  View,
+  Text,
+  Dimensions,
+  Image,
+  ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
+} from 'react-native'
+import {LangMap2, SC, TestStackParams} from '../../type'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
@@ -49,6 +58,12 @@ const globalText: LangMap2 = {
     en: 'TEST',
     ko: '응시',
   },
+  notLogined: {
+    ko: `로그인이 필요한 서비스 입니다.
+로그인 페이지로 이동합니다.`,
+    en: `It's a service that requires signin.
+Go to the login page.`,
+  },
 }
 const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
   //data
@@ -61,9 +76,17 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
   const RegistedTestList = useRecoilValue(RegisterTestInfoState)
   const {mutate: registedTestListMutate, isLoading} = useRegisterTestList()
   useEffect(() => {
+    if (!isFocused) {
+      return
+    }
     if (user) {
       registedTestListMutate({userId: user[0].id})
     } else {
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText.notLogined[lang])
+      } else {
+        ToastAndroid.show(globalText.notLogined[lang], ToastAndroid.SHORT)
+      }
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
   }, [lang, navigation, registedTestListMutate, user, isFocused])
@@ -98,7 +121,7 @@ const Test: SC<TestStackParams, 'TestStack'> = ({navigation}) => {
       return (
         <Card
           key={i}
-          title={v.title.split(' ')[0]}
+          title={v.title}
           description={v.description}
           navigation={navigation}
           times={v.times}

@@ -189,7 +189,7 @@ const TestDetail: SC<TestStackParams, 'TestDetail'> = ({navigation, route}) => {
       const body = {
         userId: user[0].id,
         level: params.level,
-        testName: params.testName,
+        testName: params.testName.split(' ')[0],
         times: params.times,
       }
       getTestSimpleData(body)

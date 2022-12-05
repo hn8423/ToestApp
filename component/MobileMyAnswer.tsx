@@ -10,6 +10,7 @@ import _ from 'lodash'
 import {LangMap2} from '../type'
 import {Result} from '../type/result'
 import Button from '../component/Button'
+import ViewVideo from './ViewVideo'
 dayjs.extend(utc)
 const chartWidth = Dimensions.get('window').width
 
@@ -296,52 +297,67 @@ const MobileMyAnswer = ({data}: Props) => {
   }, [data, globalText, lang, style])
 
   return (
-    <View {...style.wrapper}>
-      <View {...style.whiteBox}>
-        <Text {...style.resultTitle}>{resultTitle}</Text>
-        <View {...style.line} />
-        <View {...style.myanswerInfo}>
-          <Text>{doneTime}</Text>
-          <Text>LEVEL {data.level}</Text>
-        </View>
-        <View {...style.myAnswerGraphScore}>
-          <Text {...style.resultTitle}>SCORE</Text>
-          <Text {...style.myScore}>{myScore} </Text>
-          <Text {...style.resultTitle}>/ 100</Text>
-        </View>
-      </View>
-      <View {...style.whiteBox}>
-        <View {...style.awardWrapper}>
-          <Text {...style.resultTitle}>Award</Text>
-          <View>{activeObj}</View>
-        </View>
-      </View>
-      <View {...style.whiteBox}>
-        <View {...style.textTitle}>
-          <Text {...style.titleBlue}>{globalText[lang].myBlue} </Text>
-          <Text {...style.titleBlack}>{globalText[lang].answer}</Text>
-        </View>
-        <View {...style.line} />
-        <View {...style.listWrapper}>
-          <View {...style.listPart}>
-            <Text {...style.listTitle}>No.</Text>
+    <>
+      {select === 0 && (
+        <View {...style.wrapper}>
+          <View {...style.whiteBox}>
+            <Text {...style.resultTitle}>{resultTitle}</Text>
+            <View {...style.line} />
+            <View {...style.myanswerInfo}>
+              <Text>{doneTime}</Text>
+              <Text>LEVEL {data.level}</Text>
+            </View>
+            <View {...style.myAnswerGraphScore}>
+              <Text {...style.resultTitle}>SCORE</Text>
+              <Text {...style.myScore}>{myScore} </Text>
+              <Text {...style.resultTitle}>/ 100</Text>
+            </View>
           </View>
-          <View {...style.listPart}>
-            <Text {...style.listTitle}>{globalText[lang].answer}</Text>
+          <View {...style.whiteBox}>
+            <View {...style.awardWrapper}>
+              <Text {...style.resultTitle}>Award</Text>
+              <View>{activeObj}</View>
+            </View>
           </View>
-          <View {...style.listPart}>
-            <Text {...style.listTitle}>{globalText[lang].view}</Text>
-          </View>
-          <View {...style.listPart}>
-            <Text {...style.listTitle}>{globalText[lang].world}</Text>
-          </View>
-          <View {...style.listPart}>
-            <Text {...style.listTitle}>{country}</Text>
+          <View {...style.whiteBox}>
+            <View {...style.textTitle}>
+              <Text {...style.titleBlue}>{globalText[lang].myBlue} </Text>
+              <Text {...style.titleBlack}>{globalText[lang].answer}</Text>
+            </View>
+            <View {...style.line} />
+            <View {...style.listWrapper}>
+              <View {...style.listPart}>
+                <Text {...style.listTitle}>No.</Text>
+              </View>
+              <View {...style.listPart}>
+                <Text {...style.listTitle}>{globalText[lang].answer}</Text>
+              </View>
+              <View {...style.listPart}>
+                <Text {...style.listTitle}>{globalText[lang].view}</Text>
+              </View>
+              <View {...style.listPart}>
+                <Text {...style.listTitle}>{globalText[lang].world}</Text>
+              </View>
+              <View {...style.listPart}>
+                <Text {...style.listTitle}>{country}</Text>
+              </View>
+            </View>
+            <View /* {...style.scoreWrapper} */>{score}</View>
           </View>
         </View>
-        <View /* {...style.scoreWrapper} */>{score}</View>
-      </View>
-    </View>
+      )}
+      {select !== 0 && (
+        <ViewVideo
+          data={{
+            setSelect,
+            select,
+            testName: data.testName,
+            times: data.times,
+            level: data.level,
+          }}
+        />
+      )}
+    </>
   )
 }
 

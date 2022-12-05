@@ -1,6 +1,15 @@
-import React, {useEffect, useRef, useMemo, useState} from 'react'
-import {View, Text, Dimensions, Image, ScrollView} from 'react-native'
-import {LangMap1, ToestRef, SC, ResultStackParams} from '../../type'
+import React, {useEffect, useMemo, useState} from 'react'
+import {
+  View,
+  Text,
+  Dimensions,
+  Image,
+  ScrollView,
+  Platform,
+  Alert,
+  ToastAndroid,
+} from 'react-native'
+import {LangMap1, SC, ResultStackParams} from '../../type'
 import {useRecoilState, useRecoilValue} from 'recoil'
 import {langState} from '../../atoms/lang'
 import useGetStyle from '../../hooks/use-style'
@@ -24,6 +33,8 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
       각 평가별로 AI가 진단한 상세리포트와 누적리포트를 제공합니다.`,
       test1: `시험`,
       test2: `결과`,
+      notLogined: `로그인이 필요한 서비스 입니다.
+    로그인 페이지로 이동합니다.`,
     },
     en: {
       imgTitle1: `TOEST Portfolio`,
@@ -32,6 +43,8 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
         ' Authentic assessment combines\nmentoring, and learning to promote\nhigher-ordered thinking, and full\nparticipation of learners through daily\nroutines.',
       test1: `NEW`,
       test2: `RESULT`,
+      notLogined: `It's a service that requires signin.
+    Go to the login page.`,
     },
   })
 
@@ -42,12 +55,20 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
   const [testData] = useRecoilState(ResultInfoState)
   const {mutate: resultInfoListMutate, isLoading} = useResultInfo()
   useEffect(() => {
+    if (!isFocused) {
+      return
+    }
     if (user) {
       resultInfoListMutate({userId: user[0].id})
     } else {
+      if (Platform.OS === 'ios') {
+        Alert.alert('message', globalText[lang].notLogined)
+      } else {
+        ToastAndroid.show(globalText[lang].notLogined, ToastAndroid.SHORT)
+      }
       navigation.dispatch(DrawerActions.jumpTo('LoginStackNavigator'))
     }
-  }, [lang, navigation, resultInfoListMutate, user, isFocused])
+  }, [lang, navigation, resultInfoListMutate, user, isFocused, globalText])
 
   const isEng = useMemo(() => lang === 'en', [lang])
   const testDataLang = useMemo(() => {
@@ -79,7 +100,6 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
     }
 
     return testDataLang.map((v, i) => {
-      // console.log(v)
       return (
         <Card
           key={i}
