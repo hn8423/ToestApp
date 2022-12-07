@@ -294,6 +294,7 @@ const MobileMyAnswer = ({data}: Props) => {
     captionItem: {
       flexDirection: 'row',
       alignItems: 'center',
+      maxWidth: 100,
     },
     captionDotMy: {
       width: 12,
@@ -372,7 +373,9 @@ const MobileMyAnswer = ({data}: Props) => {
               </View>
               <View {...style.captionItem}>
                 <View {...style.captionDotCountry} />
-                <Text>{country}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail">
+                  {country}
+                </Text>
               </View>
               <View {...style.captionItem}>
                 <View {...style.captionDotOverall} />

@@ -79,7 +79,18 @@ export type ResultDetailDataType = {
       id: string
     }
   }
-  resultComment: unknown
+  resultComment: {
+    [x: string]: {
+      [x: string]: {
+        [x: string]: {
+          [x: string]: {
+            text_ko: string
+            text_en: string
+          }
+        }
+      }
+    }
+  }
   resultAIRecommendation: {
     id: string
     testInfoId: string

@@ -159,7 +159,7 @@ const MyAnswerGraph = ({
             fill="#000"
             textAnchor="middle"
           >
-            {`${worldWide}%`}
+            {worldWide !== 'NaN0' ? `${worldWide}%` : '0%'}
           </Text>
         </G>
         <G>
