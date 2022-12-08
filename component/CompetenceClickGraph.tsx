@@ -1,26 +1,5 @@
 import {View} from 'react-native'
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-  Text,
-} from 'react-native-svg'
+import {Circle, G, TextPath, Path, Line, Defs, Text} from 'react-native-svg'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 
@@ -29,7 +8,7 @@ import {LangMap2} from '../type'
 
 type Props = {
   data: {
-    clickSVG: (num: number) => () => void
+    clickSVG: (num: React.SetStateAction<number>) => () => void
     active: number
     setActive: React.Dispatch<React.SetStateAction<number>>
     globalText: LangMap2
@@ -42,21 +21,16 @@ const CompetenceClickGraph = ({
   const RADIUSOVERALL = 120
   const RADIUSCOUNTRY = 100
   const RADIUSMY = 80
-  const CIRCUMFERENCEOVERALL = 2 * Math.PI * RADIUSOVERALL
-  const CIRCUMFERENCECOUNTRY = 2 * Math.PI * RADIUSCOUNTRY
-  const CIRCUMFERENCEMY = 2 * Math.PI * RADIUSMY
   const lang = useRecoilValue(langState) as 'en' | 'ko'
 
   const style = useGetStyle({
     graphText: {
-      // fontStyle: 'normal',
       fontWeight: '500',
       fontSize: 10,
       lineHeight: 16,
       letterSpacing: 0.4,
     },
     graphText2: {
-      // fontStyle: 'normal',
       fontWeight: '500',
       fontSize: 9,
       lineHeight: 16,
@@ -119,16 +93,13 @@ const CompetenceClickGraph = ({
         x2="240"
         y2="240"
         stroke="#cfd6e4"
-        transform={{rotation: 225, origin: [210, 145.5], translateX: -88.5}}
+        transform={{rotation: 225, origin: [210, 145.5], translateX: -91}}
       />
       <Circle
-        // className={classname(['competence-graph-bar-overall-1', 'competence-graph-bar-overall', { actived: active === 1 }])}
-
         cx="164.25"
         cy="164.25"
         r="116.25"
         strokeWidth="2em"
-        onPress={clickSVG(1)}
         stroke={active === 1 ? '#ffd06d' : '#ffe26d'}
         transform={{
           rotation: -135,
@@ -144,13 +115,7 @@ const CompetenceClickGraph = ({
         <Path id="text-line1" d="M 1 164 Q 157 -50 327 148 " />
       </Defs>
       <G>
-        <Text
-          {...style.graphText}
-          x="3.75"
-          y="0"
-          fill="#fff"
-          onPress={clickSVG(1)}
-        >
+        <Text {...style.graphText} x="3.75" y="0" fill="#fff">
           <TextPath
             xlinkHref="#text-line1"
             startOffset={lang === 'en' ? 156 : 163}
@@ -164,7 +129,6 @@ const CompetenceClickGraph = ({
         cy="164.25"
         r="116.25"
         strokeWidth="2em"
-        onPress={clickSVG(2)}
         stroke={active === 2 ? '#ff9047' : '#ffa945'}
         transform={{
           rotation: -45,
@@ -180,13 +144,7 @@ const CompetenceClickGraph = ({
         <Path id="text-line2" d="M 216 54 Q 337 157 222 272 " />
       </Defs>
       <G>
-        <Text
-          {...style.graphText}
-          x="7.75"
-          y="0"
-          fill="#fff"
-          onPress={clickSVG(2)}
-        >
+        <Text {...style.graphText} x="7.75" y="0" fill="#fff">
           <TextPath
             xlinkHref="#text-line2"
             startOffset={lang === 'en' ? 40 : 80}
@@ -200,7 +158,6 @@ const CompetenceClickGraph = ({
         cy="164.25"
         r="116.25"
         strokeWidth="2em"
-        onPress={clickSVG(3)}
         stroke={active === 3 ? '#e56784' : '#e666a9'}
         transform={{
           rotation: 45,
@@ -213,23 +170,10 @@ const CompetenceClickGraph = ({
         strokeDasharray={730}
       />
       <Defs>
-        <Path id="text-line3" d="M 232 272 Q 337 157 222 54" />
+        <Path id="text-line3" d="M 61 235 Q 155 320 238 255" />
       </Defs>
-      <G
-        transform={{
-          rotation: 90,
-          origin: 82.125,
-          translateY: -7,
-          translateX: 165.5,
-        }}
-      >
-        <Text
-          {...style.graphText}
-          x="3.75"
-          y="6"
-          fill="#fff"
-          onPress={clickSVG(3)}
-        >
+      <G>
+        <Text {...style.graphText} fill="#fff">
           <TextPath
             xlinkHref="#text-line3"
             startOffset={lang === 'en' ? 51 : 80}
@@ -244,7 +188,6 @@ const CompetenceClickGraph = ({
         cy="164.25"
         r="116.25"
         strokeWidth="2em"
-        onPress={clickSVG(4)}
         stroke={active === 4 ? '#49a7e5' : '#4ac1e8'}
         transform={{
           rotation: 135,
@@ -257,23 +200,10 @@ const CompetenceClickGraph = ({
         strokeDasharray={730}
       />
       <Defs>
-        <Path id="text-line4" d="M 219 279 Q 350 163 206 36" />
+        <Path id="text-line4" d="M 75 80 Q 12 161 80 252 " />
       </Defs>
-      <G
-        transform={{
-          rotation: 160,
-          origin: 82.125,
-          translateY: 137,
-          translateX: 190.5,
-        }}
-      >
-        <Text
-          {...style.graphText2}
-          x="3.75"
-          y="6"
-          fill="#fff"
-          onPress={clickSVG(4)}
-        >
+      <G>
+        <Text {...style.graphText2} fill="#fff">
           <TextPath
             xlinkHref="#text-line4"
             startOffset={lang === 'en' ? 2 : 52}

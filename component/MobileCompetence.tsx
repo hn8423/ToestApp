@@ -1,5 +1,5 @@
-import {useMemo, useState} from 'react'
-import {Text, View} from 'react-native'
+import {useEffect, useMemo, useState} from 'react'
+import {Text, TouchableOpacity, View, Image, Dimensions} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useStyles2 from '../hooks/ use-style2'
@@ -8,8 +8,10 @@ import {Result} from '../type/result'
 import dbString from '../lib/database-result/gpst/dbStringVar'
 import _ from 'lodash'
 import CompetenceGraph from './CompetenceGraph'
-import Svg, {Circle, Defs, Line, Path} from 'react-native-svg'
+import Svg from 'react-native-svg'
 import CompetenceClickGraph from './CompetenceClickGraph'
+const chartWidth = Dimensions.get('window').width
+
 type Props = {
   data: {
     resultInfo?: Result.DetailDataType['resultInfo']
@@ -28,14 +30,184 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
   const [ScoreTypeEn, setScoreTypeEn] = useState('')
   const [ScoreTypeKo, setScoreTypeKo] = useState('')
   const {getStyles, styles} = useStyles2({
-    wrapper: {paddingVertical: 32, flex: 1},
-    test2: {borderRadius: 100},
-    competenceGraphBarOverall: {
-      // fill: 'none',
-      // strokeWidth: 2em,
-      // stroke-dashoffset: 548,
-      // stroke-dasharray: 730,
-      // transform-origin: center,
+    wrapper: {padding: 16, flex: 1},
+    whiteBox: {
+      marginTop: 16,
+      backgroundColor: '#fff',
+      padding: 24,
+      borderRadius: 8,
+    },
+    cardBox: {
+      marginTop: 16,
+      backgroundColor: '#fff',
+      paddingVertical: 24,
+      borderRadius: 8,
+    },
+    title: {
+      fontStyle: 'normal',
+      fontWeight: '700',
+      fontSize: 20,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+    },
+    CompetenceText: {
+      color: '#191919',
+      paddingBottom: 16,
+    },
+    captionSub: {
+      fontStyle: 'normal',
+      fontWeight: '400',
+      fontSize: 14,
+      lineHeight: 20,
+      letterSpacing: 0.25,
+      color: '#393939',
+    },
+    cardTitle: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: 16,
+      lineHeight: 24,
+      letterSpacing: 0.15,
+      textTransform: 'capitalize',
+      color: '#191919',
+      marginBottom: 16,
+      paddingHorizontal: 24,
+    },
+    svgWrapper: {
+      width: '100%',
+      alignItems: 'center',
+      position: 'relative',
+    },
+    caption: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    captionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      maxWidth: 100,
+    },
+    captionDot: {
+      width: 12,
+      height: 12,
+      borderRadius: 50,
+      marginRight: 8,
+    },
+    cardInner: {
+      paddingHorizontal: 24,
+    },
+    cardHr: {
+      width: chartWidth - 80,
+      height: 2,
+      backgroundColor: '#dbdbdb',
+      marginHorizontal: 24,
+      marginVertical: 8,
+    },
+    myScore: {backgroundColor: '#4AC1E8'},
+    average: {backgroundColor: '#CFD6E4'},
+    graphClick: {
+      position: 'absolute',
+      width: 40,
+      height: 30,
+    },
+    creativeThinking1: {
+      top: '33%',
+      left: '39.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-35deg'}],
+    },
+
+    creativeThinking2: {
+      top: '27.5%',
+      left: '52%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-10deg'}],
+    },
+
+    creativeThinking3: {
+      top: '27.5%',
+      right: '22%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '10deg'}],
+    },
+    creativeThinking4: {
+      top: '33%',
+      right: '9.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '35deg'}],
+    },
+    logical1: {
+      bottom: '3%',
+      right: '9.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-35deg'}],
+    },
+
+    logical2: {
+      bottom: '-2%',
+      right: '22%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-10deg'}],
+    },
+
+    logical3: {
+      bottom: '-2%',
+      left: '52%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '10deg'}],
+    },
+    logical4: {
+      bottom: '3%',
+      left: '40%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '35deg'}],
+    },
+    communication1: {
+      top: '42%',
+      right: '-2.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '50deg'}],
+    },
+
+    communication2: {
+      top: '54%',
+      right: '-8%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '75deg'}],
+    },
+
+    communication3: {
+      bottom: '23.5%',
+      right: '-8%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-80deg'}],
+    },
+    communication4: {
+      bottom: '11%',
+      right: '-2.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-50deg'}],
+    },
+    information1: {
+      bottom: '12%',
+      left: '30.5%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '50deg'}],
+    },
+
+    information2: {
+      bottom: '24%',
+      left: '25%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '75deg'}],
+    },
+
+    information3: {
+      bottom: '38%',
+      left: '25%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-80deg'}],
+    },
+    information4: {
+      bottom: '51%',
+      left: '30%',
+      transform: [{translateX: -50}, {translateY: -50}, {rotate: '-50deg'}],
+    },
+    cardImageWrapper: {
+      position: 'relative',
+      width: '100%',
+      height: 128,
+      backgroundColor: '#EFF2F5',
+      marginBottom: 24,
+    },
+    cardImage: {
+      position: 'absolute',
+      left: '5%',
     },
   })
   // method
@@ -62,7 +234,7 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
     },
   })
 
-  function clickSVG(num: number) {
+  function clickSVG(num: React.SetStateAction<number>) {
     return () => {
       setActive(num)
     }
@@ -182,6 +354,19 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
     textLang,
   ])
 
+  const imageCardContent = useMemo(() => {
+    switch (active) {
+      case 1:
+        return require('../assets/images/result/competence/create.png')
+      case 2:
+        return require('../assets/images/result/competence/communication.png')
+      case 3:
+        return require('../assets/images/result/competence/logical.png')
+      case 4:
+        return require('../assets/images/result/competence/infomation.png')
+    }
+  }, [active])
+
   const radial = useMemo(() => {
     // 100 = 718(164.25 + 240)
     // 0 = 164.25(164.25 + 0)
@@ -239,31 +424,165 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
       cct,
     ]
     return (
-      <>
-        <CompetenceGraph
-          imdlP={imdlP}
-          lctP={lctP}
-          ccP={ccP}
-          ctP={ctP}
-          imdlPC={imdlPC}
-          lctPC={lctPC}
-          ccPC={ccPC}
-          ctPC={ctPC}
-        />
-      </>
+      <CompetenceGraph
+        clickSvg={clickSVG}
+        imdlP={imdlP}
+        lctP={lctP}
+        ccP={ccP}
+        ctP={ctP}
+        imdlPC={imdlPC}
+        lctPC={lctPC}
+        ccPC={ccPC}
+        ctPC={ctPC}
+      />
     )
   }, [resultInfo])
-  // console.log(radial)
 
+  // effect
+  // effect
+  // effect
+  useEffect(() => {
+    if (areaScore >= 80) {
+      setAchievementEn('excellent')
+      setAchievementKo('뛰어난')
+    } else if (areaScore >= 60) {
+      setAchievementEn('high')
+      setAchievementKo('좋은')
+    } else if (areaScore >= 40) {
+      setAchievementEn('average')
+      setAchievementKo('보통')
+    } else {
+      setAchievementEn('basic')
+      setAchievementKo('기초적인')
+    }
+  }, [areaScore, resultComment])
+
+  useEffect(() => {
+    switch (active) {
+      case 0:
+        setScoreTypeEn('Creative Thinking')
+        setScoreTypeKo('창의력')
+      case 1:
+        setScoreTypeEn('Creative Thinking')
+        setScoreTypeKo('창의력')
+      // return 'com_creative'
+      case 2:
+        setScoreTypeEn('Communication & Collaboration')
+        setScoreTypeKo('의사소통 및 협업 능력')
+      case 3:
+        setScoreTypeEn('Logical & Critical thinking')
+        setScoreTypeKo('논리·비판적사고력')
+      case 4:
+        setScoreTypeEn('Information, Media, Digital literacy')
+        setScoreTypeKo('정보 미디어 디지털 역량')
+    }
+  }, [active])
   return (
     <View style={[styles.wrapper]}>
-      <Svg viewBox="0 0 328.5 328.5" width="328.5" height="328.5">
-        <CompetenceClickGraph
-          data={{clickSVG, active, setActive, globalText}}
-        />
-        {radial}
-      </Svg>
-      {/* <Text>jofsdija</Text> */}
+      <View style={[styles.whiteBox]}>
+        <Text style={[styles.title, styles.CompetenceText]}>
+          {globalText[lang].compentenceTitle}
+        </Text>
+        <Text style={[styles.captionSub]}>
+          {globalText[lang].competenceDescription}
+        </Text>
+        <View style={[styles.svgWrapper]} pointerEvents="box-none">
+          <Svg viewBox="0 0 328.5 328.5" width="328.5" height="328.5">
+            <CompetenceClickGraph
+              data={{clickSVG, active, setActive, globalText}}
+            />
+            {radial}
+          </Svg>
+          <TouchableOpacity
+            style={[styles.creativeThinking1, styles.graphClick]}
+            onPress={clickSVG(1)}
+          />
+          <TouchableOpacity
+            style={[styles.creativeThinking2, styles.graphClick]}
+            onPress={clickSVG(1)}
+          />
+
+          <TouchableOpacity
+            style={[styles.creativeThinking3, styles.graphClick]}
+            onPress={clickSVG(1)}
+          />
+          <TouchableOpacity
+            style={[styles.creativeThinking4, styles.graphClick]}
+            onPress={clickSVG(1)}
+          />
+          <TouchableOpacity
+            style={[styles.communication1, styles.graphClick]}
+            onPress={clickSVG(2)}
+          />
+          <TouchableOpacity
+            style={[styles.communication2, styles.graphClick]}
+            onPress={clickSVG(2)}
+          />
+          <TouchableOpacity
+            style={[styles.communication3, styles.graphClick]}
+            onPress={clickSVG(2)}
+          />
+          <TouchableOpacity
+            style={[styles.communication4, styles.graphClick]}
+            onPress={clickSVG(2)}
+          />
+          <TouchableOpacity
+            style={[styles.logical1, styles.graphClick]}
+            onPress={clickSVG(3)}
+          />
+          <TouchableOpacity
+            style={[styles.logical2, styles.graphClick]}
+            onPress={clickSVG(3)}
+          />
+          <TouchableOpacity
+            style={[styles.logical3, styles.graphClick]}
+            onPress={clickSVG(3)}
+          />
+          <TouchableOpacity
+            style={[styles.logical4, styles.graphClick]}
+            onPress={clickSVG(3)}
+          />
+          <TouchableOpacity
+            style={[styles.information1, styles.graphClick]}
+            onPress={clickSVG(4)}
+          />
+          <TouchableOpacity
+            style={[styles.information2, styles.graphClick]}
+            onPress={clickSVG(4)}
+          />
+          <TouchableOpacity
+            style={[styles.information3, styles.graphClick]}
+            onPress={clickSVG(4)}
+          />
+          <TouchableOpacity
+            style={[styles.information4, styles.graphClick]}
+            onPress={clickSVG(4)}
+          />
+        </View>
+        <View style={[styles.caption]}>
+          <View style={[styles.captionItem]}>
+            <View style={[styles.captionDot, styles.myScore]} />
+            <Text>My Score</Text>
+          </View>
+
+          <View style={[styles.captionItem]}>
+            <View style={[styles.captionDot, styles.average]} />
+            <Text>AVERAGE</Text>
+          </View>
+        </View>
+      </View>
+      {active !== 0 && (
+        <View style={[styles.cardBox]}>
+          <Text style={[styles.cardTitle]}>{title[0]}</Text>
+          <View style={[styles.cardImageWrapper]}>
+            <Image style={[styles.cardImage]} source={imageCardContent} />
+          </View>
+          <Text style={[styles.cardInner, styles.captionSub]}>{title[1]}</Text>
+          <View style={[styles.cardHr]} />
+          <Text style={[styles.cardInner, styles.captionSub]}>{topWorld}</Text>
+          <Text style={[styles.cardInner, styles.captionSub]}>{subTitle}</Text>
+        </View>
+      )}
     </View>
   )
 }

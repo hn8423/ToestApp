@@ -1,26 +1,4 @@
-import {View} from 'react-native'
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-  Text,
-} from 'react-native-svg'
+import Svg, {Circle, Polygon, Line} from 'react-native-svg'
 
 import useGetStyle from '../hooks/use-style'
 
@@ -33,6 +11,7 @@ type Props = {
   lctPC: number
   ccPC: number
   ctPC: number
+  clickSvg: (s: React.SetStateAction<number>) => () => void
 }
 
 const CompetenceGraph = ({
@@ -44,44 +23,10 @@ const CompetenceGraph = ({
   lctPC,
   ccPC,
   ctPC,
+  clickSvg,
 }: Props) => {
-  const RADIUSOVERALL = 120
-  const RADIUSCOUNTRY = 100
-  const RADIUSMY = 80
-  const CIRCUMFERENCEOVERALL = 2 * Math.PI * RADIUSOVERALL
-  const CIRCUMFERENCECOUNTRY = 2 * Math.PI * RADIUSCOUNTRY
-  const CIRCUMFERENCEMY = 2 * Math.PI * RADIUSMY
-  const style = useGetStyle({
-    myAnswerGraphWrapper: {
-      alignItems: 'center',
-      paddingVertical: 32,
-    },
-    myAnwerGraphText: {
-      transform: [{rotateZ: '90deg'}],
-    },
-    TopText: {
-      fontStyle: 'normal',
-      fontWeight: '700',
-      fontSize: 20,
-      lineHeight: 24,
-      letterSpacing: 0.15,
-    },
-    PercentText: {
-      fontStyle: 'normal',
-      fontWeight: '700',
-      fontSize: 36,
-      lineHeight: 48,
-    },
-    WorldWideText: {
-      fontStyle: 'normal',
-      fontWeight: '500',
-      fontSize: 10,
-      lineHeight: 16,
-      letterSpacing: 0.4,
-    },
-  })
   return (
-    <>
+    <Svg>
       <Polygon
         points={`164.25,${lctPC} ${imdlPC},164.25 164.25,${ctPC} ${ccPC},164.25`}
         fill="#cfd6e480"
@@ -163,7 +108,7 @@ const CompetenceGraph = ({
         stroke="#4AC1E8"
         strokeWidth="1px"
       />
-    </>
+    </Svg>
   )
 }
 
