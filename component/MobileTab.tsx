@@ -81,16 +81,20 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
       ),
       3: (
         <MobileDomainSpecifics
-        // resultInfo={resultInfo}
-        // resultComment={resultComment}
-        // userName={name}
+          data={{
+            resultInfo: resultDetailData?.resultInfo,
+            resultComment: resultDetailData?.resultComment,
+            userName: name,
+          }}
         />
       ),
       4: (
         <MobileOverallEvaluation
-        // resultInfo={resultInfo}
-        // resultComment={resultComment}
-        // userName={name}
+          data={{
+            resultInfo: resultDetailData?.resultInfo,
+            resultComment: resultDetailData?.resultComment,
+            userName: name,
+          }}
         />
       ),
       5: (
