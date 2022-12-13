@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import {View, Text} from 'react-native'
+import {View} from 'react-native'
 import {ResultStackParams, SC} from '../../type'
 import useGetStyle from '../../hooks/use-style'
 import {useRecoilValue} from 'recoil'
@@ -7,7 +7,7 @@ import {ResultDetailInfoState} from '../../atoms/resultDetailInfo'
 import useResultDetailInfo from '../../hooks/useResultDetailInfo'
 import MobileTab from '../../component/MobileTab'
 import {useIsFocused} from '@react-navigation/native'
-
+import _ from 'lodash'
 type paramsType = {
   testName: string
   times: number
@@ -39,10 +39,7 @@ const ResultDetail: SC<ResultStackParams, 'ResultDetail'> = ({
       resultDetailInfoListMutate(body)
     }
   }, [params, resultDetailInfoListMutate])
-  const [event, setEvent] = useState(true)
   const [activeTrophy, setActiveTrophy] = useState(0)
-  const [isInit, setInit] = useState(false)
-  const [isBBan, setBBan] = useState(false)
 
   //MEMO
   //MEMO

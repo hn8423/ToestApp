@@ -1,27 +1,27 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {AuthStateParams} from '../atoms/auth'
+import {AiStateParams} from '../atoms/aiRecomend'
 
-const key = 'auth'
+const key = 'ai'
 
-const authStorage = {
+const aiStorage = {
   async get() {
     const rawData = await AsyncStorage.getItem(key)
     if (!rawData) {
       return null
     }
     try {
-      const data: AuthStateParams = JSON.parse(rawData)
+      const data: AiStateParams = JSON.parse(rawData)
       return data
     } catch (e) {
       return null
     }
   },
-  set(AuthState: AuthStateParams) {
-    return AsyncStorage.setItem(key, JSON.stringify(AuthState))
+  set(AiState: AiStateParams) {
+    return AsyncStorage.setItem(key, JSON.stringify(AiState))
   },
   clear() {
     return AsyncStorage.removeItem(key)
   },
 }
 
-export default authStorage
+export default aiStorage

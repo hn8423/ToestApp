@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useRef, useEffect} from 'react'
+import React, {useMemo, useState} from 'react'
 import {
   View,
   Text,
@@ -12,14 +12,13 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native'
-import {SignUpStackParams, SC, ToestRef, LangMap2} from '../type'
+import {SignUpStackParams, SC, LangMap2} from '../type'
 import useGetStyle from '../hooks/use-style'
 import _ from 'lodash'
 import Header from '../component/Header'
 import Button from '../component/Button'
 import SearchInput from '../component/SearchInput'
 import {TextInput} from 'react-native-gesture-handler'
-import Toast from '../component/Toest'
 const chartHeight = Dimensions.get('window').height
 const chartWidth = Dimensions.get('window').width
 import useRegister from '../hooks/useRegister'
@@ -524,10 +523,6 @@ const SignUp: SC<SignUpStackParams, 'SignUp'> = ({navigation}) => {
       marginHorizontal: 'auto',
     },
   })
-
-  useEffect(() => {
-    console.log('cojs')
-  }, [])
 
   return (
     <>

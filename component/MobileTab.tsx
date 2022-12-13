@@ -1,10 +1,9 @@
-import {useEffect, useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {
   ScrollView,
   View,
   Dimensions,
   Text,
-  Touchable,
   TouchableOpacity,
 } from 'react-native'
 import {useRecoilValue} from 'recoil'
@@ -17,6 +16,8 @@ import MobileDomainSpecifics from './MobileDomainSpecifics'
 import MobileMyAnswer from './MobileMyAnswer'
 import MobileOverallEvaluation from './MobileOverallEvaluation'
 const chartWidth = Dimensions.get('window').width
+import _ from 'lodash'
+import useAIRecommend from '../hooks/useAIRecommend'
 
 type Props = {
   testName: string
@@ -32,6 +33,7 @@ type Obj = {
 const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
   const resultDetailData = useRecoilValue(ResultDetailInfoState)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+
   const [activeTab, setActiveTab] = useState(1)
   const globalText = {
     en: {
@@ -54,6 +56,85 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
       setActiveTab(id)
     }
   }
+
+  const dataList = useMemo(() => {
+    let result = [
+      {
+        name: 'dom_artHuman',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_artHumanScore,
+      },
+      {
+        name: 'dom_healthGlobal',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_healthGlobalScore,
+      },
+      {
+        name: 'dom_socialScience',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_socialScienceScore,
+      },
+      {
+        name: 'dom_technology',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_technologyScore,
+      },
+    ]
+    return result
+  }, [resultDetailData])
+  const dataListOrderByAchievement = useMemo(() => {
+    return _(dataList)
+      .orderBy(v => {
+        if (v.score) v.score.achievement
+      }, 'desc')
+      .value()
+  }, [dataList])
+
+  const top2Data = useMemo(
+    () => dataListOrderByAchievement.slice(0, 2),
+    [dataListOrderByAchievement],
+  )
+
+  const top2DataForNotZero = useMemo(
+    () =>
+      _(top2Data)
+        .filter(data => {
+          if (!data.score || 0) {
+            return false
+          }
+          return true
+          // data.score.score
+        })
+        .value(),
+    [top2Data],
+  )
+  const dataListFor80Over = useMemo(
+    () =>
+      _(dataListOrderByAchievement)
+        .filter(v => {
+          if (!v.score) {
+            return false
+          }
+          return v.score.achievement >= 80
+        })
+        .value(),
+    [dataListOrderByAchievement],
+  )
+
+  const displayDataList = useMemo(() => {
+    let is80OverDisplay = dataListFor80Over.length > 2
+    return is80OverDisplay ? dataListFor80Over : top2DataForNotZero
+  }, [dataListFor80Over, top2DataForNotZero])
+
+  const obtainBadgeStrong = useMemo(() => {
+    return displayDataList.map(v => v.name)
+  }, [displayDataList])
+  // console.log(obtainBadgeStrong)
+  const aiRecommendation = useAIRecommend({
+    data: resultDetailData?.resultAIRecommendation,
+    badgeList: obtainBadgeStrong,
+    userId: resultDetailData?.resultUserId,
+    testName,
+    times,
+    level,
+  })
+
   //MEMO
   //MEMO
   //MEMO
@@ -98,12 +179,17 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
         />
       ),
       5: (
-        <MobileAi /* aiRecommendation={aiRecommendation} resultInfo={resultInfo}  */
+        <MobileAi
+          data={{
+            resultInfo: resultDetailData?.resultInfo,
+            aiRecommendation,
+          }}
         />
       ),
     }),
     [
       activeTrophy,
+      aiRecommendation,
       level,
       name,
       resultDetailData?.resultComment,
@@ -187,11 +273,6 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
     tabText5: {
       color: activeTab === 5 ? '#4AC1E8' : '#999999',
     },
-    tabContants: {
-      // backgroundColor: 'red',
-      // height: 428,
-      // width: 234,
-    },
   })
 
   return (
@@ -228,7 +309,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <View {...style.tabContants}>{active}</View>
+        <View>{active}</View>
       </View>
     </ScrollView>
   )

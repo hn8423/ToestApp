@@ -41,6 +41,7 @@ export namespace Result {
 }
 
 export type ResultDetailDataType = {
+  resultUserId: string
   resultInfo: {
     myAnswerInfo: {
       stage: number
@@ -79,21 +80,23 @@ export type ResultDetailDataType = {
       id: string
     }
   }
-  resultComment: {
-    [x: string]: {
-      [x: string]: {
-        [x: string]: {
-          [x: string]: {
-            text_ko: string
-            text_en: string
-          }
-        }
-      }
-    }
-  }
+  resultComment: unknown
+  // {
+  //   [x: string]: {
+  //     [x: string]: {
+  //       [x: string]: {
+  //         [x: string]: {
+  //           text_ko: string
+  //           text_en: string
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   resultAIRecommendation: {
     id: string
     testInfoId: string
+    isFixed?: boolean
     AIChannelList: {
       id: string
       recommendationId: string
@@ -101,6 +104,8 @@ export type ResultDetailDataType = {
       tags: string
       dom: string
       ytId: string
+      thumbnail: string //
+      title: string //
     }[]
     AIMovieList: {
       id: string
@@ -112,6 +117,7 @@ export type ResultDetailDataType = {
       genre: string
       movieRatingOfAge: number
       ytId: string
+      thumbnail: string //
     }[]
     AIPeopleList: {
       id: string

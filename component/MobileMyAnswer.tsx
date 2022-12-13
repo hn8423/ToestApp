@@ -190,7 +190,6 @@ const MobileMyAnswer = ({data}: Props) => {
       setActiveTrophy(1)
     }
   }, [scores, worldPercentage])
-  // console.log(data.testName)
   //STYLE
   //STYLE
   //STYLE
