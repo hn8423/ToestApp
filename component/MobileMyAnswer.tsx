@@ -1,5 +1,5 @@
 import {useMemo, useState, useEffect} from 'react'
-import {Text, View, Dimensions, Image, TouchableOpacity} from 'react-native'
+import {Text, View, Image} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
@@ -11,8 +11,8 @@ import {LangMap2} from '../type'
 import {Result} from '../type/result'
 import Button from '../component/Button'
 import ViewVideo from './ViewVideo'
+import MyAnswerGraph from './myAnswerGraph'
 dayjs.extend(utc)
-const chartWidth = Dimensions.get('window').width
 
 type Props = {
   data: {
@@ -26,9 +26,7 @@ type Props = {
 type TitleMapType = {
   [x: string]: string
 }
-type Obj = {
-  [x: number]: string | JSX.Element
-}
+
 const MobileMyAnswer = ({data}: Props) => {
   //DATA
   //DATA
@@ -63,6 +61,34 @@ const MobileMyAnswer = ({data}: Props) => {
       spyco: `spyco`,
     }
     return titleMap[data.testName]
+  }, [data])
+
+  const worldScore = useMemo(
+    () => (data.resultInfo ? data.resultInfo?.scoreMap.score.world.average : 0),
+    [data],
+  )
+  const countryScore = useMemo(
+    () =>
+      data.resultInfo ? data.resultInfo?.scoreMap.score.country.average : 0,
+    [data],
+  )
+  const myScoreReal = useMemo(
+    () => (data.resultInfo ? data.resultInfo.scoreMap.score.score : 0),
+    [data],
+  )
+  let worldWide = useMemo(() => {
+    let percent = data.resultInfo?.scoreMap.score.world.topPercentage
+    if (percent === 100) {
+      return '100'
+    }
+
+    let displayNumber = _(percent).floor(1)
+    let isInteger = Number.isInteger(displayNumber)
+    let numberAmount = _(percent).floor().toString().length === 1
+    let word = _(
+      isInteger ? `${displayNumber}.` : `${_(displayNumber).floor(1)}`,
+    ).padEnd(numberAmount ? 3 : 4, '0')
+    return word
   }, [data])
 
   const doneTime = useMemo(() => {
@@ -164,7 +190,6 @@ const MobileMyAnswer = ({data}: Props) => {
       setActiveTrophy(1)
     }
   }, [scores, worldPercentage])
-  // console.log(data.testName)
   //STYLE
   //STYLE
   //STYLE
@@ -239,7 +264,6 @@ const MobileMyAnswer = ({data}: Props) => {
       flexDirection: 'row',
       borderBottomColor: '#F1F1F5',
       borderBottomWidth: 2,
-      // justifyContent: 'space-around',
     },
     listPart: {
       width: '20%',
@@ -260,6 +284,37 @@ const MobileMyAnswer = ({data}: Props) => {
       flexDirection: 'row',
       borderBottomColor: '#F1F1F5',
       borderBottomWidth: 2,
+    },
+    caption: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      // backgroundColor: 'red',
+    },
+    captionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      maxWidth: 100,
+    },
+    captionDotMy: {
+      width: 12,
+      height: 12,
+      backgroundColor: '#0086c3',
+      borderRadius: 50,
+      marginRight: 8,
+    },
+    captionDotCountry: {
+      width: 12,
+      height: 12,
+      backgroundColor: '#1ab3e5',
+      borderRadius: 50,
+      marginRight: 8,
+    },
+    captionDotOverall: {
+      width: 12,
+      height: 12,
+      backgroundColor: '#7dd2ee',
+      borderRadius: 50,
+      marginRight: 8,
     },
   })
 
@@ -307,6 +362,25 @@ const MobileMyAnswer = ({data}: Props) => {
               <Text>{doneTime}</Text>
               <Text>LEVEL {data.level}</Text>
             </View>
+            <MyAnswerGraph
+              data={{worldScore, countryScore, myScoreReal, worldWide}}
+            />
+            <View {...style.caption}>
+              <View {...style.captionItem}>
+                <View {...style.captionDotMy} />
+                <Text>MY</Text>
+              </View>
+              <View {...style.captionItem}>
+                <View {...style.captionDotCountry} />
+                <Text numberOfLines={1} ellipsizeMode="tail">
+                  {country}
+                </Text>
+              </View>
+              <View {...style.captionItem}>
+                <View {...style.captionDotOverall} />
+                <Text>OVERALL</Text>
+              </View>
+            </View>
             <View {...style.myAnswerGraphScore}>
               <Text {...style.resultTitle}>SCORE</Text>
               <Text {...style.myScore}>{myScore} </Text>
@@ -342,7 +416,7 @@ const MobileMyAnswer = ({data}: Props) => {
                 <Text {...style.listTitle}>{country}</Text>
               </View>
             </View>
-            <View /* {...style.scoreWrapper} */>{score}</View>
+            <View>{score}</View>
           </View>
         </View>
       )}
