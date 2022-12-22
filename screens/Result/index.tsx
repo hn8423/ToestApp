@@ -109,7 +109,7 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
           times={v.times}
           level={v.level}
           routeName="ResultDetail"
-        ></Card>
+        />
       )
     })
   }, [navigation, testDataLang])
@@ -211,7 +211,7 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
                 <Text {...style.sub}>{globalText[lang].bannerDes}</Text>
               </View>
             </View>
-            <View {...style.brithtness}></View>
+            <View {...style.brithtness} />
             <Image
               {...style.mainImg}
               source={require('../../assets/images/result/main.png')}

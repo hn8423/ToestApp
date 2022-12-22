@@ -309,7 +309,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <View>{active}</View>
+        {/* <View>{active}</View> */}
       </View>
     </ScrollView>
   )
