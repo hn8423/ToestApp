@@ -462,16 +462,20 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
       case 0:
         setScoreTypeEn('Creative Thinking')
         setScoreTypeKo('창의력')
+        break
       case 1:
         setScoreTypeEn('Creative Thinking')
         setScoreTypeKo('창의력')
+        break
       // return 'com_creative'
       case 2:
         setScoreTypeEn('Communication & Collaboration')
         setScoreTypeKo('의사소통 및 협업 능력')
+        break
       case 3:
         setScoreTypeEn('Logical & Critical thinking')
         setScoreTypeKo('논리·비판적사고력')
+        break
       case 4:
         setScoreTypeEn('Information, Media, Digital literacy')
         setScoreTypeKo('정보 미디어 디지털 역량')
@@ -480,13 +484,13 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
   return (
     <View style={[styles.wrapper]}>
       <View style={[styles.whiteBox]}>
-        <Text style={[styles.title, styles.CompetenceText]}>
+        {/* <Text style={[styles.title, styles.CompetenceText]}>
           {globalText[lang].compentenceTitle}
         </Text>
         <Text style={[styles.captionSub]}>
           {globalText[lang].competenceDescription}
-        </Text>
-        <View style={[styles.svgWrapper]} pointerEvents="box-none">
+        </Text> */}
+        {/* <View style={[styles.svgWrapper]} pointerEvents="box-none">
           <Svg viewBox="0 0 328.5 328.5" width="328.5" height="328.5">
             <CompetenceClickGraph
               data={{clickSVG, active, setActive, globalText}}
@@ -558,8 +562,8 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
             style={[styles.information4, styles.graphClick]}
             onPress={clickSVG(4)}
           />
-        </View>
-        <View style={[styles.caption]}>
+        </View>  */}
+        {/* <View style={[styles.caption]}>
           <View style={[styles.captionItem]}>
             <View style={[styles.captionDot, styles.myScore]} />
             <Text>My Score</Text>
@@ -569,9 +573,9 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
             <View style={[styles.captionDot, styles.average]} />
             <Text>AVERAGE</Text>
           </View>
-        </View>
+        </View> */}
       </View>
-      {active !== 0 && (
+      {/* {active !== 0 && (
         <View style={[styles.cardBox]}>
           <Text style={[styles.cardTitle]}>{title[0]}</Text>
           <View style={[styles.cardImageWrapper]}>
@@ -582,7 +586,7 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
           <Text style={[styles.cardInner, styles.captionSub]}>{topWorld}</Text>
           <Text style={[styles.cardInner, styles.captionSub]}>{subTitle}</Text>
         </View>
-      )}
+      )} */}
     </View>
   )
 }

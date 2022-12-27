@@ -1,26 +1,5 @@
-import {View} from 'react-native'
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-  Text,
-} from 'react-native-svg'
+import {Text, View} from 'react-native'
+import Svg, {Circle} from 'react-native-svg'
 
 import useGetStyle from '../hooks/use-style'
 
@@ -46,9 +25,17 @@ const MyAnswerGraph = ({
     myAnswerGraphWrapper: {
       alignItems: 'center',
       paddingVertical: 32,
+      position: 'relative',
     },
     myAnwerGraphText: {
       transform: [{rotateZ: '90deg'}],
+    },
+
+    Textwrapper: {
+      position: 'absolute',
+      top: '45%',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     TopText: {
       fontStyle: 'normal',
@@ -56,12 +43,14 @@ const MyAnswerGraph = ({
       fontSize: 20,
       lineHeight: 24,
       letterSpacing: 0.15,
+      color: '#000',
     },
     PercentText: {
       fontStyle: 'normal',
       fontWeight: '700',
       fontSize: 36,
       lineHeight: 48,
+      color: '#000',
     },
     WorldWideText: {
       fontStyle: 'normal',
@@ -69,6 +58,7 @@ const MyAnswerGraph = ({
       fontSize: 10,
       lineHeight: 16,
       letterSpacing: 0.4,
+      color: '#767676',
     },
   })
   return (
@@ -92,10 +82,6 @@ const MyAnswerGraph = ({
           strokeDasharray={CIRCUMFERENCEOVERALL}
           strokeDashoffset={CIRCUMFERENCEOVERALL * (1 - worldScore / 100)}
           strokeLinecap={'round'}
-          /* rotation={-90}
-          origin={[63.75, 63.75]}
-          translateY={127.5} */
-
           transform={{rotation: -90, origin: 63.75, translateY: 127.5}}
         />
 
@@ -140,40 +126,14 @@ const MyAnswerGraph = ({
           strokeLinecap={'round'}
           transform={{rotation: -90, origin: 63.75, translateY: 127.5}}
         />
-        <G>
-          <Text
-            {...style.TopText}
-            x={'50%'}
-            y="105"
-            fill="#000"
-            textAnchor="middle"
-          >
-            TOP
-          </Text>
-        </G>
-        <G>
-          <Text
-            {...style.PercentText}
-            x={'51%'}
-            y="140.5"
-            fill="#000"
-            textAnchor="middle"
-          >
-            {worldWide !== 'NaN0' ? `${worldWide}%` : '0%'}
-          </Text>
-        </G>
-        <G>
-          <Text
-            {...style.WorldWideText}
-            x={'50%'}
-            y="162.5"
-            fill="#767676"
-            textAnchor="middle"
-          >
-            WORLDWIDE
-          </Text>
-        </G>
       </Svg>
+      <View {...style.Textwrapper}>
+        <Text {...style.TopText}>TOP</Text>
+        <Text {...style.PercentText}>
+          {worldWide !== 'NaN0' ? `${worldWide}%` : '0%'}
+        </Text>
+        <Text {...style.WorldWideText}>WORLDWIDE</Text>
+      </View>
     </View>
   )
 }

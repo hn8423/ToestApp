@@ -353,7 +353,7 @@ const MobileMyAnswer = ({data}: Props) => {
 
   return (
     <>
-      {select === 0 && (
+      {select === 0 && data && (
         <View {...style.wrapper}>
           <View {...style.whiteBox}>
             <Text {...style.resultTitle}>{resultTitle}</Text>
