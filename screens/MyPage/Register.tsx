@@ -42,7 +42,7 @@ const globalText: LangMap2 = {
     ko: '계정 설정',
   },
   menu4: {
-    en: 'Payment',
+    en: 'Register',
     ko: '접수 확인',
   },
   menu6: {

@@ -151,52 +151,43 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
           }}
         />
       ),
-      2: (
-        <MobileCompetence
-          data={{
-            resultInfo: resultDetailData?.resultInfo,
-            resultComment: resultDetailData?.resultComment,
-            name,
-          }}
-        />
-      ),
-      3: (
-        <MobileDomainSpecifics
-          data={{
-            resultInfo: resultDetailData?.resultInfo,
-            resultComment: resultDetailData?.resultComment,
-            userName: name,
-          }}
-        />
-      ),
-      4: (
-        <MobileOverallEvaluation
-          data={{
-            resultInfo: resultDetailData?.resultInfo,
-            resultComment: resultDetailData?.resultComment,
-            userName: name,
-          }}
-        />
-      ),
-      5: (
-        <MobileAi
-          data={{
-            resultInfo: resultDetailData?.resultInfo,
-            aiRecommendation,
-          }}
-        />
-      ),
+      // 2: (
+      //   <MobileCompetence
+      //     data={{
+      //       resultInfo: resultDetailData?.resultInfo,
+      //       resultComment: resultDetailData?.resultComment,
+      //       name,
+      //     }}
+      //   />
+      // ),
+      // 3: (
+      //   <MobileDomainSpecifics
+      //     data={{
+      //       resultInfo: resultDetailData?.resultInfo,
+      //       resultComment: resultDetailData?.resultComment,
+      //       userName: name,
+      //     }}
+      //   />
+      // ),
+      // 4: (
+      //   <MobileOverallEvaluation
+      //     data={{
+      //       resultInfo: resultDetailData?.resultInfo,
+      //       resultComment: resultDetailData?.resultComment,
+      //       userName: name,
+      //     }}
+      //   />
+      // ),
+      // 5: (
+      //   <MobileAi
+      //     data={{
+      //       resultInfo: resultDetailData?.resultInfo,
+      //       aiRecommendation,
+      //     }}
+      //   />
+      // ),
     }),
-    [
-      activeTrophy,
-      aiRecommendation,
-      level,
-      name,
-      resultDetailData?.resultComment,
-      resultDetailData?.resultInfo,
-      testName,
-      times,
-    ],
+    [activeTrophy, level, resultDetailData?.resultInfo, testName, times],
   )
 
   const active = useMemo(() => obj[activeTab], [activeTab, obj])
@@ -309,7 +300,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        {/* <View>{active}</View> */}
+        <View>{active}</View>
       </View>
     </ScrollView>
   )
