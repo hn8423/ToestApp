@@ -155,7 +155,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
       //   <MobileCompetence
       //     data={{
       //       resultInfo: resultDetailData?.resultInfo,
-      //       resultComment: resultDetailData?.resultComment,
+      //       resultComment: resultDetailData!.resultComment,
       //       name,
       //     }}
       //   />
@@ -187,7 +187,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
       //   />
       // ),
     }),
-    [activeTrophy, level, resultDetailData?.resultInfo, testName, times],
+    [activeTrophy, level, resultDetailData, testName, times],
   )
 
   const active = useMemo(() => obj[activeTab], [activeTab, obj])
@@ -276,22 +276,22 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
                 <Text {...style.tabText1}>{globalText[lang].myanswer}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={change(2)}>
+            <TouchableOpacity onPress={change(1)}>
               <View {...style.tabButton2}>
                 <Text {...style.tabText2}>{globalText[lang].compentence}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={change(3)}>
+            <TouchableOpacity onPress={change(1)}>
               <View {...style.tabButton3}>
                 <Text {...style.tabText3}>{globalText[lang].domain}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={change(4)}>
+            <TouchableOpacity onPress={change(1)}>
               <View {...style.tabButton4}>
                 <Text {...style.tabText4}>{globalText[lang].overAll}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={change(5)}>
+            <TouchableOpacity onPress={change(1)}>
               <View {...style.tabButton5}>
                 <Text {...style.tabText5}>
                   {globalText[lang].aiRecommendation}

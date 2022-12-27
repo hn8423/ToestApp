@@ -373,7 +373,7 @@ const MobileMyAnswer = ({data}: Props) => {
               <View {...style.captionItem}>
                 <View {...style.captionDotCountry} />
                 <Text numberOfLines={1} ellipsizeMode="tail">
-                  {/* {country} */}
+                  {country}
                 </Text>
               </View>
               <View {...style.captionItem}>
@@ -383,14 +383,14 @@ const MobileMyAnswer = ({data}: Props) => {
             </View>
             <View {...style.myAnswerGraphScore}>
               <Text {...style.resultTitle}>SCORE</Text>
-              {/* <Text {...style.myScore}>{myScore} </Text> */}
+              <Text {...style.myScore}>{myScore} </Text>
               <Text {...style.resultTitle}>/ 100</Text>
             </View>
           </View>
           <View {...style.whiteBox}>
             <View {...style.awardWrapper}>
               <Text {...style.resultTitle}>Award</Text>
-              {/* <View>{activeObj}</View> */}
+              <View>{activeObj}</View>
             </View>
           </View>
           <View {...style.whiteBox}>
@@ -413,14 +413,14 @@ const MobileMyAnswer = ({data}: Props) => {
                 <Text {...style.listTitle}>{globalText[lang].world}</Text>
               </View>
               <View {...style.listPart}>
-                {/* <Text {...style.listTitle}>{country}</Text> */}
+                <Text {...style.listTitle}>{country}</Text>
               </View>
             </View>
-            {/* <View>{score}</View> */}
+            <View>{score}</View>
           </View>
         </View>
       )}
-      {/* {select !== 0 && (
+      {select !== 0 && (
         <ViewVideo
           data={{
             setSelect,
@@ -430,7 +430,7 @@ const MobileMyAnswer = ({data}: Props) => {
             level: data.level,
           }}
         />
-      )} */}
+      )}
     </>
   )
 }

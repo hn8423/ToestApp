@@ -126,40 +126,6 @@ const MyAnswerGraph = ({
           strokeLinecap={'round'}
           transform={{rotation: -90, origin: 63.75, translateY: 127.5}}
         />
-        {/* <G> 
-        <Text
-          {...style.TopText}
-          x={'50%'}
-          y="105"
-          fill="#000"
-          textAnchor="middle"
-        >
-          TOP
-        </Text>
-        </G> */}
-        {/* <G>
-            <Text
-              {...style.PercentText}
-              x={'51%'}
-              y="140.5"
-              fill="#000"
-              textAnchor="middle"
-            >
-              {worldWide !== 'NaN0' ? `${worldWide}%` : '0%'}
-            </Text>
-      
-        </G> */}
-        {/* <G>
-          <Text
-            {...style.WorldWideText}
-            x={'50%'}
-            y="162.5"
-            fill="#767676"
-            textAnchor="middle"
-          >
-            WORLDWIDE
-          </Text>
-        </G> */}
       </Svg>
       <View {...style.Textwrapper}>
         <Text {...style.TopText}>TOP</Text>
