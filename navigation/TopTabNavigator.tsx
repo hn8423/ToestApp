@@ -12,7 +12,7 @@ import {
 import {useRecoilState, useRecoilValue} from 'recoil'
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import {Image, Text} from 'react-native'
-import {DrawerParamList, SC, MainStackParams, LangMap2} from '../type'
+import {LangMap2} from '../type'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 const Tab = createMaterialTopTabNavigator()
@@ -23,8 +23,8 @@ const globalText: LangMap2 = {
     ko: '계정 설정',
   },
   menu2: {
-    en: 'Payment',
-    ko: '결제 확인',
+    en: 'Register',
+    ko: '접수 확인',
   },
 }
 const TopTabNavigator = () => {
