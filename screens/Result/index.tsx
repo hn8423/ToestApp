@@ -38,7 +38,6 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
     },
     en: {
       imgTitle1: `TOEST Portfolio`,
-
       bannerDes:
         ' Authentic assessment combines\nmentoring, and learning to promote\nhigher-ordered thinking, and full\nparticipation of learners through daily\nroutines.',
       test1: `NEW`,
@@ -53,7 +52,7 @@ const Result: SC<ResultStackParams, 'ResultStack'> = ({navigation}) => {
   const isFocused = useIsFocused()
 
   const [testData] = useRecoilState(ResultInfoState)
-  const {mutate: resultInfoListMutate, isLoading} = useResultInfo()
+  const {mutate: resultInfoListMutate} = useResultInfo()
   useEffect(() => {
     if (!isFocused) {
       return

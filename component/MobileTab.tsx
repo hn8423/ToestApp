@@ -140,17 +140,17 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
   //MEMO
   const obj: Obj = useMemo(
     () => ({
-      1: (
-        <MobileMyAnswer
-          data={{
-            resultInfo: resultDetailData?.resultInfo,
-            testName,
-            times,
-            level,
-            activeTrophy,
-          }}
-        />
-      ),
+      // 1: (
+      //   <MobileMyAnswer
+      //     data={{
+      //       resultInfo: resultDetailData?.resultInfo,
+      //       testName,
+      //       times,
+      //       level,
+      //       activeTrophy,
+      //     }}
+      //   />
+      // ),
       // 2: (
       //   <MobileCompetence
       //     data={{
@@ -187,7 +187,7 @@ const MobileTab = ({testName, times, level, name, activeTrophy}: Props) => {
       //   />
       // ),
     }),
-    [activeTrophy, level, resultDetailData, testName, times],
+    [],
   )
 
   const active = useMemo(() => obj[activeTab], [activeTab, obj])

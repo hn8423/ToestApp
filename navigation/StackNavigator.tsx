@@ -14,6 +14,7 @@ import LogIn from '../screens/Login'
 import SignUp from '../screens/SignUp'
 import TopTabNavigator from './TopTabNavigator'
 import {MainStackParams} from '../type'
+import TopTabResultNavigator from './TopTabResultNavigator'
 
 const StackMain = createStackNavigator<MainStackParams>()
 const StackApply = createStackNavigator()
@@ -70,7 +71,7 @@ export const ResultStackNavigator = () => {
       <StackResult.Screen name="ResultStack" component={Result} />
       <StackResult.Screen
         name="ResultDetail"
-        component={ResultDetail}
+        component={TopTabResultNavigator}
         options={{
           headerShown: true,
           headerTitle: 'Result',

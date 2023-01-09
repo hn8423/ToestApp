@@ -300,6 +300,9 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
       right: 10,
       bottom: 10,
     },
+    webview: {
+      display: 'none',
+    },
   })
 
   useFocusEffect(() => {
@@ -331,22 +334,18 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                 ? 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36'
                 : 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
             }
-            style={
-              {
-                // display: 'none',
-              }
-            }
+            {...style.webview}
             onNavigationStateChange={navState => {
               console.log(navState.url)
               if (navState.url === 'https://dev.toest.me/mobile#') {
               }
             }}
           />
-          {/* <Header />
+          <Header />
           <ScrollView>
             <View {...style.container}>
               <View {...style.social}>
-                <TouchableHighlight>
+                {/* <TouchableHighlight>
                   <Image
                     {...style.socialLogo}
                     source={require('../assets/images/login/google.png')}
@@ -363,7 +362,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                     {...style.socialLogo}
                     source={require('../assets/images/login/kakao.png')}
                   />
-                </TouchableHighlight>
+                </TouchableHighlight> */}
               </View>
               <View {...style.input}>
                 <Text {...style.inputTitle}>Email</Text>
@@ -414,7 +413,7 @@ const LogIn: SC<LoginStackParams, 'LogIn'> = ({navigation}) => {
                 </View>
               </View>
             </View>
-          </ScrollView> */}
+          </ScrollView>
         </>
       )}
     </>

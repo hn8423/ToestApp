@@ -2,6 +2,7 @@ import {NavigationProp} from '@react-navigation/native'
 import {NavigatorScreenParams, ParamListBase} from '@react-navigation/core'
 import {FC} from 'react'
 import {StackScreenProps} from '@react-navigation/stack'
+import {Result} from './result'
 
 export type NavigationProps = {
   navigation: NavigationProp<any, any>
@@ -14,6 +15,21 @@ export type MainParamList = {
   Test: undefined
   Result: undefined
   MyPage: undefined
+}
+
+/* result top tab */
+export type ResultParamList = {
+  MobileMyAnswer: {
+    resultInfo: Result.DetailDataType['resultInfo']
+    testName: string
+    times: number
+    level: string
+    activeTrophy: number
+  }
+  Competence: undefined
+  DomainSpecifics: undefined
+  OverAll: undefined
+  AiRecommendation: undefined
 }
 
 export type MainNavigationScreenParams = NavigatorScreenParams<MainParamList>
@@ -65,9 +81,11 @@ export type SignUpStackParams = {
   SignUp?: {}
 }
 
-export type SC<T extends ParamListBase, K extends keyof T> = FC<
-  StackScreenProps<T, K>
->
+export type SC<
+  T extends ParamListBase,
+  K extends keyof T,
+  P extends object = {},
+> = FC<StackScreenProps<T, K> & P>
 
 type value = {
   [x: string]: string

@@ -1,37 +1,42 @@
 import {useMemo, useState, useEffect} from 'react'
-import {Text, View, Image} from 'react-native'
+import {Text, View, Image, ScrollView} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import countryData from '../utills/countryCode'
+import countryparams from '../utills/countryCode'
 import _ from 'lodash'
-import {LangMap2} from '../type'
+import {LangMap2, ResultParamList, SC} from '../type'
 import {Result} from '../type/result'
 import Button from '../component/Button'
 import ViewVideo from './ViewVideo'
 import MyAnswerGraph from './myAnswerGraph'
+import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 dayjs.extend(utc)
 
-type Props = {
-  data: {
-    resultInfo?: Result.DetailDataType['resultInfo']
-    testName: string
-    times: number
-    level: string
-    activeTrophy: number
-  }
+type paramsType = {
+  resultInfo: Result.DetailDataType['resultInfo']
+  testName: string
+  times: number
+  level: string
+  activeTrophy: number
 }
 type TitleMapType = {
   [x: string]: string
 }
 
-const MobileMyAnswer = ({data}: Props) => {
-  //DATA
-  //DATA
-  //DATA
+const MobileMyAnswer: SC<ResultParamList, 'MobileMyAnswer'> = ({
+  navigation,
+  route,
+}) => {
+  //params
+  //params
+  //params
+  const params = route.params as paramsType
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const resultInfo = resultDetailData?.resultInfo
   const [activeTrophy, setActiveTrophy] = useState(0)
   let [select, setSelect] = useState(0)
   const globalText: LangMap2 = useMemo(() => {
@@ -60,24 +65,23 @@ const MobileMyAnswer = ({data}: Props) => {
       etest: `etest`,
       spyco: `spyco`,
     }
-    return titleMap[data.testName]
-  }, [data])
+    return titleMap[params.testName]
+  }, [params])
 
   const worldScore = useMemo(
-    () => (data.resultInfo ? data.resultInfo?.scoreMap.score.world.average : 0),
-    [data],
+    () => (resultInfo ? resultInfo?.scoreMap.score.world.average : 0),
+    [resultInfo],
   )
   const countryScore = useMemo(
-    () =>
-      data.resultInfo ? data.resultInfo?.scoreMap.score.country.average : 0,
-    [data],
+    () => (resultInfo ? resultInfo?.scoreMap.score.country.average : 0),
+    [resultInfo],
   )
   const myScoreReal = useMemo(
-    () => (data.resultInfo ? data.resultInfo.scoreMap.score.score : 0),
-    [data],
+    () => (resultInfo ? resultInfo.scoreMap.score.score : 0),
+    [resultInfo],
   )
   let worldWide = useMemo(() => {
-    let percent = data.resultInfo?.scoreMap.score.world.topPercentage
+    let percent = resultInfo?.scoreMap.score.world.topPercentage
     if (percent === 100) {
       return '100'
     }
@@ -89,52 +93,48 @@ const MobileMyAnswer = ({data}: Props) => {
       isInteger ? `${displayNumber}.` : `${_(displayNumber).floor(1)}`,
     ).padEnd(numberAmount ? 3 : 4, '0')
     return word
-  }, [data])
+  }, [resultInfo?.scoreMap.score.world.topPercentage])
 
   const doneTime = useMemo(() => {
-    if (!data.resultInfo) {
+    if (!resultInfo) {
       return ''
     }
     if (lang === 'en') {
-      return `${dayjs(data.resultInfo!.doneTimeStamp)
+      return `${dayjs(resultInfo!.doneTimeStamp)
         .utc()
         .format('YYYY.MM.DD H:mm z')}`
     } else {
-      return `${dayjs(data.resultInfo!.doneTimeStamp)
+      return `${dayjs(resultInfo!.doneTimeStamp)
         .utcOffset('+0900')
         .format('YYYY.MM.DD H:mm')} KST`
     }
-  }, [lang, data])
+  }, [lang, resultInfo])
   const myScore = useMemo(
-    () => (data.resultInfo ? `${data.resultInfo.scoreMap.score.score}` : '0'),
-    [data],
+    () => (resultInfo ? `${resultInfo.scoreMap.score.score}` : '0'),
+    [resultInfo],
   )
   const scores = useMemo(() => {
-    if (!data.resultInfo) {
+    if (!resultInfo) {
       return 0
     }
-    return data.resultInfo.scoreMap.score.score
-  }, [data])
+    return resultInfo.scoreMap.score.score
+  }, [resultInfo])
   const worldPercentage = useMemo(() => {
-    if (!data.resultInfo) {
+    if (!resultInfo) {
       return 0
     }
-    return data.resultInfo.scoreMap.score.world.topPercentage
-  }, [data])
+    return resultInfo.scoreMap.score.world.topPercentage
+  }, [resultInfo])
   const country = useMemo(() => {
-    if (!data.resultInfo) {
+    if (!resultInfo) {
       return 'KO'
     }
     if (lang === 'ko') {
-      return `${
-        countryData.countryCodeMap[data!.resultInfo!.countryCode].code_ko
-      }`
+      return `${countryparams.countryCodeMap[resultInfo?.countryCode].code_ko}`
     } else if (lang === 'en') {
-      return `${
-        countryData.countryCodeMap[data!.resultInfo!.countryCode].code_en
-      }`
+      return `${countryparams.countryCodeMap[resultInfo?.countryCode].code_en}`
     }
-  }, [lang, data])
+  }, [lang, resultInfo])
 
   const [obj] = useState<{[x: number]: string | JSX.Element}>({
     0: '',
@@ -322,7 +322,7 @@ const MobileMyAnswer = ({data}: Props) => {
   //render
   //render
   const score = useMemo(() => {
-    return data.resultInfo?.myAnswerInfo.map((v, i) => (
+    return resultInfo?.myAnswerInfo.map((v, i) => (
       <View {...style.scoreWrapper} key={`score-${v.stage}-${i}`}>
         <View {...style.listPart}>
           <Text>{`${v.stage}`}</Text>
@@ -349,85 +349,93 @@ const MobileMyAnswer = ({data}: Props) => {
         </View>
       </View>
     ))
-  }, [data, globalText, lang, style])
+  }, [
+    resultInfo?.myAnswerInfo,
+    style.scoreWrapper,
+    style.listPart,
+    globalText,
+    lang,
+  ])
 
   return (
     <>
-      {select === 0 && data && (
-        <View {...style.wrapper}>
-          <View {...style.whiteBox}>
-            <Text {...style.resultTitle}>{resultTitle}</Text>
-            <View {...style.line} />
-            <View {...style.myanswerInfo}>
-              <Text>{doneTime}</Text>
-              <Text>LEVEL {data.level}</Text>
+      {select === 0 && params && (
+        <ScrollView>
+          <View {...style.wrapper}>
+            <View {...style.whiteBox}>
+              <Text {...style.resultTitle}>{resultTitle}</Text>
+              <View {...style.line} />
+              <View {...style.myanswerInfo}>
+                <Text>{doneTime}</Text>
+                <Text>LEVEL {params.level}</Text>
+              </View>
+              <MyAnswerGraph
+                data={{worldScore, countryScore, myScoreReal, worldWide}}
+              />
+              <View {...style.caption}>
+                <View {...style.captionItem}>
+                  <View {...style.captionDotMy} />
+                  <Text>MY</Text>
+                </View>
+                <View {...style.captionItem}>
+                  <View {...style.captionDotCountry} />
+                  <Text numberOfLines={1} ellipsizeMode="tail">
+                    {country}
+                  </Text>
+                </View>
+                <View {...style.captionItem}>
+                  <View {...style.captionDotOverall} />
+                  <Text>OVERALL</Text>
+                </View>
+              </View>
+              <View {...style.myAnswerGraphScore}>
+                <Text {...style.resultTitle}>SCORE</Text>
+                <Text {...style.myScore}>{myScore} </Text>
+                <Text {...style.resultTitle}>/ 100</Text>
+              </View>
             </View>
-            <MyAnswerGraph
-              data={{worldScore, countryScore, myScoreReal, worldWide}}
-            />
-            <View {...style.caption}>
-              <View {...style.captionItem}>
-                <View {...style.captionDotMy} />
-                <Text>MY</Text>
-              </View>
-              <View {...style.captionItem}>
-                <View {...style.captionDotCountry} />
-                <Text numberOfLines={1} ellipsizeMode="tail">
-                  {country}
-                </Text>
-              </View>
-              <View {...style.captionItem}>
-                <View {...style.captionDotOverall} />
-                <Text>OVERALL</Text>
+            <View {...style.whiteBox}>
+              <View {...style.awardWrapper}>
+                <Text {...style.resultTitle}>Award</Text>
+                <View>{activeObj}</View>
               </View>
             </View>
-            <View {...style.myAnswerGraphScore}>
-              <Text {...style.resultTitle}>SCORE</Text>
-              <Text {...style.myScore}>{myScore} </Text>
-              <Text {...style.resultTitle}>/ 100</Text>
+            <View {...style.whiteBox}>
+              <View {...style.textTitle}>
+                <Text {...style.titleBlue}>{globalText[lang].myBlue} </Text>
+                <Text {...style.titleBlack}>{globalText[lang].answer}</Text>
+              </View>
+              <View {...style.line} />
+              <View {...style.listWrapper}>
+                <View {...style.listPart}>
+                  <Text {...style.listTitle}>No.</Text>
+                </View>
+                <View {...style.listPart}>
+                  <Text {...style.listTitle}>{globalText[lang].answer}</Text>
+                </View>
+                <View {...style.listPart}>
+                  <Text {...style.listTitle}>{globalText[lang].view}</Text>
+                </View>
+                <View {...style.listPart}>
+                  <Text {...style.listTitle}>{globalText[lang].world}</Text>
+                </View>
+                <View {...style.listPart}>
+                  <Text {...style.listTitle}>{country}</Text>
+                </View>
+              </View>
+              <View>{score}</View>
             </View>
           </View>
-          <View {...style.whiteBox}>
-            <View {...style.awardWrapper}>
-              <Text {...style.resultTitle}>Award</Text>
-              <View>{activeObj}</View>
-            </View>
-          </View>
-          <View {...style.whiteBox}>
-            <View {...style.textTitle}>
-              <Text {...style.titleBlue}>{globalText[lang].myBlue} </Text>
-              <Text {...style.titleBlack}>{globalText[lang].answer}</Text>
-            </View>
-            <View {...style.line} />
-            <View {...style.listWrapper}>
-              <View {...style.listPart}>
-                <Text {...style.listTitle}>No.</Text>
-              </View>
-              <View {...style.listPart}>
-                <Text {...style.listTitle}>{globalText[lang].answer}</Text>
-              </View>
-              <View {...style.listPart}>
-                <Text {...style.listTitle}>{globalText[lang].view}</Text>
-              </View>
-              <View {...style.listPart}>
-                <Text {...style.listTitle}>{globalText[lang].world}</Text>
-              </View>
-              <View {...style.listPart}>
-                <Text {...style.listTitle}>{country}</Text>
-              </View>
-            </View>
-            <View>{score}</View>
-          </View>
-        </View>
+        </ScrollView>
       )}
       {select !== 0 && (
         <ViewVideo
           data={{
             setSelect,
             select,
-            testName: data.testName,
-            times: data.times,
-            level: data.level,
+            testName: params.testName,
+            times: params.times,
+            level: params.level,
           }}
         />
       )}
