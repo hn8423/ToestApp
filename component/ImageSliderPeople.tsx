@@ -1,14 +1,6 @@
 import _ from 'lodash'
 import React, {useMemo, useState} from 'react'
-import {
-  Dimensions,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Linking,
-  Alert,
-} from 'react-native'
+import {Dimensions, Text, View, Image, TouchableOpacity} from 'react-native'
 const chartWidth = Dimensions.get('window').width
 import Carousel from 'react-native-reanimated-carousel'
 import useGetStyle from '../hooks/use-style'
@@ -115,78 +107,66 @@ const ImageSliderPeople = ({images = []}: Props) => {
       opacity: 0.6,
       marginHorizontal: 2,
     },
+    dot: {
+      justifyContent: 'flex-end',
+    },
   })
-
-  const openUrl = (url: string) => {
-    return async () => {
-      const supported = await Linking.canOpenURL(url)
-      if (supported) {
-        // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-        // by some browser in the mobile
-        await Linking.openURL(url)
-      } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`)
-        console.log(`Don't know how to open this URL: ${url}`)
-      }
-    }
-  }
 
   const dots = useMemo(() => {
     return images.map((val, i) => {
       return i === viewTarget ? (
-        <View key={i + 'dots'} {...style.activeDot}></View>
+        <View key={i + 'dots'} {...style.activeDot} />
       ) : (
-        <View key={i + 'dots'} {...style.inactiveDot}></View>
+        <View key={i + 'dots'} {...style.inactiveDot} />
       )
     })
   }, [images, style.activeDot, style.inactiveDot, viewTarget])
+
   return (
-    <View
-      style={{
-        justifyContent: 'flex-end',
-      }}
-    >
-      <Carousel
-        width={chartWidth}
-        height={350}
-        loop
-        autoPlay
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.75,
-          parallaxScrollingOffset: 145,
-        }}
-        snapEnabled={true}
-        autoPlayInterval={4000}
-        data={images}
-        onSnapToItem={v => {
-          setViewTarget(v)
-        }}
-        renderItem={v => (
-          <TouchableOpacity key={`renderItem ${v.index}`}>
-            <View {...style.container}>
-              <Image
-                {...style.image}
-                resizeMode="contain"
-                source={{uri: `https://dev.toest.me${v.item.image}`}}
-              />
-              <View {...style.textWrapper} pointerEvents="none">
-                <Text {...style.title}>{v.item.name}</Text>
-                <Text {...style.sub}>{v.item.occupation}</Text>
-                <View {...style.tagWrapper}>
-                  {v.item.tags.split(', ').map((tag, i) => {
-                    return (
-                      <View key={`tag ${i}`} {...style.tagItem}>
-                        <Text>{tag}</Text>
-                      </View>
-                    )
-                  })}
+    <View {...style.dot}>
+      {images.length !== 0 && (
+        <Carousel
+          width={chartWidth}
+          height={350}
+          loop
+          autoPlay
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.75,
+            parallaxScrollingOffset: 145,
+          }}
+          snapEnabled={true}
+          autoPlayInterval={4000}
+          data={images}
+          onSnapToItem={v => {
+            setViewTarget(v)
+          }}
+          renderItem={v => (
+            <TouchableOpacity key={`renderItem ${v.index}`}>
+              <View {...style.container}>
+                <Image
+                  {...style.image}
+                  resizeMode="contain"
+                  source={{uri: `https://dev.toest.me${v.item.image}`}}
+                />
+                <View {...style.textWrapper} pointerEvents="none">
+                  <Text {...style.title}>{v.item.name}</Text>
+                  <Text {...style.sub}>{v.item.occupation}</Text>
+                  <View {...style.tagWrapper}>
+                    {v.item.tags.split(', ').map((tag, i) => {
+                      return (
+                        <View key={`tag ${i}`} {...style.tagItem}>
+                          <Text>{tag}</Text>
+                        </View>
+                      )
+                    })}
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      )}
       <View {...style.dotsNavigation}>{dots}</View>
     </View>
   )

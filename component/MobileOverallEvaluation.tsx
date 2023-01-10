@@ -1,20 +1,16 @@
 import {useMemo, useState} from 'react'
-import {Image, Text, TouchableOpacity, View} from 'react-native'
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
-import {Result} from '../type/result'
-import {LangMap2} from '../type'
+import {LangMap2, ResultParamList, SC} from '../type'
 import dbStringVar from '../lib/database-result/gpst/dbStringVar'
 import correctQuestionDescriptionList from '../lib/database-result/gpst/client-correctQuestionDescriptionList'
 import _ from 'lodash'
 import useStyles2 from '../hooks/ use-style2'
+import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 
-type Props = {
-  data: {
-    resultInfo?: Result.DetailDataType['resultInfo']
-    resultComment: Result.DetailDataType['resultComment']
-    userName: string
-  }
+type paramsType = {
+  userName: string
 }
 
 type ScoreGaradeType = {
@@ -24,9 +20,10 @@ type ScoreGaradeType = {
   }
 }
 
-const MobileOverallEvaluation = ({
-  data: {resultInfo, resultComment, userName},
-}: Props) => {
+const MobileOverallEvaluation: SC<
+  ResultParamList,
+  'MobileOverallEvaluation'
+> = ({route}) => {
   const {styles} = useStyles2({
     wrapper: {padding: 16, flex: 1},
     whiteBox: {
@@ -122,7 +119,10 @@ const MobileOverallEvaluation = ({
     },
   })
   const [moreRead, setMoreRead] = useState(false)
-
+  const params = route.params as paramsType
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const resultInfo = resultDetailData?.resultInfo
+  const resultComment = resultDetailData?.resultComment
   //toggle
   //toggle
   //toggle
@@ -188,22 +188,22 @@ const MobileOverallEvaluation = ({
     return [
       {
         name: globalText.artHumanTitle[lang],
-        score: resultInfo!.scoreMap.dom_artHumanScore,
+        score: resultInfo?.scoreMap.dom_artHumanScore,
         img: require('../assets/images/result/overAll/domain/artHuman.png'),
       },
       {
         name: globalText.healthGlobalEnvironmentTitle[lang],
-        score: resultInfo!.scoreMap.dom_healthGlobalScore,
+        score: resultInfo?.scoreMap.dom_healthGlobalScore,
         img: require('../assets/images/result/overAll/domain/healthGlobalEnvironment.png'),
       },
       {
         name: globalText.socialScienceTitle[lang],
-        score: resultInfo!.scoreMap.dom_socialScienceScore,
+        score: resultInfo?.scoreMap.dom_socialScienceScore,
         img: require('../assets/images/result/overAll/domain/socialScience.png'),
       },
       {
         name: globalText.physicalScienceTitle[lang],
-        score: resultInfo!.scoreMap.dom_technologyScore,
+        score: resultInfo?.scoreMap.dom_technologyScore,
         img: require('../assets/images/result/overAll/domain/physicalScienceEngineering.png'),
       },
     ]
@@ -213,22 +213,22 @@ const MobileOverallEvaluation = ({
     return [
       {
         name: globalText.informationMediaDigitalLiteracyTitle[lang],
-        score: resultInfo!.scoreMap.com_communicationScore.achievement,
+        score: resultInfo?.scoreMap.com_communicationScore.achievement,
         img: require('../assets/images/result/overAll/compentence/communicationCollaboration.png'),
       },
       {
         name: globalText.creativeThinkingTitle[lang],
-        score: resultInfo!.scoreMap.com_creativeScore.achievement,
+        score: resultInfo?.scoreMap.com_creativeScore.achievement,
         img: require('../assets/images/result/overAll/compentence/creativeThinking.png'),
       },
       {
         name: globalText.logicalCriticalThinkingTitle[lang],
-        score: resultInfo!.scoreMap.com_informationScore.achievement,
+        score: resultInfo?.scoreMap.com_informationScore.achievement,
         img: require('../assets/images/result/overAll/compentence/informationDigitalLiteracy.png'),
       },
       {
         name: globalText.communicationCollaborationTitle[lang],
-        score: resultInfo!.scoreMap.com_logicalScore.achievement,
+        score: resultInfo?.scoreMap.com_logicalScore.achievement,
         img: require('../assets/images/result/overAll/compentence/logicalCriticalThinking.png'),
       },
     ]
@@ -247,31 +247,31 @@ const MobileOverallEvaluation = ({
   //memo
 
   const topPercentage = useMemo(
-    () => resultInfo!.scoreMap.score.world.topPercentage,
+    () => resultInfo?.scoreMap.score.world.topPercentage,
     [resultInfo],
   )
 
   const compareScore = useMemo(() => {
     let result = 'excellent'
-
-    if (topPercentage <= 11) {
-      result = 'excellent'
-    } else if (topPercentage <= 23) {
-      result = 'high'
-    } else if (topPercentage <= 40) {
-      result = 'satisfactory'
-    } else if (topPercentage <= 60) {
-      result = 'average'
-    } else {
-      result = 'needImprovement'
-    }
+    if (topPercentage)
+      if (topPercentage <= 11) {
+        result = 'excellent'
+      } else if (topPercentage <= 23) {
+        result = 'high'
+      } else if (topPercentage <= 40) {
+        result = 'satisfactory'
+      } else if (topPercentage <= 60) {
+        result = 'average'
+      } else {
+        result = 'needImprovement'
+      }
 
     return result
   }, [topPercentage])
 
   const koName = useMemo(
-    () => (lang === 'ko' ? userName : ''),
-    [lang, userName],
+    () => (lang === 'ko' ? params.userName : ''),
+    [lang, params],
   )
   const deleteName = useMemo(() => (lang === 'ko' ? '' : ''), [lang])
   const scoreGradeLang = useMemo(
@@ -284,48 +284,68 @@ const MobileOverallEvaluation = ({
   // comment
 
   const testComment = useMemo(() => {
-    return resultComment.overAll.comment.test
-  }, [resultComment.overAll.comment.test])
+    return resultComment?.overAll.comment.test
+  }, [resultComment])
 
   const commentByscoreGrade = useMemo(() => {
-    return testComment[compareScore][textLang]
+    return testComment?.[compareScore][textLang]
   }, [testComment, compareScore, textLang])
 
   const totalComment = useMemo(() => {
+    if (!resultComment) {
+      return
+    }
     return dbStringVar(resultComment.overAll.comment.total.none[textLang], {
       name: koName,
     })
-  }, [koName, resultComment.overAll.comment.total.none, textLang])
+  }, [koName, resultComment, textLang])
 
   const commentTotalsplitAll = useMemo(() => {
+    if (!totalComment) {
+      return ''
+    }
     return splitAll(totalComment, [`'|_testScore_|'`, `'|_achievement_|'`])
   }, [totalComment])
 
   const commentTotalSplitForBr = useMemo(() => {
+    if (!commentTotalsplitAll[2]) {
+      return ''
+    }
     return commentTotalsplitAll[2].split('\n')
   }, [commentTotalsplitAll])
 
-  const displayComment = useMemo(
-    () => commentByscoreGrade.replace(/\n/g, ' ').replace(/\. /g, '.\n\n'),
-    [commentByscoreGrade],
-  )
+  const displayComment = useMemo(() => {
+    if (!commentByscoreGrade) {
+      return ''
+    }
+    commentByscoreGrade.replace(/\n/g, ' ').replace(/\. /g, '.\n\n')
+  }, [commentByscoreGrade])
 
   const domainComment = useMemo(() => {
+    if (!resultComment) {
+      return ''
+    }
     return dbStringVar(
       resultComment.overAll.comment.domainSpecific.none[textLang],
       {name: koName},
     )
-  }, [koName, resultComment.overAll.comment.domainSpecific.none, textLang])
+  }, [koName, resultComment, textLang])
 
   const domainCommentSplit = useMemo(() => {
     return domainComment.split('|_badgeList_|')
   }, [domainComment])
 
   const competenceComment = useMemo(() => {
-    return dbStringVar(resultComment.overAll.comment.competence.none[textLang])
-  }, [resultComment.overAll.comment.competence.none, textLang])
+    if (!resultComment) {
+      return
+    }
+    return resultComment.overAll.comment.competence.none[textLang]
+  }, [resultComment, textLang])
 
   const competenceCommentSplit = useMemo(() => {
+    if (!competenceComment) {
+      return ['', '', '']
+    }
     return competenceComment.split('|_topCompetenceList_|')
   }, [competenceComment])
 
@@ -336,7 +356,7 @@ const MobileOverallEvaluation = ({
   const dataListOrderByAchievement = useMemo(
     () =>
       _(dataList)
-        .orderBy(v => v.score.achievement, 'desc')
+        .orderBy(v => v.score?.achievement, 'desc')
         .value(),
     [dataList],
   )
@@ -345,13 +365,18 @@ const MobileOverallEvaluation = ({
     [dataListOrderByAchievement],
   )
   const top2DataForNotZero = useMemo(() => {
-    let arr = top2Data.filter(data => data.score.score)
+    let arr = top2Data.filter(data => data.score?.score)
     return arr
   }, [top2Data])
   const dataListFor80Over = useMemo(
     () =>
       _(dataListOrderByAchievement)
-        .filter(v => v.score.achievement >= 80)
+        .filter(v => {
+          if (!v.score) {
+            return false
+          }
+          return v.score.achievement >= 80
+        })
         .value(),
     [dataListOrderByAchievement],
   )
@@ -376,9 +401,12 @@ const MobileOverallEvaluation = ({
   }, [displayDataList, globalText.and, lang, styles.bluetitle])
 
   const domainTopAcievementMap = useMemo(() => {
-    return displayDataList.map((v, i) => {
+    return displayDataList.map(v => {
       return (
-        <View style={styles.whiteSmallBox} key={v.name}>
+        <View
+          style={styles.whiteSmallBox}
+          key={`${v.name}-domainTopAcievementMap`}
+        >
           <Image style={styles.bedgeImage} source={v.img} />
           <View style={styles.bedgeTextWrapper}>
             <Text style={[styles.bedgeFont, styles.blacktitle]}>{v.name}</Text>
@@ -411,7 +439,12 @@ const MobileOverallEvaluation = ({
   const competenceDataListFor80Over = useMemo(
     () =>
       _(competenceDataListOrderByAchievement)
-        .filter(v => v.score >= 80)
+        .filter(v => {
+          if (!v.score) {
+            return false
+          }
+          return v.score >= 80
+        })
         .value(),
     [competenceDataListOrderByAchievement],
   )
@@ -440,7 +473,10 @@ const MobileOverallEvaluation = ({
   const competenceTopAcievementMap = useMemo(() => {
     return competenceDisplayDataList.map(v => {
       return (
-        <View style={styles.whiteSmallBox} key={v.name}>
+        <View
+          style={styles.whiteSmallBox}
+          key={`${v.name}-competenceTopAcievementMap`}
+        >
           <Image style={styles.bedgeImage} source={v.img} />
           <View style={styles.bedgeTextWrapper}>
             <Text style={[styles.bedgeFont, styles.blacktitle]}>{v.name}</Text>
@@ -461,47 +497,41 @@ const MobileOverallEvaluation = ({
   // descritption
   // descritption
 
-  const notEnoughComment = useMemo(() => {
-    resultComment
-    return !displayDataList.length
-      ? resultComment.overAll.comment.notEnough.none[textLang]
-      : ''
-  }, [displayDataList.length, resultComment, textLang])
-
   const detailStrengthTitle = useMemo(() => {
+    if (!resultComment) {
+      return
+    }
     return dbStringVar(
       resultComment.overAll.description.question.none[textLang],
       {name: koName},
     )
-  }, [koName, resultComment.overAll.description.question.none, textLang])
+  }, [koName, resultComment, textLang])
 
   const overAllsubTitle = useMemo(() => {
+    if (!resultComment) {
+      return
+    }
     return dbStringVar(
       resultComment.overAll.description.subtitle.none[textLang],
       {name: deleteName},
     )
-  }, [deleteName, resultComment.overAll.description.subtitle.none, textLang])
-
-  /**@type {string} */
-  const zeroScoreText = useMemo(() => {
-    return !displayDataList.length
-      ? resultComment.overAll.comment.notEnough.none[textLang]
-      : ''
-  }, [displayDataList.length, resultComment, textLang])
+  }, [deleteName, resultComment, textLang])
 
   // renderMap
   // renderMap
   // renderMap
 
   const detailedStrengthDataList = useMemo(() => {
-    return correctQuestionDescriptionList(resultInfo!.myAnswerInfo)
+    return correctQuestionDescriptionList(resultInfo?.myAnswerInfo)
   }, [resultInfo])
-
   const detailedStrengthListMap = useMemo(() => {
-    return detailedStrengthDataList.map((v, i) => {
+    return detailedStrengthDataList.map(v => {
       let text = v[lang]
       return (
-        <View style={[styles.strengthWrapper]}>
+        <View
+          style={[styles.strengthWrapper]}
+          key={`${v.en}-detailedStrengthListMap`}
+        >
           <Image
             style={[styles.strengthImg]}
             source={require('../assets/images/result/overAll/check.png')}
@@ -536,95 +566,99 @@ const MobileOverallEvaluation = ({
   }
 
   return (
-    <View style={[styles.wrapper]}>
-      <View style={[styles.whiteBox]}>
-        <View style={[styles.titleWrapper]}>
-          <Text style={[styles.titleFont, styles.bluetitle]}>
-            {globalText2[lang].ovelAllBlue}
-          </Text>
-          <Text style={[styles.titleFont, styles.blacktitle]}>
-            {' '}
-            {globalText2[lang].evaluation}
-          </Text>
-        </View>
-        <View style={[styles.titleWrapper]}>
-          <Text style={[styles.subFont, styles.subcolor]}>
-            {koName} {overAllsubTitle}
-          </Text>
-        </View>
-        <View style={[styles.textWrapper]}>
-          <Text style={[styles.subFont, styles.subcolor]}>
-            {commentTotalsplitAll[0]}
-            <Text style={[styles.bluetitle]}>
-              {resultInfo!.scoreMap.score.score}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={[styles.wrapper]}>
+        <View style={[styles.whiteBox]}>
+          <View style={[styles.titleWrapper]}>
+            <Text style={[styles.titleFont, styles.bluetitle]}>
+              {globalText2[lang].ovelAllBlue}
             </Text>
-            {commentTotalsplitAll[1]}
-            <Text style={[styles.bluetitle]}>{` ${scoreGradeLang}`}</Text>
-            {commentTotalSplitForBr[0]}
-            {`\n`}
-            {`\n`}
-            {commentTotalSplitForBr[1]}{' '}
-            <Text style={[styles.bluetitle]}>{scoreGradeLang}</Text>{' '}
-            {commentTotalsplitAll[3]}
-          </Text>
-        </View>
-        {!moreRead && (
-          <TouchableOpacity
-            style={[styles.moreReadWrapper]}
-            onPress={moreReadClick}
-          >
-            <Text style={[styles.moreReadText]}>{globalText.more[lang]}</Text>
-            <Image
-              source={require('../assets/images/result/overAll/down.png')}
-            />
-          </TouchableOpacity>
-        )}
-        {moreRead && (
-          <>
-            <View style={[styles.textWrapper]}>
-              <Text style={[styles.subFont, styles.subcolor]}>
-                {displayComment}
+            <Text style={[styles.titleFont, styles.blacktitle]}>
+              {' '}
+              {globalText2[lang].evaluation}
+            </Text>
+          </View>
+          <View style={[styles.titleWrapper]}>
+            <Text style={[styles.subFont, styles.subcolor]}>
+              {koName} {overAllsubTitle}
+            </Text>
+          </View>
+          <View style={[styles.textWrapper]}>
+            <Text style={[styles.subFont, styles.subcolor]}>
+              {commentTotalsplitAll[0]}
+              <Text style={[styles.bluetitle]}>
+                {resultInfo?.scoreMap.score.score}
               </Text>
-            </View>
+              {commentTotalsplitAll[1]}
+              <Text style={[styles.bluetitle]}>{` ${scoreGradeLang}`}</Text>
+              {commentTotalSplitForBr[0]}
+              {`\n`}
+              {`\n`}
+              {commentTotalSplitForBr[1]}{' '}
+              <Text style={[styles.bluetitle]}>{scoreGradeLang}</Text>{' '}
+              {commentTotalsplitAll[3]}
+            </Text>
+          </View>
+          {!moreRead && (
             <TouchableOpacity
               style={[styles.moreReadWrapper]}
-              onPress={foldClick}
+              onPress={moreReadClick}
             >
-              <Text style={[styles.moreReadText]}>{globalText.fold[lang]}</Text>
+              <Text style={[styles.moreReadText]}>{globalText.more[lang]}</Text>
               <Image
-                source={require('../assets/images/result/overAll/up.png')}
+                source={require('../assets/images/result/overAll/down.png')}
               />
             </TouchableOpacity>
-          </>
-        )}
-      </View>
-      <View style={[styles.whiteBox]}>
-        <View style={[styles.textWrapper]}>
+          )}
+          {moreRead && (
+            <>
+              <View style={[styles.textWrapper]}>
+                <Text style={[styles.subFont, styles.subcolor]}>
+                  {displayComment}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={[styles.moreReadWrapper]}
+                onPress={foldClick}
+              >
+                <Text style={[styles.moreReadText]}>
+                  {globalText.fold[lang]}
+                </Text>
+                <Image
+                  source={require('../assets/images/result/overAll/up.png')}
+                />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+        <View style={[styles.whiteBox]}>
+          <View style={[styles.textWrapper]}>
+            <Text style={[styles.blacktitle, styles.subFont]}>
+              {domainCommentSplit[0]}
+              <Text style={[styles.bluetitle]}>{top2AchievementMap}</Text>
+              {domainCommentSplit[1]}
+            </Text>
+          </View>
+          <View>{domainTopAcievementMap}</View>
+        </View>
+        <View style={[styles.whiteBox]}>
           <Text style={[styles.blacktitle, styles.subFont]}>
-            {domainCommentSplit[0]}
-            <Text style={[styles.bluetitle]}>{top2AchievementMap}</Text>
-            {domainCommentSplit[1]}
+            {competenceCommentSplit[0]}
+            {competenceTop2AchievementMap}
+            {competenceCommentSplit[1]}
           </Text>
+          <View>{competenceTopAcievementMap}</View>
         </View>
-        <View>{domainTopAcievementMap}</View>
-      </View>
-      <View style={[styles.whiteBox]}>
-        <Text style={[styles.blacktitle, styles.subFont]}>
-          {competenceCommentSplit[0]}
-          {competenceTop2AchievementMap}
-          {competenceCommentSplit[1]}
-        </Text>
-        <View>{competenceTopAcievementMap}</View>
-      </View>
-      <View style={[styles.whiteBox]}>
-        <View style={[styles.textWrapper]}>
-          <Text style={[styles.strengthsFont, styles.blacktitle]}>
-            {detailStrengthTitle}
-          </Text>
+        <View style={[styles.whiteBox]}>
+          <View style={[styles.textWrapper]}>
+            <Text style={[styles.strengthsFont, styles.blacktitle]}>
+              {detailStrengthTitle}
+            </Text>
+          </View>
+          <View>{detailedStrengthListMap}</View>
         </View>
-        <View>{detailedStrengthListMap}</View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

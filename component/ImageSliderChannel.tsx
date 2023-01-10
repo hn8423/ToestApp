@@ -137,6 +137,9 @@ const ImageSliderChannel = ({images = []}: Props) => {
       opacity: 0.6,
       marginHorizontal: 2,
     },
+    dot: {
+      justifyContent: 'flex-end',
+    },
   })
 
   const openUrl = (url: string) => {
@@ -156,70 +159,69 @@ const ImageSliderChannel = ({images = []}: Props) => {
   const dots = useMemo(() => {
     return images.map((val, i) => {
       return i === viewTarget ? (
-        <View key={i + 'dots'} {...style.activeDot}></View>
+        <View key={i + 'dots'} {...style.activeDot} />
       ) : (
-        <View key={i + 'dots'} {...style.inactiveDot}></View>
+        <View key={i + 'dots'} {...style.inactiveDot} />
       )
     })
   }, [images, style.activeDot, style.inactiveDot, viewTarget])
+
   return (
-    <View
-      style={{
-        justifyContent: 'flex-end',
-      }}
-    >
-      <Carousel
-        width={chartWidth}
-        height={460}
-        loop
-        autoPlay
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.65,
-          parallaxScrollingOffset: 165,
-        }}
-        snapEnabled={true}
-        autoPlayInterval={4000}
-        data={images}
-        onSnapToItem={v => {
-          setViewTarget(v)
-        }}
-        renderItem={v => (
-          <TouchableOpacity
-            key={`renderItem ${v.index}`}
-            onPress={openUrl(v.item.url)}
-          >
-            <View {...style.container}>
-              <Image
-                {...style.image}
-                resizeMode="cover"
-                source={{uri: v.item.location}}
-                blurRadius={5}
-              />
-              <View {...style.imageCenterWrapper}>
+    <View {...style.dot}>
+      {images.length !== 0 && (
+        <Carousel
+          width={chartWidth}
+          height={460}
+          loop
+          autoPlay
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.65,
+            parallaxScrollingOffset: 165,
+          }}
+          snapEnabled={true}
+          autoPlayInterval={4000}
+          data={images}
+          onSnapToItem={v => {
+            setViewTarget(v)
+          }}
+          renderItem={v => (
+            <TouchableOpacity
+              key={`renderItem ${v.index}`}
+              onPress={openUrl(v.item.url)}
+            >
+              <View {...style.container}>
                 <Image
-                  {...style.imageCenter}
+                  {...style.image}
                   resizeMode="cover"
                   source={{uri: v.item.location}}
+                  blurRadius={5}
                 />
-              </View>
-              <View {...style.textWrapper} pointerEvents="none">
-                <Text {...style.title}>{v.item.name}</Text>
-                <Text {...style.sub}>{v.item.dom}</Text>
-                <View {...style.tagWrapper}>
-                  {v.item.tags.split(', ').map((tag, i) => {
-                    return (
-                      <View key={`tag ${i}`} {...style.tagItem}>
-                        <Text>{tag}</Text>
-                      </View>
-                    )
-                  })}
+                <View {...style.imageCenterWrapper}>
+                  <Image
+                    {...style.imageCenter}
+                    resizeMode="cover"
+                    source={{uri: v.item.location}}
+                  />
+                </View>
+                <View {...style.textWrapper} pointerEvents="none">
+                  <Text {...style.title}>{v.item.name}</Text>
+                  <Text {...style.sub}>{v.item.dom}</Text>
+                  <View {...style.tagWrapper}>
+                    {v.item.tags.split(', ').map((tag, i) => {
+                      return (
+                        <View key={`tag ${i}`} {...style.tagItem}>
+                          <Text>{tag}</Text>
+                        </View>
+                      )
+                    })}
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      )}
       <View {...style.dotsNavigation}>{dots}</View>
     </View>
   )

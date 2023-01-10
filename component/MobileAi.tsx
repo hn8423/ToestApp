@@ -1,27 +1,103 @@
 import {useMemo, useState} from 'react'
-import {Image, Text, View} from 'react-native'
-import {Result} from '../type/result'
-import {LangMap2} from '../type'
+import {Image, ScrollView, Text, View} from 'react-native'
+import {LangMap2, ResultParamList, SC} from '../type'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useStyles2 from '../hooks/ use-style2'
 import ImageSliderMovie from './ImageSliderMovie'
 import _ from 'lodash'
-import {AiRecommend} from '../atoms/aiRecomend'
 import ImageSliderChannel from './ImageSliderChannel'
 import ImageSliderPeople from './ImageSliderPeople'
+import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
+import useAIRecommend from '../hooks/useAIRecommend'
 
-type Props = {
-  data: {
-    resultInfo?: Result.DetailDataType['resultInfo']
-    aiRecommendation?: AiRecommend
-  }
+type paramsType = {
+  testName: string
+  times: number
+  level: string
 }
-const MobileAi = ({data: {resultInfo, aiRecommendation}}: Props) => {
+const MobileAi: SC<ResultParamList, 'MobileAi'> = ({route}) => {
   //data
   //data
   //data
-  const {getStyles, styles} = useStyles2({
+  const params = route.params as paramsType
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const resultInfo = resultDetailData?.resultInfo
+  const dataList = useMemo(() => {
+    let result = [
+      {
+        name: 'dom_artHuman',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_artHumanScore,
+      },
+      {
+        name: 'dom_healthGlobal',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_healthGlobalScore,
+      },
+      {
+        name: 'dom_socialScience',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_socialScienceScore,
+      },
+      {
+        name: 'dom_technology',
+        score: resultDetailData?.resultInfo?.scoreMap.dom_technologyScore,
+      },
+    ]
+    return result
+  }, [resultDetailData])
+  const dataListOrderByAchievement = useMemo(() => {
+    return _(dataList)
+      .orderBy(v => {
+        if (v.score) v.score.achievement
+      }, 'desc')
+      .value()
+  }, [dataList])
+  const top2Data = useMemo(
+    () => dataListOrderByAchievement.slice(0, 2),
+    [dataListOrderByAchievement],
+  )
+  const top2DataForNotZero = useMemo(
+    () =>
+      _(top2Data)
+        .filter(data => {
+          if (!data.score || 0) {
+            return false
+          }
+          return true
+          // data.score.score
+        })
+        .value(),
+    [top2Data],
+  )
+  const dataListFor80Over = useMemo(
+    () =>
+      _(dataListOrderByAchievement)
+        .filter(v => {
+          if (!v.score) {
+            return false
+          }
+          return v.score.achievement >= 80
+        })
+        .value(),
+    [dataListOrderByAchievement],
+  )
+  const displayDataList = useMemo(() => {
+    let is80OverDisplay = dataListFor80Over.length > 2
+    return is80OverDisplay ? dataListFor80Over : top2DataForNotZero
+  }, [dataListFor80Over, top2DataForNotZero])
+
+  const obtainBadgeStrong = useMemo(() => {
+    return displayDataList.map(v => v.name)
+  }, [displayDataList])
+  const aiRecommendation = useAIRecommend({
+    data: resultDetailData?.resultAIRecommendation,
+    badgeList: obtainBadgeStrong,
+    userId: resultDetailData?.resultUserId,
+    testName: params.testName,
+    times: params.times,
+    level: params.level,
+  })
+
+  const {styles} = useStyles2({
     wrapper: {flex: 1},
     robotWrapper: {
       marginTop: 30,
@@ -75,11 +151,6 @@ Get a visualized report of every student in one Comprehensive System.`,
 
   /**@type {'en'|'ko'} */
   const lang = useRecoilValue(langState) as 'en' | 'ko'
-  const textLang = useMemo(() => globalText[lang], [globalText, lang])
-
-  const isScoreZero = useMemo(() => {
-    return resultInfo ? resultInfo.scoreMap.score.score === 0 : true
-  }, [resultInfo])
 
   //rendermap
   //rendermap
@@ -107,7 +178,7 @@ Get a visualized report of every student in one Comprehensive System.`,
       }
       return {
         image: image,
-        key: `slider-${v.id}`,
+        key: `slider-people-${v.id}`,
         order: i,
         name: v.name,
         occupation: v.occupation,
@@ -119,7 +190,7 @@ Get a visualized report of every student in one Comprehensive System.`,
     if (!aiRecommendation) {
       return
     }
-    return aiRecommendation.movie.map((v, i) => {
+    return aiRecommendation?.movie.map((v, i) => {
       let dom = ''
       switch (v.dom) {
         case 'dom_artHuman':
@@ -137,7 +208,7 @@ Get a visualized report of every student in one Comprehensive System.`,
       }
       return {
         location: v.thumbnail,
-        key: `slider-${v.id}`,
+        key: `slider-movie-${v.id}`,
         order: i,
         title: v.title,
         dom: dom,
@@ -152,7 +223,7 @@ Get a visualized report of every student in one Comprehensive System.`,
     if (!aiRecommendation) {
       return
     }
-    return aiRecommendation.channel.map((v, i) => {
+    return aiRecommendation!.channel.map((v, i) => {
       let dom = ''
       switch (v.dom) {
         case 'dom_artHuman':
@@ -170,7 +241,7 @@ Get a visualized report of every student in one Comprehensive System.`,
       }
       return {
         location: v.thumbnail,
-        key: `slider-${v.id}`,
+        key: `slider-channel-${v.id}`,
         order: i,
         name: v.title,
         dom: dom,
@@ -179,31 +250,32 @@ Get a visualized report of every student in one Comprehensive System.`,
       }
     })
   }, [aiRecommendation])
-
   return (
-    <View style={[styles.wrapper]}>
-      <View style={[styles.robotWrapper]}>
-        <Image source={require('../assets/images/result/ai/robotAi.png')} />
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={[styles.wrapper]}>
+        <View style={[styles.robotWrapper]}>
+          <Image source={require('../assets/images/result/ai/robotAi.png')} />
+        </View>
+        <View style={[styles.aiSlide]}>
+          <Text style={[styles.titleFont, styles.blackColor]}>
+            {globalText[lang].movieTitle}
+          </Text>
+          <ImageSliderMovie images={movieMap} />
+        </View>
+        <View style={[styles.aiSlide]}>
+          <Text style={[styles.titleFont, styles.blackColor]}>
+            {globalText[lang].channelsTitle}
+          </Text>
+          <ImageSliderChannel images={channelMap} />
+        </View>
+        <View style={[styles.aiSlide]}>
+          <Text style={[styles.titleFont, styles.blackColor]}>
+            {globalText[lang].peopleInterestTitle}
+          </Text>
+          <ImageSliderPeople images={peopleMap} />
+        </View>
       </View>
-      <View style={[styles.aiSlide]}>
-        <Text style={[styles.titleFont, styles.blackColor]}>
-          {globalText[lang].movieTitle}
-        </Text>
-        <ImageSliderMovie images={movieMap} />
-      </View>
-      <View style={[styles.aiSlide]}>
-        <Text style={[styles.titleFont, styles.blackColor]}>
-          {globalText[lang].channelsTitle}
-        </Text>
-        <ImageSliderChannel images={channelMap} />
-      </View>
-      <View style={[styles.aiSlide]}>
-        <Text style={[styles.titleFont, styles.blackColor]}>
-          {globalText[lang].peopleInterestTitle}
-        </Text>
-        <ImageSliderPeople images={peopleMap} />
-      </View>
-    </View>
+    </ScrollView>
   )
 }
 

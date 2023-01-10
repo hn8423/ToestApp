@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import {PaymentStackNavigator} from './StackNavigator'
 import {useRecoilValue} from 'recoil'
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import {Text} from 'react-native'
@@ -10,6 +9,11 @@ import {useIsFocused} from '@react-navigation/native'
 import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 import useResultDetailInfo from '../hooks/useResultDetailInfo'
 import MobileMyAnswer from '../component/MobileMyAnswer'
+import MobileCompetence from '../component/MobileCompetence'
+import MobileDomainSpecifics from '../component/MobileDomainSpecifics'
+import MobileOverallEvaluation from '../component/MobileOverallEvaluation'
+import _ from 'lodash'
+import MobileAi from '../component/MobileAi'
 const Tab = createMaterialTopTabNavigator<ResultParamList>()
 const globalText: LangMap2 = {
   en: {
@@ -41,7 +45,7 @@ const TopTabResultNavigator: SC<ResultStackParams, 'ResultDetail'> = ({
     BoxText1: {
       fontStyle: 'normal',
       fontWeight: '500',
-      fontSize: 14,
+      fontSize: 12,
       lineHeight: 24,
       textAlign: 'center',
       letterSpacing: 0.1,
@@ -50,7 +54,7 @@ const TopTabResultNavigator: SC<ResultStackParams, 'ResultDetail'> = ({
     BoxText2: {
       fontStyle: 'normal',
       fontWeight: '500',
-      fontSize: 14,
+      fontSize: 12,
       lineHeight: 24,
       textAlign: 'center',
       letterSpacing: 0.1,
@@ -123,13 +127,13 @@ const TopTabResultNavigator: SC<ResultStackParams, 'ResultDetail'> = ({
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarScrollEnabled: true,
         tabBarStyle: {
           backgroundColor: '#fff',
         },
         tabBarIndicatorStyle: {
           backgroundColor: '#4AC1E8',
         },
-        tabBarActiveTintColor: '#4AC1E8',
       }}
       initialRouteName={'MobileMyAnswer'}
     >
@@ -137,25 +141,88 @@ const TopTabResultNavigator: SC<ResultStackParams, 'ResultDetail'> = ({
         name="MobileMyAnswer"
         component={MobileMyAnswer}
         initialParams={{
-          resultInfo: resultDetailData?.resultInfo,
-          testName: params.testName,
+          testName: params.testName.split(' ')[0],
           times: params.times,
           level: params.level,
           activeTrophy,
         }}
         options={{
-          tabBarLabel: ({color, focused}) => (
-            <Text {...style.BoxText1}>{globalText[language].myanswer}</Text>
-          ),
+          tabBarLabel: ({focused}) =>
+            focused ? (
+              <Text {...style.BoxText1}>{globalText[language].myanswer}</Text>
+            ) : (
+              <Text {...style.BoxText2}>{globalText[language].myanswer}</Text>
+            ),
         }}
       />
       <Tab.Screen
-        name="Competence"
-        component={PaymentStackNavigator}
+        name="MobileCompetence"
+        component={MobileCompetence}
+        initialParams={{
+          name,
+        }}
         options={{
-          tabBarLabel: ({color, focused}) => (
-            <Text {...style.BoxText2}>{globalText[language].compentence}</Text>
-          ),
+          tabBarLabel: ({focused}) =>
+            focused ? (
+              <Text {...style.BoxText1}>
+                {globalText[language].compentence}
+              </Text>
+            ) : (
+              <Text {...style.BoxText2}>
+                {globalText[language].compentence}
+              </Text>
+            ),
+        }}
+      />
+      <Tab.Screen
+        name="MobileDomainSpecifics"
+        component={MobileDomainSpecifics}
+        initialParams={{
+          userName: name,
+        }}
+        options={{
+          tabBarLabel: ({focused}) =>
+            focused ? (
+              <Text {...style.BoxText1}>{globalText[language].domain}</Text>
+            ) : (
+              <Text {...style.BoxText2}>{globalText[language].domain}</Text>
+            ),
+        }}
+      />
+      <Tab.Screen
+        name="MobileOverallEvaluation"
+        component={MobileOverallEvaluation}
+        initialParams={{
+          userName: name,
+        }}
+        options={{
+          tabBarLabel: ({focused}) =>
+            focused ? (
+              <Text {...style.BoxText1}>{globalText[language].overAll}</Text>
+            ) : (
+              <Text {...style.BoxText2}>{globalText[language].overAll}</Text>
+            ),
+        }}
+      />
+      <Tab.Screen
+        name="MobileAi"
+        component={MobileAi}
+        initialParams={{
+          testName: params.testName.split(' ')[0],
+          times: params.times,
+          level: params.level,
+        }}
+        options={{
+          tabBarLabel: ({focused}) =>
+            focused ? (
+              <Text {...style.BoxText1}>
+                {globalText[language].aiRecommendation}
+              </Text>
+            ) : (
+              <Text {...style.BoxText2}>
+                {globalText[language].aiRecommendation}
+              </Text>
+            ),
         }}
       />
     </Tab.Navigator>

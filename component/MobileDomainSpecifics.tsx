@@ -1,27 +1,29 @@
 import {useMemo, useState} from 'react'
-import {Text, View, Dimensions, Image} from 'react-native'
+import {Text, View, Dimensions, Image, ScrollView} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useStyles2 from '../hooks/ use-style2'
-import {LangMap2} from '../type'
+import {LangMap2, ResultParamList, SC} from '../type'
 import {Result} from '../type/result'
 import _ from 'lodash'
+import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 const chartWidth = Dimensions.get('window').width
 
-type Props = {
-  data: {
-    resultInfo?: Result.DetailDataType['resultInfo']
-    resultComment: Result.DetailDataType['resultComment']
-    userName: string
-  }
+type paramsType = {
+  userName: string
 }
-const MobileDomainSpecifics = ({
-  data: {resultInfo, resultComment, userName},
-}: Props) => {
+const MobileDomainSpecifics: SC<ResultParamList, 'MobileDomainSpecifics'> = ({
+  navigation,
+  route,
+}) => {
   // data
   // data
   // data
+  const params = route.params as paramsType
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const resultInfo = resultDetailData?.resultInfo
+  const resultComment = resultDetailData?.resultComment
   const [globalText] = useState<LangMap2>({
     artHumanTitle: {en: 'Art & Humanities', ko: '예술인문'},
     socialScienceTitle: {en: 'Social Science', ko: '사회경제'},
@@ -57,22 +59,22 @@ const MobileDomainSpecifics = ({
     return [
       {
         name: globalText.artHumanTitle[lang],
-        score: resultInfo!.scoreMap.dom_artHumanScore,
+        score: resultInfo?.scoreMap.dom_artHumanScore,
         img: require('../assets/images/result/domain/artHumanBadge.png'),
       },
       {
         name: globalText.healthGlobalEnvironmentTitle[lang],
-        score: resultInfo!.scoreMap.dom_healthGlobalScore,
+        score: resultInfo?.scoreMap.dom_healthGlobalScore,
         img: require('../assets/images/result/domain/healthGlobalEnvironmentBadge.png'),
       },
       {
         name: globalText.socialScienceTitle[lang],
-        score: resultInfo!.scoreMap.dom_socialScienceScore,
+        score: resultInfo?.scoreMap.dom_socialScienceScore,
         img: require('../assets/images/result/domain/socialScienceBadge.png'),
       },
       {
         name: globalText.physicalScienceTitle[lang],
-        score: resultInfo!.scoreMap.dom_technologyScore,
+        score: resultInfo?.scoreMap.dom_technologyScore,
         img: require('../assets/images/result/domain/physicalScienceBadge.png'),
       },
     ]
@@ -83,8 +85,8 @@ const MobileDomainSpecifics = ({
       {
         title: globalText.artHumanTitle[lang],
         description:
-          resultComment.domainSpecific.description.dom_artHuman.none[textLang],
-        tags: resultComment.domainSpecific.tag.dom_artHuman.none[
+          resultComment?.domainSpecific.description.dom_artHuman.none[textLang],
+        tags: resultComment?.domainSpecific.tag.dom_artHuman.none[
           textLang
         ].split(', '),
         img: require('../assets/images/result/domain/artHumanContentsImg.png'),
@@ -92,10 +94,10 @@ const MobileDomainSpecifics = ({
       {
         title: globalText.socialScienceTitle[lang],
         description:
-          resultComment.domainSpecific.description.dom_socialScience.none[
+          resultComment?.domainSpecific.description.dom_socialScience.none[
             textLang
           ],
-        tags: resultComment.domainSpecific.tag.dom_socialScience.none[
+        tags: resultComment?.domainSpecific.tag.dom_socialScience.none[
           textLang
         ].split(', '),
         img: require('../assets/images/result/domain/healthGlobalEnvironmentContentsImg.png'),
@@ -103,10 +105,10 @@ const MobileDomainSpecifics = ({
       {
         title: globalText.physicalScienceTitle[lang],
         description:
-          resultComment.domainSpecific.description.dom_technology.none[
+          resultComment?.domainSpecific.description.dom_technology.none[
             textLang
           ],
-        tags: resultComment.domainSpecific.tag.dom_technology.none[
+        tags: resultComment?.domainSpecific.tag.dom_technology.none[
           textLang
         ].split(', '),
         img: require('../assets/images/result/domain/socialScienceContentsImg.png'),
@@ -114,10 +116,10 @@ const MobileDomainSpecifics = ({
       {
         title: globalText.healthGlobalEnvironmentTitle[lang],
         description:
-          resultComment.domainSpecific.description.dom_healthGlobal.none[
+          resultComment?.domainSpecific.description.dom_healthGlobal.none[
             textLang
           ],
-        tags: resultComment.domainSpecific.tag.dom_healthGlobal.none[
+        tags: resultComment?.domainSpecific.tag.dom_healthGlobal.none[
           textLang
         ].split(', '),
         img: require('../assets/images/result/domain/physicalScienceContentsImg.png'),
@@ -144,7 +146,7 @@ const MobileDomainSpecifics = ({
   const dataListOrderByAchievement = useMemo(
     () =>
       _(dataList)
-        .orderBy(v => v.score.achievement, 'desc')
+        .orderBy(v => v.score?.achievement, 'desc')
         .value(),
     [dataList],
   )
@@ -153,13 +155,18 @@ const MobileDomainSpecifics = ({
     [dataListOrderByAchievement],
   )
   const top2DataForNotZero = useMemo(() => {
-    let arr = top2Data.filter(data => data.score.score)
+    let arr = top2Data.filter(data => data.score?.score)
     return arr
   }, [top2Data])
   const dataListFor80Over = useMemo(
     () =>
       _(dataListOrderByAchievement)
-        .filter(v => v.score.achievement >= 80)
+        .filter(v => {
+          if (!v.score) {
+            return false
+          }
+          return v.score.achievement >= 80
+        })
         .value(),
     [dataListOrderByAchievement],
   )
@@ -181,8 +188,8 @@ const MobileDomainSpecifics = ({
   }, [obtainBadge])
 
   const myName = useMemo(
-    () => (lang === 'ko' ? userName : 'You'),
-    [lang, userName],
+    () => (lang === 'ko' ? params.userName : 'You'),
+    [lang, params],
   )
   const obtainBadgeStart = useMemo(() => {
     if (lang === 'ko') {
@@ -222,9 +229,15 @@ const MobileDomainSpecifics = ({
   }, [displayDataList, getGlobalText])
 
   const userDescriptionEnd = useMemo(() => {
+    if (!userDescriptionSplitByBadgeList.length) {
+      return ''
+    }
     if (lang === 'ko') {
       return userDescriptionSplitByBadgeList[1].replace('|_name_|', 'name')
     } else if (lang === 'en') {
+      if (!userDescriptionSplitByBadgeList[1]) {
+        return ''
+      }
       return userDescriptionSplitByBadgeList[1].slice(5)
     }
   }, [lang, userDescriptionSplitByBadgeList])
@@ -232,7 +245,7 @@ const MobileDomainSpecifics = ({
   /**@type {string} */
   const zeroScoreText = useMemo(() => {
     return !displayDataList.length
-      ? resultComment.domainSpecific.comment.notEnough.none[textLang]
+      ? resultComment?.domainSpecific.comment.notEnough.none[textLang]
       : ''
   }, [displayDataList.length, resultComment, textLang])
 
@@ -318,7 +331,7 @@ const MobileDomainSpecifics = ({
           <Text style={[styles.sub]}>{v.description}</Text>
           <View style={[styles.tagWrapper]}>
             {isExistTags &&
-              v.tags.map(tag => (
+              v.tags?.map(tag => (
                 <View
                   key={`${tag}-${i}`}
                   style={[styles.tag, {backgroundColor: tagsClass(i)}]}
@@ -338,40 +351,42 @@ const MobileDomainSpecifics = ({
     ])
   }, [displayDataList])
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.whiteBox}>
-        <View style={styles.titleWrapper}>
-          <Text style={[styles.title, styles.blue]}>
-            {globalText2[lang].domainBlue}
-          </Text>
-          <Text style={[styles.title, styles.black]}>
-            {' '}
-            {globalText2[lang].specific}
-          </Text>
-        </View>
-        {!!zeroScoreText && <Text>{zeroScoreText}</Text>}
-        {!zeroScoreText && (
-          <View>
-            <View style={[styles.topSub]}>
-              <Text style={[styles.sub]}>
-                {myName}
-                {obtainBadgeStart}
-                {obtainBadgeStrong}
-                {obtainBadgeEnd}
-              </Text>
-            </View>
-            <View style={[styles.badgeWrapper]}>{badgeMap}</View>
-            <Text style={[styles.sub]}>
-              {myName}
-              {userDescriptionStart}
-              {userDescriptionStrong}
-              {userDescriptionEnd}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.wrapper}>
+        <View style={styles.whiteBox}>
+          <View style={styles.titleWrapper}>
+            <Text style={[styles.title, styles.blue]}>
+              {globalText2[lang].domainBlue}
+            </Text>
+            <Text style={[styles.title, styles.black]}>
+              {' '}
+              {globalText2[lang].specific}
             </Text>
           </View>
-        )}
+          {!!zeroScoreText && <Text>{zeroScoreText}</Text>}
+          {!zeroScoreText && (
+            <View>
+              <View style={[styles.topSub]}>
+                <Text style={[styles.sub]}>
+                  {myName}
+                  {obtainBadgeStart}
+                  {obtainBadgeStrong}
+                  {obtainBadgeEnd}
+                </Text>
+              </View>
+              <View style={[styles.badgeWrapper]}>{badgeMap}</View>
+              <Text style={[styles.sub]}>
+                {myName}
+                {userDescriptionStart}
+                {userDescriptionStrong}
+                {userDescriptionEnd}
+              </Text>
+            </View>
+          )}
+        </View>
+        {contentBoxTitleAndDescription}
       </View>
-      {contentBoxTitleAndDescription}
-    </View>
+    </ScrollView>
   )
 }
 

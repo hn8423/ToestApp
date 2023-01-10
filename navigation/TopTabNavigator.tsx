@@ -1,22 +1,12 @@
 import React from 'react'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {DrawerScreenProps} from '@react-navigation/drawer'
-import {
-  MainStackNavigator,
-  ApplyStackNavigator,
-  TestStackNavigator,
-  ResultStackNavigator,
-  MyPageStackNavigator,
-  PaymentStackNavigator,
-} from './StackNavigator'
-import {useRecoilState, useRecoilValue} from 'recoil'
+import {MyPageStackNavigator, PaymentStackNavigator} from './StackNavigator'
+import {useRecoilValue} from 'recoil'
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
-import {Image, Text} from 'react-native'
+import {Text} from 'react-native'
 import {LangMap2} from '../type'
 import {langState} from '../atoms/lang'
 import useGetStyle from '../hooks/use-style'
 const Tab = createMaterialTopTabNavigator()
-// type DrawerScreenProp = DrawerScreenProps<DrawerParamList, 'Main'>
 const globalText: LangMap2 = {
   menu1: {
     en: 'Account Settings',
@@ -66,7 +56,7 @@ const TopTabNavigator = () => {
         name="TopAccount"
         component={MyPageStackNavigator}
         options={{
-          tabBarLabel: ({color, focused}) =>
+          tabBarLabel: ({focused}) =>
             focused ? (
               <Text {...style.BoxText1}>{globalText.menu1[language]}</Text>
             ) : (
@@ -78,7 +68,7 @@ const TopTabNavigator = () => {
         name="TopPayment"
         component={PaymentStackNavigator}
         options={{
-          tabBarLabel: ({color, focused}) =>
+          tabBarLabel: ({focused}) =>
             focused ? (
               <Text {...style.BoxText1}>{globalText.menu2[language]}</Text>
             ) : (

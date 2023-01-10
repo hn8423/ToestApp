@@ -121,6 +121,9 @@ const ImageSlider = ({images = []}: Props) => {
       opacity: 0.6,
       marginHorizontal: 2,
     },
+    dot: {
+      justifyContent: 'flex-end',
+    },
   })
 
   const openUrl = (url: string) => {
@@ -140,64 +143,63 @@ const ImageSlider = ({images = []}: Props) => {
   const dots = useMemo(() => {
     return images.map((val, i) => {
       return i === viewTarget ? (
-        <View key={i + 'dots'} {...style.activeDot}></View>
+        <View key={i + 'dots'} {...style.activeDot} />
       ) : (
-        <View key={i + 'dots'} {...style.inactiveDot}></View>
+        <View key={i + 'dots'} {...style.inactiveDot} />
       )
     })
   }, [images, style.activeDot, style.inactiveDot, viewTarget])
+
   return (
-    <View
-      style={{
-        justifyContent: 'flex-end',
-      }}
-    >
-      <Carousel
-        width={chartWidth}
-        height={460}
-        loop
-        autoPlay
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.65,
-          parallaxScrollingOffset: 165,
-        }}
-        snapEnabled={true}
-        autoPlayInterval={4000}
-        data={images}
-        onSnapToItem={v => {
-          setViewTarget(v)
-        }}
-        renderItem={v => (
-          <TouchableOpacity
-            key={`renderItem ${v.index}`}
-            onPress={openUrl(v.item.url)}
-          >
-            <View {...style.container}>
-              <ActivityIndicator size="small" />
-              <Image
-                {...style.image}
-                resizeMode="cover"
-                source={{uri: v.item.location}}
-              />
-              <View {...style.textWrapper} pointerEvents="none">
-                <Text {...style.title}>{v.item.title}</Text>
-                <Text {...style.sub}>genre : {v.item.genre}</Text>
-                <Text {...style.sub}>{v.item.dom}</Text>
-                <View {...style.tagWrapper}>
-                  {v.item.tags.split(', ').map((tag, i) => {
-                    return (
-                      <View key={`tag ${i}`} {...style.tagItem}>
-                        <Text>{tag}</Text>
-                      </View>
-                    )
-                  })}
+    <View {...style.dot}>
+      {images.length !== 0 && (
+        <Carousel
+          width={chartWidth}
+          height={460}
+          loop
+          autoPlay
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.65,
+            parallaxScrollingOffset: 165,
+          }}
+          snapEnabled={true}
+          autoPlayInterval={4000}
+          data={images}
+          onSnapToItem={v => {
+            setViewTarget(v)
+          }}
+          renderItem={v => (
+            <TouchableOpacity
+              key={`renderItem ${v.index}`}
+              onPress={openUrl(v.item.url)}
+            >
+              <View {...style.container}>
+                <ActivityIndicator size="small" />
+                <Image
+                  {...style.image}
+                  resizeMode="cover"
+                  source={{uri: v.item.location}}
+                />
+                <View {...style.textWrapper} pointerEvents="none">
+                  <Text {...style.title}>{v.item.title}</Text>
+                  <Text {...style.sub}>genre : {v.item.genre}</Text>
+                  <Text {...style.sub}>{v.item.dom}</Text>
+                  <View {...style.tagWrapper}>
+                    {v.item.tags.split(', ').map((tag, i) => {
+                      return (
+                        <View key={`tag ${i}`} {...style.tagItem}>
+                          <Text>{tag}</Text>
+                        </View>
+                      )
+                    })}
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      )}
       <View {...style.dotsNavigation}>{dots}</View>
     </View>
   )

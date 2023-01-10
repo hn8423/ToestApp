@@ -1,30 +1,40 @@
 import {useEffect, useMemo, useState} from 'react'
-import {Text, TouchableOpacity, View, Image, Dimensions} from 'react-native'
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+} from 'react-native'
 import {useRecoilValue} from 'recoil'
 import {langState} from '../atoms/lang'
 import useStyles2 from '../hooks/ use-style2'
-import {LangMap2} from '../type'
-import {Result} from '../type/result'
+import {LangMap2, ResultParamList, SC} from '../type'
 import dbString from '../lib/database-result/gpst/dbStringVar'
 import _ from 'lodash'
 import CompetenceGraph from './CompetenceGraph'
 import Svg from 'react-native-svg'
 import CompetenceClickGraph from './CompetenceClickGraph'
+import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 const chartWidth = Dimensions.get('window').width
 
-type Props = {
-  data: {
-    resultInfo?: Result.DetailDataType['resultInfo']
-    resultComment: Result.DetailDataType['resultComment']
-    name: string
-  }
+type paramsType = {
+  name: string
 }
-const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
+const MobileCompetence: SC<ResultParamList, 'MobileCompetence'> = ({
+  navigation,
+  route,
+}) => {
   // data
   // data
   // data
+  const params = route.params as paramsType
   const [active, setActive] = useState(0)
   const lang = useRecoilValue(langState) as 'en' | 'ko'
+  const resultDetailData = useRecoilValue(ResultDetailInfoState)
+  const resultInfo = resultDetailData?.resultInfo
+  const resultComment = resultDetailData?.resultComment
   const [achievementEn, setAchievementEn] = useState('')
   const [achievementKo, setAchievementKo] = useState('')
   const [ScoreTypeEn, setScoreTypeEn] = useState('')
@@ -282,7 +292,12 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
   }, [area])
 
   const title = useMemo(() => {
-    return resultComment.competence.description[area].none[textLang].split('\n')
+    if (!resultComment) {
+      return ['']
+    }
+    return resultComment?.competence.description[area].none[textLang].split(
+      '\n',
+    )
   }, [area, resultComment, textLang])
   const scoreTypeLang = useMemo(() => {
     switch (lang) {
@@ -303,56 +318,52 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
   }, [achievementEn, achievementKo, lang])
 
   const areaScore = useMemo(() => {
+    if (!resultInfo) {
+      return 0
+    }
     return (
-      (resultInfo!.scoreMap[areaScoreType].score /
-        resultInfo!.scoreMap[areaScoreType].score) *
+      (resultInfo?.scoreMap[areaScoreType].score /
+        resultInfo?.scoreMap[areaScoreType].score) *
       100
     )
   }, [areaScoreType, resultInfo])
 
-  const subTitle = useMemo(
-    () =>
-      achievementEn
-        ? `${dbString(
-            resultComment.competence.comment.subtitle.none[textLang],
-            {
-              name: name,
-              achievement: achievement,
-              scoreType: scoreTypeLang,
-            },
-          )}\n${
-            resultComment.competence.comment[area][achievementEn][textLang]
-          }`
-        : '',
-    [
-      achievement,
-      achievementEn,
-      area,
-      name,
-      resultComment.competence.comment,
-      scoreTypeLang,
-      textLang,
-    ],
-  )
-
-  const topWorld = useMemo(() => {
-    return dbString(
-      resultComment.competence.description.topWorld.none[textLang],
-      {
-        /* parseInt( */
-        topPercentWorld: `${
-          resultInfo!.scoreMap[areaScoreType].world!.topPercentage
-        }`,
-        /* ) */ name: name,
-      },
-    )
+  const subTitle = useMemo(() => {
+    if (!resultComment) {
+      return ''
+    }
+    return achievementEn
+      ? `${dbString(resultComment?.competence.comment.subtitle.none[textLang], {
+          name: params.name,
+          achievement: achievement,
+          scoreType: scoreTypeLang,
+        })}\n${
+          resultComment?.competence.comment[area][achievementEn][textLang]
+        }`
+      : ''
   }, [
-    areaScoreType,
-    name,
-    resultComment.competence.description.topWorld.none,
-    resultInfo,
+    achievement,
+    achievementEn,
+    area,
+    params.name,
+    resultComment,
+    scoreTypeLang,
     textLang,
   ])
+
+  const topWorld = useMemo(() => {
+    if (resultComment)
+      return dbString(
+        resultComment?.competence.description.topWorld.none[textLang],
+        {
+          /* parseInt( */
+          topPercentWorld: `${
+            resultInfo?.scoreMap[areaScoreType].world!.topPercentage
+          }`,
+          /* ) */ name: params.name,
+        },
+      )
+  }, [areaScoreType, params.name, resultComment, resultInfo, textLang])
 
   const imageCardContent = useMemo(() => {
     switch (active) {
@@ -370,38 +381,41 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
   const radial = useMemo(() => {
     // 100 = 718(164.25 + 240)
     // 0 = 164.25(164.25 + 0)
+    if (!resultInfo) {
+      return
+    }
     let data = {
       imdl:
-        (resultInfo!.scoreMap.com_informationScore.score /
-          resultInfo!.scoreMap.com_informationScore.maxScore) *
+        (resultInfo?.scoreMap.com_informationScore.score /
+          resultInfo?.scoreMap.com_informationScore.maxScore) *
         100,
       lct:
-        (resultInfo!.scoreMap.com_logicalScore.score /
-          resultInfo!.scoreMap.com_logicalScore.maxScore) *
+        (resultInfo?.scoreMap.com_logicalScore.score /
+          resultInfo?.scoreMap.com_logicalScore.maxScore) *
         100,
       cc:
-        (resultInfo!.scoreMap.com_communicationScore.score /
-          resultInfo!.scoreMap.com_communicationScore.maxScore) *
+        (resultInfo?.scoreMap.com_communicationScore.score /
+          resultInfo?.scoreMap.com_communicationScore.maxScore) *
         100,
       ct:
-        (resultInfo!.scoreMap.com_creativeScore.score /
-          resultInfo!.scoreMap.com_creativeScore.maxScore) *
+        (resultInfo?.scoreMap.com_creativeScore.score /
+          resultInfo?.scoreMap.com_creativeScore.maxScore) *
         100,
       cimdl:
-        (resultInfo!.scoreMap.com_informationScore.world.average /
-          resultInfo!.scoreMap.com_informationScore.maxScore) *
+        (resultInfo?.scoreMap.com_informationScore.world.average /
+          resultInfo?.scoreMap.com_informationScore.maxScore) *
         100,
       clct:
-        (resultInfo!.scoreMap.com_logicalScore.world.average /
-          resultInfo!.scoreMap.com_logicalScore.maxScore) *
+        (resultInfo?.scoreMap.com_logicalScore.world.average /
+          resultInfo?.scoreMap.com_logicalScore.maxScore) *
         100,
       ccc:
-        (resultInfo!.scoreMap.com_communicationScore.world.average /
-          resultInfo!.scoreMap.com_communicationScore.maxScore) *
+        (resultInfo?.scoreMap.com_communicationScore.world.average /
+          resultInfo?.scoreMap.com_communicationScore.maxScore) *
         100,
       cct:
-        (resultInfo!.scoreMap.com_creativeScore.world.average /
-          resultInfo!.scoreMap.com_creativeScore.maxScore) *
+        (resultInfo?.scoreMap.com_creativeScore.world.average /
+          resultInfo?.scoreMap.com_creativeScore.maxScore) *
         100,
     }
     let {cc, ccc, cct, cimdl, clct, ct, imdl, lct} = _(data)
@@ -482,112 +496,120 @@ const MobileCompetence = ({data: {resultInfo, resultComment, name}}: Props) => {
     }
   }, [active])
   return (
-    <View style={[styles.wrapper]}>
-      <View style={[styles.whiteBox]}>
-        {/* <Text style={[styles.title, styles.CompetenceText]}>
-          {globalText[lang].compentenceTitle}
-        </Text>
-        <Text style={[styles.captionSub]}>
-          {globalText[lang].competenceDescription}
-        </Text> */}
-        {/* <View style={[styles.svgWrapper]} pointerEvents="box-none">
-          <Svg viewBox="0 0 328.5 328.5" width="328.5" height="328.5">
-            <CompetenceClickGraph
-              data={{clickSVG, active, setActive, globalText}}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={[styles.wrapper]}>
+        <View style={[styles.whiteBox]}>
+          <Text style={[styles.title, styles.CompetenceText]}>
+            {globalText[lang].compentenceTitle}
+          </Text>
+          <Text style={[styles.captionSub]}>
+            {globalText[lang].competenceDescription}
+          </Text>
+          <View style={[styles.svgWrapper]} pointerEvents="box-none">
+            <Svg viewBox="0 0 328.5 328.5" width="328.5" height="328.5">
+              <CompetenceClickGraph
+                data={{clickSVG, active, setActive, globalText}}
+              />
+              {radial}
+            </Svg>
+            <TouchableOpacity
+              style={[styles.creativeThinking1, styles.graphClick]}
+              onPress={clickSVG(1)}
             />
-            {radial}
-          </Svg>
-          <TouchableOpacity
-            style={[styles.creativeThinking1, styles.graphClick]}
-            onPress={clickSVG(1)}
-          />
-          <TouchableOpacity
-            style={[styles.creativeThinking2, styles.graphClick]}
-            onPress={clickSVG(1)}
-          />
+            <TouchableOpacity
+              style={[styles.creativeThinking2, styles.graphClick]}
+              onPress={clickSVG(1)}
+            />
 
-          <TouchableOpacity
-            style={[styles.creativeThinking3, styles.graphClick]}
-            onPress={clickSVG(1)}
-          />
-          <TouchableOpacity
-            style={[styles.creativeThinking4, styles.graphClick]}
-            onPress={clickSVG(1)}
-          />
-          <TouchableOpacity
-            style={[styles.communication1, styles.graphClick]}
-            onPress={clickSVG(2)}
-          />
-          <TouchableOpacity
-            style={[styles.communication2, styles.graphClick]}
-            onPress={clickSVG(2)}
-          />
-          <TouchableOpacity
-            style={[styles.communication3, styles.graphClick]}
-            onPress={clickSVG(2)}
-          />
-          <TouchableOpacity
-            style={[styles.communication4, styles.graphClick]}
-            onPress={clickSVG(2)}
-          />
-          <TouchableOpacity
-            style={[styles.logical1, styles.graphClick]}
-            onPress={clickSVG(3)}
-          />
-          <TouchableOpacity
-            style={[styles.logical2, styles.graphClick]}
-            onPress={clickSVG(3)}
-          />
-          <TouchableOpacity
-            style={[styles.logical3, styles.graphClick]}
-            onPress={clickSVG(3)}
-          />
-          <TouchableOpacity
-            style={[styles.logical4, styles.graphClick]}
-            onPress={clickSVG(3)}
-          />
-          <TouchableOpacity
-            style={[styles.information1, styles.graphClick]}
-            onPress={clickSVG(4)}
-          />
-          <TouchableOpacity
-            style={[styles.information2, styles.graphClick]}
-            onPress={clickSVG(4)}
-          />
-          <TouchableOpacity
-            style={[styles.information3, styles.graphClick]}
-            onPress={clickSVG(4)}
-          />
-          <TouchableOpacity
-            style={[styles.information4, styles.graphClick]}
-            onPress={clickSVG(4)}
-          />
-        </View>  */}
-        {/* <View style={[styles.caption]}>
-          <View style={[styles.captionItem]}>
-            <View style={[styles.captionDot, styles.myScore]} />
-            <Text>My Score</Text>
+            <TouchableOpacity
+              style={[styles.creativeThinking3, styles.graphClick]}
+              onPress={clickSVG(1)}
+            />
+            <TouchableOpacity
+              style={[styles.creativeThinking4, styles.graphClick]}
+              onPress={clickSVG(1)}
+            />
+            <TouchableOpacity
+              style={[styles.communication1, styles.graphClick]}
+              onPress={clickSVG(2)}
+            />
+            <TouchableOpacity
+              style={[styles.communication2, styles.graphClick]}
+              onPress={clickSVG(2)}
+            />
+            <TouchableOpacity
+              style={[styles.communication3, styles.graphClick]}
+              onPress={clickSVG(2)}
+            />
+            <TouchableOpacity
+              style={[styles.communication4, styles.graphClick]}
+              onPress={clickSVG(2)}
+            />
+            <TouchableOpacity
+              style={[styles.logical1, styles.graphClick]}
+              onPress={clickSVG(3)}
+            />
+            <TouchableOpacity
+              style={[styles.logical2, styles.graphClick]}
+              onPress={clickSVG(3)}
+            />
+            <TouchableOpacity
+              style={[styles.logical3, styles.graphClick]}
+              onPress={clickSVG(3)}
+            />
+            <TouchableOpacity
+              style={[styles.logical4, styles.graphClick]}
+              onPress={clickSVG(3)}
+            />
+            <TouchableOpacity
+              style={[styles.information1, styles.graphClick]}
+              onPress={clickSVG(4)}
+            />
+            <TouchableOpacity
+              style={[styles.information2, styles.graphClick]}
+              onPress={clickSVG(4)}
+            />
+            <TouchableOpacity
+              style={[styles.information3, styles.graphClick]}
+              onPress={clickSVG(4)}
+            />
+            <TouchableOpacity
+              style={[styles.information4, styles.graphClick]}
+              onPress={clickSVG(4)}
+            />
           </View>
+          <View style={[styles.caption]}>
+            <View style={[styles.captionItem]}>
+              <View style={[styles.captionDot, styles.myScore]} />
+              <Text>My Score</Text>
+            </View>
 
-          <View style={[styles.captionItem]}>
-            <View style={[styles.captionDot, styles.average]} />
-            <Text>AVERAGE</Text>
+            <View style={[styles.captionItem]}>
+              <View style={[styles.captionDot, styles.average]} />
+              <Text>AVERAGE</Text>
+            </View>
           </View>
-        </View> */}
-      </View>
-      {/* {active !== 0 && (
-        <View style={[styles.cardBox]}>
-          <Text style={[styles.cardTitle]}>{title[0]}</Text>
-          <View style={[styles.cardImageWrapper]}>
-            <Image style={[styles.cardImage]} source={imageCardContent} />
-          </View>
-          <Text style={[styles.cardInner, styles.captionSub]}>{title[1]}</Text>
-          <View style={[styles.cardHr]} />
-          <Text style={[styles.cardInner, styles.captionSub]}>{topWorld}</Text>
-          <Text style={[styles.cardInner, styles.captionSub]}>{subTitle}</Text>
         </View>
-      )} */}
-    </View>
+        {active !== 0 && (
+          <View style={[styles.cardBox]}>
+            <Text style={[styles.cardTitle]}>{title[0]}</Text>
+            <View style={[styles.cardImageWrapper]}>
+              <Image style={[styles.cardImage]} source={imageCardContent} />
+            </View>
+            <Text style={[styles.cardInner, styles.captionSub]}>
+              {title[1]}
+            </Text>
+            <View style={[styles.cardHr]} />
+            <Text style={[styles.cardInner, styles.captionSub]}>
+              {topWorld}
+            </Text>
+            <Text style={[styles.cardInner, styles.captionSub]}>
+              {subTitle}
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
   )
 }
 

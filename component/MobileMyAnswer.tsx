@@ -8,7 +8,6 @@ import utc from 'dayjs/plugin/utc'
 import countryparams from '../utills/countryCode'
 import _ from 'lodash'
 import {LangMap2, ResultParamList, SC} from '../type'
-import {Result} from '../type/result'
 import Button from '../component/Button'
 import ViewVideo from './ViewVideo'
 import MyAnswerGraph from './myAnswerGraph'
@@ -16,7 +15,6 @@ import {ResultDetailInfoState} from '../atoms/resultDetailInfo'
 dayjs.extend(utc)
 
 type paramsType = {
-  resultInfo: Result.DetailDataType['resultInfo']
   testName: string
   times: number
   level: string
@@ -360,7 +358,7 @@ const MobileMyAnswer: SC<ResultParamList, 'MobileMyAnswer'> = ({
   return (
     <>
       {select === 0 && params && (
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View {...style.wrapper}>
             <View {...style.whiteBox}>
               <Text {...style.resultTitle}>{resultTitle}</Text>
@@ -429,15 +427,17 @@ const MobileMyAnswer: SC<ResultParamList, 'MobileMyAnswer'> = ({
         </ScrollView>
       )}
       {select !== 0 && (
-        <ViewVideo
-          data={{
-            setSelect,
-            select,
-            testName: params.testName,
-            times: params.times,
-            level: params.level,
-          }}
-        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <ViewVideo
+            data={{
+              setSelect,
+              select,
+              testName: params.testName,
+              times: params.times,
+              level: params.level,
+            }}
+          />
+        </ScrollView>
       )}
     </>
   )

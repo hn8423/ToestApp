@@ -2,7 +2,6 @@ import {NavigationProp} from '@react-navigation/native'
 import {NavigatorScreenParams, ParamListBase} from '@react-navigation/core'
 import {FC} from 'react'
 import {StackScreenProps} from '@react-navigation/stack'
-import {Result} from './result'
 
 export type NavigationProps = {
   navigation: NavigationProp<any, any>
@@ -20,16 +19,25 @@ export type MainParamList = {
 /* result top tab */
 export type ResultParamList = {
   MobileMyAnswer: {
-    resultInfo: Result.DetailDataType['resultInfo']
     testName: string
     times: number
     level: string
     activeTrophy: number
   }
-  Competence: undefined
-  DomainSpecifics: undefined
-  OverAll: undefined
-  AiRecommendation: undefined
+  MobileCompetence: {
+    name: string
+  }
+  MobileDomainSpecifics: {
+    userName: string
+  }
+  MobileOverallEvaluation: {
+    userName: string
+  }
+  MobileAi: {
+    testName: string
+    times: number
+    level: string
+  }
 }
 
 export type MainNavigationScreenParams = NavigatorScreenParams<MainParamList>
